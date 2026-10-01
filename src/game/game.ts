@@ -27,6 +27,7 @@ import { archetypesData, difficultyData, type DifficultyName } from './data/game
 import authoredJson from '../../data/anim/authored.json';
 import wolfJson from '../../data/werewolf.json';
 import { WerewolfSystem } from './werewolf/werewolf';
+import { FinisherSystem } from './combat/finishers';
 
 interface Corpse {
   model: CharacterModel;
@@ -71,6 +72,7 @@ export class Game {
   private waveClearTimer = -1;
   private respawnTimer = -1;
   wolf!: WerewolfSystem;
+  finishers!: FinisherSystem;
   get wolfMeter(): number {
     return this.wolf ? this.wolf.meter : 0;
   }
@@ -170,6 +172,9 @@ export class Game {
     this.hud = new Hud(this.uiRoot);
     this.hud.el.classList.add('hidden');
     this.wolf = new WerewolfSystem(this.player, this.camera, this.loop, r, this.particles, () => this.enemies, this.uiRoot);
+    this.finishers = new FinisherSystem(this.player, this.camera, this.loop, this.particles, r, () => this.enemies);
+    this.player.onInteract = () => this.finishers.tryStart();
+    events.on('FinisherStarted', () => this.addWolf(wolfJson.meter.perFinisher));
     this.player.onWolfRequest = () => {
       const ok = this.wolf.trigger();
       if (!ok && this.wolf.state === 'human') {
@@ -220,7 +225,9 @@ export class Game {
 
   private makeCorpse(actor: Actor): void {
     actor.disableCollision();
-    const imp = new THREE.Vector3(actor.push.x * 0.55, 2.2 + Math.hypot(actor.push.x, actor.push.z) * 0.12, actor.push.z * 0.55);
+    const pending = this.finishers?.pendingImpulse.get(actor.id);
+    const imp = pending ?? new THREE.Vector3(actor.push.x * 0.55, 2.2 + Math.hypot(actor.push.x, actor.push.z) * 0.12, actor.push.z * 0.55);
+    if (pending) this.finishers.pendingImpulse.delete(actor.id);
     const rd = new Ragdoll(this.physics, actor.model, imp);
     this.corpses.push({ model: actor.model, ragdoll: rd, actor });
     audio.play('bodyfall', 0.8);
@@ -351,6 +358,7 @@ export class Game {
     const playerRagdoll = !pa.alive;
     if (!playerRagdoll) pa.model.update(frameDt * (this.wolf.state === 'transforming' ? 1 : this.loop.timeScale));
     this.wolf.update(frameDt);
+    this.finishers.update(frameDt);
     this.wolf.applyVisual();
     this.player.damageMul = this.wolf.damageMul;
     this.player.speedMul = this.wolf.speedMul;
@@ -400,7 +408,10 @@ export class Game {
     if (this.started) {
       this.hud.setHealth(pa.hp / pa.maxHp);
       this.hud.setWolf(this.wolf.active ? this.wolf.timerFraction : this.wolf.meter / 100, this.wolf.active);
-      if (this.wolf.ready) this.hud.setHint('APERTE  R  —  FALA LOBINHO');
+      const fin = this.finishers.candidate();
+      if (fin) this.hud.setHint(this.input.usingTouch ? 'PEGAR  —  FINALIZAR' : 'E  —  FINALIZAR');
+      else if (this.wolf.ready) this.hud.setHint(this.input.usingTouch ? 'LOBO  —  FALA LOBINHO' : 'APERTE  R  —  FALA LOBINHO');
+      else if (!this.finishers.active) this.hud.setHint(null);
       const tgt = this.player.currentTarget;
       this.hud.update(frameDt, this.enemies, this.renderer.camera, tgt && tgt.kind === 'enemy' ? (tgt as Enemy) : null);
     }

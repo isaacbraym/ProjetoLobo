@@ -40,6 +40,14 @@ export function createBot(game: Game, seed = 7) {
       return { mx: -mx, my: -my, press: 'dodge' };
     }
     if (bd > 3.5) return { mx, my, sprint: bd > 7 };
+    if (game.finishers?.candidate() && cool <= 0 && rng.chance(0.6)) {
+      cool = 1.2;
+      return { mx, my, press: 'interact' };
+    }
+    if (game.wolf?.ready && cool <= 0) {
+      cool = 2.5;
+      return { mx: 0, my: 0, press: 'wolf' };
+    }
     if (cool <= 0) {
       cool = rng.range(0.12, 0.3);
       const r = rng.next();

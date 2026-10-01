@@ -218,6 +218,16 @@ export class Enemy implements Fighter {
     return true;
   }
 
+  /** Trava o inimigo (vítima de finalização). */
+  freezeFor(seconds: number): void {
+    this.cancelAttack();
+    this.hasToken = false;
+    this.stun = seconds;
+    this.actor.push.set(0, 0, 0);
+    this.actor.model.animator.play('hitChest', { speed: 0.35, fade: 0.05, hold: true });
+    this.setState('stagger');
+  }
+
   private cancelAttack(): void {
     if (this.attack) {
       this.attack = null;

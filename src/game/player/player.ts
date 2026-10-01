@@ -47,6 +47,8 @@ export class Player implements Fighter {
   damageTakenMul = 1;
   /** Pedido de transformação (o jogo decide se pode). */
   onWolfRequest: (() => boolean) | null = null;
+  /** Interação contextual (finalização, pegar arma…). */
+  onInteract: (() => boolean) | null = null;
   /** Bot de teste pode dirigir no lugar do jogador. */
   autopilot: ((p: Player) => { mx: number; my: number; press?: ButtonAction; sprint?: boolean }) | null = null;
 
@@ -136,8 +138,12 @@ export class Player implements Fighter {
   }
 
   private tryActions(input: Input, dx: number, dz: number, mag: number): boolean {
-    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'dodge' || x === 'wolf');
+    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'dodge' || x === 'wolf' || x === 'interact');
     if (!act) return false;
+    if (act === 'interact') {
+      this.onInteract?.();
+      return true;
+    }
     if (act === 'wolf') {
       this.onWolfRequest?.();
       return true;
