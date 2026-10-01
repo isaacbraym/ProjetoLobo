@@ -244,8 +244,16 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
         }
         break;
       case 'M_Eye':
-        centerEyeUv(mesh);
-        m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: irisTexture(opts.iris ?? '#5a3a1e'), roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05 });
+        if (opts.faceMap && mesh.geometry.getAttribute('uv1')) {
+          // olho com a foto projetada (mesma UV do rosto): íris/esclera exatamente como na referência
+          const fm = opts.faceMap.clone();
+          fm.channel = 1;
+          fm.needsUpdate = true;
+          m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: fm, roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05 });
+        } else {
+          centerEyeUv(mesh);
+          m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: irisTexture(opts.iris ?? '#5a3a1e'), roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05 });
+        }
         break;
       case 'M_Lash':
         m = new THREE.MeshStandardMaterial({ name, color: 0x120d0a, roughness: 0.7 });

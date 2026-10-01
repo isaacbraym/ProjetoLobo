@@ -68,7 +68,9 @@
   },
   "decimate": 0.75,
   "dropParts": [
-    "Tongue"
+    "Tongue",
+    "Lash_L",
+    "Lash_R"
   ],
   "face": {
     "photo": "refs/marcio/marcio_front.png",

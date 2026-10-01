@@ -22,6 +22,9 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
 - **Combate:** cadeia de 4 leves com variantes (jab, cruzado, gancho, uppercut), pesado, chute, free-flow com warp,
   hitstop, sangue persistente, som sintetizado, esquiva + esquiva perfeita (câmera lenta), cancelamentos.
   Golpes autorados por pose-chave em `data/anim/authored.json` (`src/engine/anim/poseAuthoring.ts`).
+- **Finalizações** (`src/game/combat/finishers.ts`): inimigo atordoado/com < 30% de vida perto → "E — FINALIZAR"
+  (gamepad RB, toque PEGAR) → câmera lateral, câmera lenta, congelamento no impacto, explosão de sangue, ragdoll
+  lançado. Variantes: uppercut fatal, martelada, chute voador (sem repetir a última). +12 na barra do lobo.
 - **IA:** CombatDirector (fichas + anéis), telegrafia (indicador vermelho), stagger por poise, super-armor do Heavy.
 - **Morte:** ragdoll Rapier (11 corpos) → congela ao repousar (T2), sem sombra; poça de sangue.
 - **Lobisomem v1** (`src/game/werewolf/`, `data/werewolf.json`): barra por eventos → R (gamepad LT+RT, botão LOBO no
@@ -35,8 +38,8 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
 ### Próximo passo (em ordem)
 1. **Rosto v2:** os 5 pontos da foto foram marcados à mão em `data/characters/marcio.json` (`face.landmarks`).
    Automatizar com MediaPipe (ver `docs/ASSET_PIPELINE.md` §3) e ajustar a forma da cabeça (modificadores MPFB de
-   nariz/olhos/boca/mandíbula). Olhos: a malha do olho aparece por cima da foto (contorno escuro) — avaliar esconder a
-   esclera da malha ou recolorir com a foto. Cabelo ainda é uma calota; melhorar volume/linha do cabelo.
+   nariz/olhos/boca/mandíbula). Olhos já usam a foto projetada (feito). **Cabelo ainda é uma calota preta** —
+   melhorar volume, fios e o grisalho das laterais da referência (projetar a foto no cabelo também é uma opção).
 2. **Lobisomem v2:** morph targets reais na malha do Márcio (Blender: `wolf_body`, `wolf_face`), roupa rasgando
    (dissolve), corrida de quatro (galope autorado), devorar, desmembramento. Pelo hoje é shells simples.
 3. **Combate restante (M2/M4):** knockdown + levantar (clipes CMU get-up já existem no cache do Bairro — ver

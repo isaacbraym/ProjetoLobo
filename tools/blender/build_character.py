@@ -346,6 +346,13 @@ def face_projection(body, parts, region, co, dom, report):
         py = cyp - sz * p.z
         return (px / cw, 1.0 - py / ch)  # Blender: v para cima; o export glTF inverte
 
+    # ---- olhos: mesma projeção (íris e esclera da foto na posição exata) ----
+    for nm, o in parts.items():
+        if not nm.startswith('Eye_'):
+            continue
+        euv = o.data.uv_layers.new(name='FaceProj')
+        for loop in o.data.loops:
+            euv.data[loop.index].uv = to_uv(o.data.vertices[loop.vertex_index].co)
     # ---- UV e máscara no corpo (a barba herda ao ser criada depois) ----
     me = body.data
     uvl = me.uv_layers.new(name='FaceProj')
