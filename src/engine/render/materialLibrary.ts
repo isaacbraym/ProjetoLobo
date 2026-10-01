@@ -227,9 +227,27 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
       case 'M_Shoes':
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.55 });
         break;
-      case 'M_Hair':
-        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.72, metalness: 0, vertexColors: true, transparent: true, alphaTest: 0.02, map: strandsTexture(), envMapIntensity: 0.35 });
+      case 'M_Hair': {
+        const hm = new THREE.MeshStandardMaterial({ name, color, roughness: 0.72, metalness: 0, vertexColors: true, transparent: true, alphaTest: 0.02, map: strandsTexture(), envMapIntensity: 0.35 });
+        const g = mesh.geometry;
+        if (opts.faceMap && g.getAttribute('uv1')) {
+          // frente/laterais do cabelo pegam a foto (linha do cabelo, grisalho das têmporas); nuca fica na cor base
+          if (!g.getAttribute('faceUv')) g.setAttribute('faceUv', g.getAttribute('uv1'));
+          const faceMap = opts.faceMap;
+          hm.onBeforeCompile = (sh) => {
+            sh.uniforms.faceMap = { value: faceMap };
+            sh.vertexShader = sh.vertexShader
+              .replace('#include <common>', '#include <common>\nattribute vec2 faceUv; varying vec2 vFaceUv;')
+              .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFaceUv = faceUv;');
+            sh.fragmentShader = sh.fragmentShader
+              .replace('#include <common>', '#include <common>\nuniform sampler2D faceMap; varying vec2 vFaceUv;')
+              .replace('#include <color_fragment>', '#if defined( USE_COLOR_ALPHA )\n diffuseColor.a *= vColor.a;\n vec3 hp = texture2D(faceMap, vFaceUv).rgb;\n float hl = dot(hp, vec3(0.299, 0.587, 0.114));\n diffuseColor.rgb = mix(diffuseColor.rgb, hp * 1.05, clamp(vColor.r, 0.0, 1.0) * (1.0 - smoothstep(0.28, 0.42, hl)));\n#endif');
+          };
+          hm.customProgramCacheKey = () => 'hair-face';
+        }
+        m = hm;
         break;
+      }
       case 'M_Beard':
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.75, vertexColors: true, transparent: true, alphaTest: 0.12, map: strandsTexture() });
         if (opts.faceMap && mesh.geometry.getAttribute('uv1')) {

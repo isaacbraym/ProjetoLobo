@@ -540,7 +540,11 @@ def main():
         lambda v: hair_cfg.get('thickness', 0.008) + max(0.0, (v.co.z - (head_top - 0.07))) * hair_cfg.get('volumeTop', 0.25),
         m_hair, solidify=0.002, smooth=2, smooth_factor=0.4,
         cuts=[((0, hl_y, head_top - 0.03), (0, -1, -0.45)), ((0, 0, head_bot + (head_top - head_bot) * hair_cfg.get('sideBottom', 0.45)), (0, 0, -1))])
-      edge_alpha(hair, hops=2)
+      head_cy = nose.y + 0.09  # centro aproximado da cabeça em profundidade
+      def hair_front(p):
+          f = max(0.0, min(1.0, (head_cy - p.y) / 0.07 + 0.35))
+          return (f, f, f)
+      edge_alpha(hair, hops=2, rgb_fn=hair_front)
 
     beard_cfg = R.get('beard')
     beard = None
