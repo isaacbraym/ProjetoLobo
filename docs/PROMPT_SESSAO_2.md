@@ -19,7 +19,7 @@ Você vai continuar SOZINHO, por muitas horas e SEM NINGUÉM para responder ou a
 2) git log --oneline -30 ; git status ; npm install ; npx playwright install chromium ; npm run verify:quick ; npm run capture combat (e olhe as imagens) — entenda o estado ANTES de mudar.
 3) Leia o código principal: src/game/game.ts, src/game/player/player.ts, src/game/ai/enemy.ts, src/game/combat/*, src/engine/anim/*, src/presentation/camera/thirdPersonCamera.ts, src/engine/render/*, tools/blender/build_character.py, tools/blender/retarget_mixamo.py.
 
-=== 2. PRIORIDADES DESTA SESSÃO (em ordem; commit+push ao fim de cada uma) ===
+=== 2. PRIORIDADES DESTA SESSÃO (em ordem: A, A2, B, C, D, E, F, G; commit+push ao fim de cada uma) ===
 
 A) ROSTO DO MÁRCIO v2 — NOVA FOTO REAL (prioridade máxima)
 - Use a foto real nova: assets-src/characters/marcio_face_src (PNG 659x659 SEM extensão, versionado com autorização do usuário — DEC-0015; cópia também em refs/marcio/marcio_face_real.png). Ela substitui a imagem antiga SÓ para o rosto/cabeça (o corpo/roupa continuam de refs/marcio/marcio_front.png). O que importa para o usuário: O ROSTO FICAR IDÊNTICO.
@@ -29,6 +29,32 @@ A) ROSTO DO MÁRCIO v2 — NOVA FOTO REAL (prioridade máxima)
   3. Projeção + mistura: delighting leve, color transfer em Lab da pele do corpo para o tom da foto, máscara suave nas bordas, olhos com a foto projetada (já existe), barba com volume (grisalha no queixo, bigode mais escuro, como na foto), cabelo CURTO com entradas e grisalho nas têmporas (como na foto real — hoje o cabelo é uma calota e a borda da frente mostra pele).
   4. Validação automática: render da cabeça → landmarks no render → erro médio normalizado pela distância interocular (meta ≤ 3%) + SSIM do recorte (meta ≥ 0,80) + `npm run capture face` (frente, 3/4, perfil, corpo). Itere até ficar claramente o Márcio de frente e em 3/4.
   - Textura do rosto no jogo: SEM extensão (ex.: public/assets/characters/marcio_f), em resolução alta (use a foto inteira na resolução nativa, sem reduzir), carregada pelo runtime e aplicada no personagem — pedido do usuário para não ficar evidente que é uma foto. O loader de imagem do navegador identifica o formato pelo conteúdo. Remova o antigo marcio_face.jpg quando o novo estiver no lugar.
+
+A2) CONTROLES "POUCOS BOTÕES" + MIRA NO MOUSE (pedido do usuário — fazer logo depois do A; é base do feel)
+- Esquema completo e notas em docs/GAME_DESIGN.md §3 (fonte da verdade, DEC-0016). Resumo:
+  • Clique ESQUERDO = soco (toque) / SOCO FORTE (segurar ~0,3 s e soltar). Clique DIREITO = chute (toque) / CHUTE FORTE (segurar).
+    O toque precisa sair na hora (sem esperar para saber se é "segurar": decida pelo tempo de pressão com buffer curto;
+    o golpe forte tem animação de carga visível e mais impacto). Combos continuam variando por contexto.
+  • SHIFT = esquiva/rolamento (toque) e correr (segurar). CTRL (alternativa C) = agarrar / pegar arma / finalizar (contextual).
+  • ESPAÇO ou F = ESPECIAL (transformar em lobisomem com a barra cheia; como lobo: rugido/ataque em área).
+  • O MOUSE ORIENTA ONDE E EM QUEM BATER: no modo câmera-mira, o inimigo sob o cursor fica destacado (contorno/luz) e
+    é o alvo do golpe (free-flow com warp até ele); sem inimigo sob o cursor, o golpe vai na direção do cursor no chão.
+  • LOBISOMEM: CLIQUE DIREITO EM CIMA DE UM CORPO (ou inimigo caído) = MORDER/COMER automaticamente — animação curta
+    (≤ 1,2 s), sangue, som, cura 25 de vida e +3 s de lobo (docs/GAME_DESIGN.md §5). Clique direito sem corpo = chute/patada.
+  • G alterna a câmera: CÂMERA-MIRA (padrão a testar: cursor visível com retícula, mouse aponta o alvo, câmera segue
+    num ângulo confortável e gira devagar com o cursor na borda) ↔ CÂMERA LIVRE (a atual: pointer lock, mouse orbita).
+    Escolha salva (localStorage com try/catch) + aviso na tela ao trocar.
+  • Poucos botões: remova os atalhos antigos (E, Q, R, J, K) ou deixe só como alias silencioso. Gamepad e toque seguem o
+    mesmo conceito (tabela no GAME_DESIGN).
+- ARMADILHA DO NAVEGADOR: Ctrl+W FECHA A ABA (Ctrl+S/D/R também atrapalham). Obrigatório: ao clicar JOGAR no desktop,
+  tela cheia + navigator.keyboard.lock() (Keyboard Lock API, captura Ctrl+W em tela cheia no Chrome/Edge), preventDefault
+  nos atalhos com Ctrl durante o jogo, aviso beforeunload e tecla C como alternativa ao Ctrl. Teste com Playwright
+  (eventos de teclado sintéticos) que Ctrl+W não chama a navegação padrão quando possível; o que não der para testar
+  headless marque NÃO VALIDADO.
+- MENU → CONTROLES: tabela clara por dispositivo (mouse/teclado, gamepad, toque) com o modo de câmera atual, a dica do G,
+  a explicação de segurar para golpe forte, o "clique direito no corpo para comer" e o aviso do Ctrl/tela cheia.
+  Visual bonito (ícones de mouse/teclas desenhados em CSS/SVG), não uma lista crua.
+- Atualize o bot de teste e os cenários de captura para o novo esquema; adicione teste unitário da lógica toque×segurar.
 
 B) CINEMÁTICA DE ABERTURA (o jogo começa com um filminho)
 - Ao clicar JOGAR: letterbox, câmera estabelecendo o saguão do Edifício Vértice → Márcio entra DISTRAÍDO (andando olhando o celular / tomando café — crie o prop por código) → BELO ZOOM no rosto dele (push-in lento, profundidade de campo, luz de borda, foco no rosto da foto real) → bandidos surgem (de trás das colunas/da recepção, um rendendo reféns: clipes mx_hostage_situation_idle_villain / mx_hostage_situation_idle_hostage / mx_kneeling_idle / mx_praying já existem) → Márcio se assusta, fecha a cara (troca para mx_fighting_idle), título "MÁRCIO" estilizado → controle passa ao jogador e a primeira onda começa. 20–35 s, pulável (qualquer tecla/toque após 1 s), legendas curtas em PT-BR com humor de filme de ação.

@@ -15,20 +15,31 @@ Explorar a sala → perceber ameaça (reféns vigiados, criminosos patrulhando) 
 reféns reagem → saquear armas improvisadas/itens/segredos → avançar → arena principal → boss → elevador → próximo andar.
 Sessão de um andar: 20–35 min. Jogo completo: ~1h30–2h.
 
-## 3. Controles
+## 3. Controles (DEC-0016 — esquema "poucos botões", pedido do usuário)
+**Teclado + mouse (desktop):** WASD + 2 cliques + Shift + Ctrl + Espaço/F + G. Nada além disso é obrigatório.
+
 | Ação | Teclado/mouse | Gamepad (padrão Xbox) | Toque |
 |---|---|---|---|
-| Mover / câmera | WASD / mouse (pointer lock) | analógico E / D | analógico flutuante esquerdo / arrastar à direita |
-| Correr | Shift (segurar) | L3 ou analógico no máximo | analógico no máximo |
-| Ataque leve | Clique esquerdo | X | botão **Leve** |
-| Ataque pesado (segurar = carregado) | Clique direito | Y | botão **Pesado** |
-| Chute | F | B | botão **Chute** |
-| Esquiva / contra (no tempo do telegrafado) | Espaço | A | botão **Esquiva** |
-| Agarrar / interagir / pegar arma (contextual) | E | RB | botão **contextual** (ícone muda) |
-| Largar/arremessar arma | Q | LB | segurar o contextual |
-| Lobisomem (barra cheia) | R | LT+RT | botão **Lobo** (pulsa quando cheio) |
-| Finalização (prompt sobre o inimigo) | E | RB | contextual |
+| Mover | WASD | analógico E | analógico flutuante esquerdo |
+| **Soco** (toque) / **Soco forte** (segurar ~0,3 s e soltar) | Clique **esquerdo** | X (segurar = forte) | botão **Soco** (segurar = forte) |
+| **Chute** (toque) / **Chute forte** (segurar ~0,3 s e soltar) | Clique **direito** | B (segurar = forte) | botão **Chute** (segurar = forte) |
+| **Esquiva/rolamento** (toque) · **Correr** (segurar) | **Shift** | A (toque) · L3/analógico no máximo (correr) | botão **Esquiva** · analógico no máximo |
+| **Agarrar / pegar arma / finalizar** (contextual; segurar com arma = arremessar) | **Ctrl** (alternativa: **C**) | RB | botão **contextual** |
+| **Especial**: transformar em Lobisomem (barra cheia); como lobo: rugido/ataque em área | **Espaço** ou **F** | LT+RT | botão **Lobo** |
+| **Mirar / escolher em quem bater** | **o mouse**: no modo câmera-mira, o inimigo sob o cursor é o alvo (destacado); sem inimigo, o golpe vai na direção do cursor | analógico E (direção) | direção do analógico |
+| **Lobisomem: morder/comer** | **Clique direito em cima de um corpo** ou inimigo caído (cura) | B perto de corpo | botão **Chute** perto de corpo |
+| **Trocar câmera**: câmera-mira (cursor visível, mouse aponta o alvo) ↔ câmera livre (mouse gira a câmera, pointer lock) | **G** | — | — |
 | Pausa | Esc | Start | ícone ‖ |
+
+Notas de implementação:
+- Câmera-mira (padrão a testar): cursor visível com retícula própria; raycast do cursor escolhe o alvo; a câmera
+  segue o Márcio num ângulo confortável e gira devagar quando o cursor encosta na borda da tela. Câmera livre: a atual
+  (pointer lock, mouse orbita). A escolha fica salva (localStorage, com try/catch) e aparece num aviso ao trocar.
+- **Ctrl + W fecha a aba do navegador** (e Ctrl+S/D/R também atrapalham). Mitigação obrigatória: ao clicar JOGAR no
+  desktop, entrar em tela cheia + `navigator.keyboard.lock()` (Keyboard Lock API, Chrome/Edge: captura Ctrl+W em tela
+  cheia), `preventDefault` nos atalhos com Ctrl durante o jogo, aviso `beforeunload` ("sair do jogo?") e tecla **C**
+  como alternativa ao Ctrl. Explicar no menu Controles.
+- Tudo isso aparece no menu **CONTROLES** (tabela por dispositivo + ilustração simples dos cliques).
 
 ## 4. Combate do Márcio (valores iniciais)
 - **Leve:** cadeia de até 4 (jab, cruzado, gancho, finalizador da cadeia: cabeçada/cotovelo/uppercut — variante por
