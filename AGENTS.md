@@ -21,7 +21,9 @@ Curto de propósito: o resto é lido **sob demanda**.
 - **Um Blender por vez**, sempre headless (`--background`). 16 GB de RAM.
 - Temporários (logs, capturas, scripts descartáveis): só em `.agent-tmp/`. Nada solto na raiz.
 - `refs/` tem fotos de pessoas reais e áudio original: **nunca** versionar (já está no `.gitignore`). Só derivados
-  processados (texturas do jogo) entram em `public/assets/`.
+  processados (texturas do jogo) entram em `public/assets/`. **Exceção autorizada pelo usuário (DEC-0015):** a foto do
+  rosto do Márcio fica versionada SEM extensão em `assets-src/characters/marcio_face_src` (PNG) e a textura de jogo do
+  rosto também vai sem extensão (ex.: `public/assets/characters/marcio_f`). Prioridade: rosto idêntico.
 - **Senha do gate:** em texto só em `.env.local` (fora do Git). Nunca escreva a senha em doc, código, commit ou bundle;
   o código guarda só sal + hash (`npm run gate:hash`).
 - Licenças: todo asset externo com origem e licença em `CREDITS.md`. Só CC0/CC-BY/royalty-free com uso em jogo permitido.
