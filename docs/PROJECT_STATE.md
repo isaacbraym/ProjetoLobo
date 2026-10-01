@@ -36,6 +36,9 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
   (`state()`, `spawn()`, `bot(true)`, `transform()`, `faceCam(true, dist, ângulo)`, `perf()`…), overlay `?perf=1`.
 
 ### Próximo passo (em ordem)
+> **Sessão 2:** seguir `docs/PROMPT_SESSAO_2.md` (rosto v2 com a foto real `refs/marcio/marcio_face_real.png`,
+> cinemática de abertura, câmera profissional, cinemática de golpes/críticos, animações, otimização + visual).
+
 1. **Rosto v2:** os 5 pontos da foto foram marcados à mão em `data/characters/marcio.json` (`face.landmarks`).
    Automatizar com MediaPipe (ver `docs/ASSET_PIPELINE.md` §3) e ajustar a forma da cabeça (modificadores MPFB de
    nariz/olhos/boca/mandíbula). Olhos já usam a foto projetada (feito). **Cabelo ainda é uma calota preta** —
