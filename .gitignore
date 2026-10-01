@@ -1,0 +1,40 @@
+# Referências pessoais (fotos de pessoas reais, áudio original) — NUNCA versionar
+refs/
+
+# Downloads brutos de terceiros (Mixamo, Quaternius, MPFB2, Sonniss, etc.) — licença não permite redistribuir o bruto
+assets-src/vendor/
+
+# Temporários de agentes
+.agent-tmp/
+
+# Node / build
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.vite/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
+# Blender
+*.blend1
+*.blend2
+__pycache__/
+
+# Ferramentas baixadas (toktx, gltfpack, etc.)
+tools/bin/
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+.idea/
+
+# Segredos locais (senha do gate em texto)
+.env
+.env.*
+!.env.example
