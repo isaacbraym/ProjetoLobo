@@ -54,5 +54,13 @@
     "furLength": 0.022,
     "furShells": 10,
     "eyeColor": "#ffb02e"
+  },
+  "special": {
+    "$comment": "Espaço/F como lobo = rugido em área; clique direito num corpo = devorar (cura + tempo de lobo).",
+    "roarCooldown": 6,
+    "eatHeal": 25,
+    "eatSeconds": 3,
+    "eatRange": 2.2,
+    "eatLunge": 8
   }
 }

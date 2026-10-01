@@ -46,12 +46,12 @@ export function createBot(game: Game, seed = 7) {
     }
     if (game.wolf?.ready && cool <= 0) {
       cool = 2.5;
-      return { mx: 0, my: 0, press: 'wolf' };
+      return { mx: 0, my: 0, press: 'special' };
     }
     if (cool <= 0) {
       cool = rng.range(0.12, 0.3);
       const r = rng.next();
-      const press: ButtonAction = r < 0.62 ? 'light' : r < 0.82 ? 'heavy' : 'kick';
+      const press: ButtonAction = r < 0.6 ? 'light' : r < 0.76 ? 'heavy' : r < 0.9 ? 'kick' : 'kickHeavy';
       return { mx, my, press };
     }
     return { mx: mx * 0.3, my: my * 0.3 };

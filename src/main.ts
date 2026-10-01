@@ -2,15 +2,17 @@ import './presentation/ui/styles.css';
 import { showGate } from './presentation/ui/gate';
 import { isTouchDevice, type QualityName } from './engine/render/quality';
 import { audio } from './engine/audio/audio';
+import { createControlsPanel } from './presentation/ui/controlsPanel';
 
 const params = new URLSearchParams(location.search);
 const AUTOTEST = params.has('autotest') && ['localhost', '127.0.0.1'].includes(location.hostname);
 
 const TIPS = [
-  'Soco leve encadeia até 4 golpes. Misture com FORTE e CHUTE para variar a sequência.',
-  'Quando o indicador vermelho acender sobre um capanga, ESQUIVE no tempo certo: câmera lenta e contra-ataque.',
-  'O Brutamontes aguenta socos leves sem parar o golpe. Use FORTE ou CHUTE para quebrar a postura.',
-  'A barra laranja é a raiva do Márcio. Quando encher... FALA LOBINHO.',
+  'Clique esquerdo soca, clique direito chuta. SEGURE e solte para o golpe FORTE.',
+  'O mouse escolhe em quem bater: o capanga sob o cursor fica destacado. G troca para a câmera livre.',
+  'Quando o indicador vermelho acender sobre um capanga, toque SHIFT na hora certa: câmera lenta e contra-ataque.',
+  'O Brutamontes aguenta socos leves sem parar o golpe. Segure o clique para quebrar a postura dele.',
+  'A barra laranja é a raiva do Márcio. Quando encher, ESPAÇO... FALA LOBINHO. Como lobo, clique direito num corpo para devorar.',
 ];
 
 async function boot(): Promise<void> {
@@ -57,6 +59,45 @@ async function boot(): Promise<void> {
   const touch = isTouchDevice();
   let touchCtl: ReturnType<typeof import('./presentation/ui/touchControls').installTouchControls> | null = null;
 
+  // ---- painel de controles (menu e pausa) ----
+  const openControls = () => {
+    const panel = createControlsPanel({ camMode: () => game.input.camMode, touch, onClose: () => panel.remove() });
+    ui.appendChild(panel);
+  };
+
+  // ---- pausa: Esc / Start, ou o navegador soltou o cursor preso (câmera livre) ----
+  let pauseEl: HTMLDivElement | null = null;
+  const resume = () => {
+    pauseEl?.remove();
+    pauseEl = null;
+    game.loop.paused = false;
+    if (game.input.camMode === 'free') game.input.requestPointerLock();
+  };
+  const pause = () => {
+    if (pauseEl || !game.started) return;
+    game.loop.paused = true;
+    if (document.pointerLockElement) document.exitPointerLock?.();
+    pauseEl = document.createElement('div');
+    pauseEl.className = 'pause';
+    pauseEl.innerHTML = `<div class="pause__box"><h2>PAUSA</h2>
+      <button class="menu__btn" data-p="resume">CONTINUAR</button>
+      <button class="menu__btn" data-p="cam">CÂMERA: ${game.input.camMode === 'aim' ? 'MIRA' : 'LIVRE'}</button>
+      <button class="menu__btn" data-p="controls">CONTROLES</button></div>`;
+    ui.appendChild(pauseEl);
+    pauseEl.querySelector('[data-p="resume"]')!.addEventListener('click', resume);
+    pauseEl.querySelector('[data-p="controls"]')!.addEventListener('click', openControls);
+    const camBtn = pauseEl.querySelector('[data-p="cam"]') as HTMLButtonElement;
+    camBtn.addEventListener('click', () => {
+      game.input.setCamMode(game.input.camMode === 'aim' ? 'free' : 'aim');
+      if (document.pointerLockElement) document.exitPointerLock?.();
+      camBtn.textContent = `CÂMERA: ${game.input.camMode === 'aim' ? 'MIRA' : 'LIVRE'}`;
+    });
+  };
+  game.onPauseRequest = () => (pauseEl ? resume() : pause());
+  document.addEventListener('pointerlockchange', () => {
+    if (!document.pointerLockElement && game.started && game.input.camMode === 'free' && !touch && !AUTOTEST) pause();
+  });
+
   const begin = async () => {
     audio.unlock();
     if (touch) {
@@ -74,8 +115,24 @@ async function boot(): Promise<void> {
       const { installTouchControls } = await import('./presentation/ui/touchControls');
       touchCtl = installTouchControls(ui, game.input);
     } else {
+      // Ctrl+W fecha a aba (Ctrl é o botão contextual): tela cheia + Keyboard Lock captura o atalho no Chrome/Edge
+      try {
+        await document.documentElement.requestFullscreen?.({ navigationUI: 'hide' });
+      } catch {
+        /* recusou a tela cheia: o aviso de saída ainda protege */
+      }
+      try {
+        await (navigator as unknown as { keyboard?: { lock?: (keys?: string[]) => Promise<void> } }).keyboard?.lock?.();
+      } catch {
+        /* sem Keyboard Lock (Firefox/Safari): use C no lugar do Ctrl */
+      }
       game.input.requestPointerLock();
     }
+    window.addEventListener('beforeunload', (e) => {
+      if (!game.started) return;
+      e.preventDefault();
+      e.returnValue = '';
+    });
     game.start();
   };
 
@@ -103,9 +160,7 @@ async function boot(): Promise<void> {
     <div class="menu__row">Qualidade:
       ${(['low', 'medium', 'high', 'ultra'] as QualityName[]).map((n) => `<button class="chip ${n === q ? 'on' : ''}" data-q="${n}">${{ low: 'Baixa', medium: 'Média', high: 'Alta', ultra: 'Ultra' }[n]}</button>`).join('')}
     </div>
-    <div class="menu__row" data-controls style="display:none;max-width:560px;line-height:1.5">
-      ${touch ? 'Analógico à esquerda · arraste à direita para a câmera · SOCO / FORTE / CHUTE / ESQUIVA.' : 'WASD mover · Mouse câmera · Clique esq. SOCO · Clique dir. FORTE · F CHUTE · Espaço ESQUIVA · Shift correr · R LOBO · Gamepad suportado.'}
-    </div>`;
+`;
   ui.appendChild(menu);
   menu.querySelectorAll<HTMLButtonElement>('[data-diff]').forEach((b) =>
     b.addEventListener('click', () => {
@@ -121,10 +176,7 @@ async function boot(): Promise<void> {
       game.renderer.setQuality(b.dataset.q as QualityName);
     }),
   );
-  menu.querySelector('[data-act="controls"]')!.addEventListener('click', () => {
-    const c = menu.querySelector('[data-controls]') as HTMLDivElement;
-    c.style.display = c.style.display === 'none' ? 'block' : 'none';
-  });
+  menu.querySelector('[data-act="controls"]')!.addEventListener('click', openControls);
   menu.querySelector('[data-act="play"]')!.addEventListener('click', () => {
     menu.remove();
     void begin();

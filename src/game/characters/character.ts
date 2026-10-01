@@ -98,13 +98,22 @@ export class CharacterModel {
     this.updateFlash(dt);
   }
 
-  /** Decaimento do flash de acerto (também usado em corpos, sem animador). */
+  /** Destaque de alvo (câmera-mira): brilho quente sutil, somado ao flash de acerto. 0..1. */
+  setHighlight(k: number): void {
+    this.highlight = k;
+  }
+  private highlight = 0;
+  private shownHighlight = 0;
+
+  /** Decaimento do flash de acerto (também usado em corpos, sem animador) + destaque de alvo. */
   updateFlash(dt: number): void {
-    if (this.flashT > 0) {
-      this.flashT -= dt;
-      const k = Math.max(0, this.flashT / 0.12);
-      for (const m of this.flashMats) m.emissive.setRGB(k * 0.7, k * 0.12, k * 0.08);
-      if (this.flashT <= 0) for (const m of this.flashMats) m.emissive.setRGB(0, 0, 0);
+    const h = this.shownHighlight + (this.highlight - this.shownHighlight) * Math.min(1, dt * 14);
+    if (this.flashT > 0 || Math.abs(h - this.shownHighlight) > 1e-4 || (h === 0 && this.shownHighlight !== 0)) {
+      this.flashT = Math.max(0, this.flashT - dt);
+      const k = this.flashT / 0.12;
+      this.shownHighlight = h < 1e-3 ? 0 : h;
+      const hh = this.shownHighlight;
+      for (const m of this.flashMats) m.emissive.setRGB(k * 0.7 + hh * 0.075, k * 0.12 + hh * 0.02, k * 0.08 + hh * 0.008);
     }
   }
 

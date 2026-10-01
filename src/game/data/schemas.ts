@@ -23,6 +23,8 @@ export const AttackSchema = z.object({
   critChance: z.number().min(0).max(1).optional(),
   /** arma branca/garra: sempre sangra */
   bleed: z.boolean().optional(),
+  /** golpe forte carregável: tempo do clipe em que a pose de carga fica parada enquanto o botão é segurado */
+  chargeAt: z.number().positive().optional(),
 });
 export type AttackDef = z.infer<typeof AttackSchema>;
 
@@ -39,16 +41,33 @@ export const AttacksFileSchema = z
       afterDodgeKick: z.string().optional(),
       wolfLight: z.array(z.array(z.string()).min(1)).optional(),
       wolfHeavy: z.array(z.array(z.string()).min(1)).optional(),
+      /** chute forte (segurar o clique direito) */
+      kickHeavy: z.array(z.array(z.string()).min(1)).optional(),
       comboResetSeconds: z.number().positive(),
+      /** golpe forte carregado (segurar): bônus cresce até `full` s de carga */
+      charge: z
+        .object({
+          full: z.number().positive(),
+          damageBonus: z.number().min(0),
+          poiseBonus: z.number().min(0),
+          hitstopBonus: z.number().min(0),
+          shakeBonus: z.number().min(0),
+          critBonus: z.number().min(0).max(1),
+          maxHold: z.number().positive(),
+        })
+        .optional(),
     }),
   })
   .superRefine((f, ctx) => {
     for (const [id, a] of Object.entries(f.attacks)) {
       if (!(a.start < a.hitAt && a.hitAt <= a.cancelAt && a.cancelAt <= a.end))
         ctx.addIssue({ code: 'custom', message: `${id}: precisa start < hitAt <= cancelAt <= end` });
+      if (a.chargeAt !== undefined && !(a.start <= a.chargeAt && a.chargeAt < a.hitAt))
+        ctx.addIssue({ code: 'custom', message: `${id}: chargeAt precisa ficar entre start e hitAt` });
     }
     const all = [...f.combos.light.flat(), ...f.combos.heavy.flat(), ...f.combos.kick.flat(), f.combos.lightToHeavy,
-      ...(f.combos.wolfLight ?? []).flat(), ...(f.combos.wolfHeavy ?? []).flat(), ...(f.combos.afterDodgeKick ? [f.combos.afterDodgeKick] : [])];
+      ...(f.combos.wolfLight ?? []).flat(), ...(f.combos.wolfHeavy ?? []).flat(), ...(f.combos.kickHeavy ?? []).flat(),
+      ...(f.combos.afterDodgeKick ? [f.combos.afterDodgeKick] : [])];
     for (const id of all) if (!f.attacks[id]) ctx.addIssue({ code: 'custom', message: `combo referencia ataque inexistente: ${id}` });
   });
 export type AttacksFile = z.infer<typeof AttacksFileSchema>;

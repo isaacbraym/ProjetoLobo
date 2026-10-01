@@ -5,6 +5,7 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { launch, openGame, outDir, lobo, ROOT } from './browser';
+import { runControls } from './scenarioControls';
 
 const scenario = process.argv[2] ?? 'combat';
 const dir = outDir('captures');
@@ -51,10 +52,27 @@ try {
     info.push({ state: await lobo(page, 'state()'), perf: await lobo(page, 'perf()') });
     writeFileSync(resolve(dir, 'state.json'), JSON.stringify(info, null, 2));
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+  } else if (scenario === 'controls') {
+    const { page, logs } = await openGame(browser, '');
+    const { failed, checks } = await runControls(page, dir);
+    writeFileSync(resolve(dir, 'controls.json'), JSON.stringify({ failed, checks }, null, 2));
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+    console.log(`[capture] controles: ${failed.length ? 'FALHOU ' + failed.join(', ') : 'tudo ok'}`);
+    console.log(JSON.stringify(checks));
   } else if (scenario === 'menu') {
-    const { page, logs } = await openGame(browser, 'menu=1&perf=1');
+    const { page, logs } = await openGame(browser, 'menu=1');
     await page.waitForTimeout(3000);
     await page.screenshot({ path: resolve(dir, 'menu.png') });
+    // painel CONTROLES (DEC-0016): uma captura por dispositivo
+    await page.click('[data-act="controls"]');
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: resolve(dir, 'menu_controls_kbm.png') });
+    await page.click('[data-dev="pad"]');
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: resolve(dir, 'menu_controls_pad.png') });
+    await page.click('[data-dev="touch"]');
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: resolve(dir, 'menu_controls_touch.png') });
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
   } else {
     const { page, logs } = await openGame(browser, 'perf=1');

@@ -1,6 +1,7 @@
-import type { Input, ButtonAction } from '../../engine/input/input';
+import type { Input, ButtonAction, StrikeKind } from '../../engine/input/input';
 
-/** Controles de toque: analógico flutuante (esq.), arrastar para câmera (dir.), botões de ação. */
+/** Controles de toque: analógico flutuante (esq.), arrastar para câmera (dir.), botões de ação.
+ *  SOCO e CHUTE seguem o toque × segurar (segurar e soltar = golpe forte), como o mouse (DEC-0016). */
 export function installTouchControls(root: HTMLElement, input: Input): { setWolfReady(v: boolean): void; el: HTMLElement } {
   const el = document.createElement('div');
   el.className = 'touch';
@@ -9,12 +10,11 @@ export function installTouchControls(root: HTMLElement, input: Input): { setWolf
     <div class="touch__zone touch__zone--right"></div>
     <div class="touch__stick"><div class="touch__knob"></div></div>
     <div class="touch__btns">
-      <div class="tbtn tbtn--light" data-a="light">SOCO</div>
-      <div class="tbtn tbtn--heavy" data-a="heavy">FORTE</div>
-      <div class="tbtn tbtn--kick" data-a="kick">CHUTE</div>
+      <div class="tbtn tbtn--light" data-s="punch">SOCO</div>
+      <div class="tbtn tbtn--kick" data-s="kick">CHUTE</div>
       <div class="tbtn tbtn--dodge" data-a="dodge">ESQUIVA</div>
       <div class="tbtn tbtn--interact" data-a="interact">PEGAR</div>
-      <div class="tbtn tbtn--wolf" data-a="wolf">LOBO</div>
+      <div class="tbtn tbtn--wolf" data-a="special">LOBO</div>
     </div>
     <div class="tbtn tbtn--pause" data-a="pause">❚❚</div>`;
   root.appendChild(el);
@@ -47,14 +47,13 @@ export function installTouchControls(root: HTMLElement, input: Input): { setWolf
     knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
     input.touchMove.x = dx / R;
     input.touchMove.y = -dy / R;
-    if (Math.hypot(dx, dy) > R * 0.95) input.held.add('sprint');
-    else input.held.delete('sprint');
+    input.touchSprint = Math.hypot(dx, dy) > R * 0.95;
   });
   const endStick = (e: PointerEvent) => {
     if (e.pointerId !== stickId) return;
     stickId = null;
     input.touchMove.x = input.touchMove.y = 0;
-    input.held.delete('sprint');
+    input.touchSprint = false;
     stick.classList.remove('on');
     knob.style.transform = 'translate(-50%,-50%)';
   };
@@ -83,17 +82,24 @@ export function installTouchControls(root: HTMLElement, input: Input): { setWolf
   right.addEventListener('pointercancel', endCam);
 
   el.querySelectorAll<HTMLDivElement>('.tbtn').forEach((b) => {
-    const a = b.dataset.a as ButtonAction;
+    const a = b.dataset.a as ButtonAction | undefined;
+    const strike = b.dataset.s as StrikeKind | undefined;
+    let isDown = false;
     b.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       e.stopPropagation();
       b.classList.add('down');
-      input.press(a);
+      isDown = true;
+      if (strike) input.strikeDown(strike);
+      else if (a) input.press(a);
       navigator.vibrate?.(8);
     });
     const up = () => {
+      if (!isDown) return;
+      isDown = false;
       b.classList.remove('down');
-      input.release(a);
+      if (strike) input.strikeUp(strike);
+      else if (a) input.release(a);
     };
     b.addEventListener('pointerup', up);
     b.addEventListener('pointercancel', up);

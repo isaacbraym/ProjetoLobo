@@ -29,6 +29,12 @@ export class ThirdPersonCamera {
   private lookAt = new THREE.Vector3();
   private initialized = false;
   autoRecenter = true;
+  /** Câmera-mira (cursor escolhe o alvo; ângulo confortável fixo, gira com o cursor na borda) ou livre (órbita). */
+  mode: 'aim' | 'free' = 'free';
+  /** Giro por cursor na borda da tela (rad/s), só na câmera-mira. */
+  edgePan = 0;
+  aimPitch = 0.6;
+  aimDistance = 6.2;
   private idleLook = 0;
 
   constructor(private cam: THREE.PerspectiveCamera, private physics: Physics) {}
@@ -57,7 +63,11 @@ export class ThirdPersonCamera {
     this.idleLook += dt;
     // pivô: ombro do personagem, deslocado para o centro das ameaças em combate
     this.pivotTarget.set(target.x, target.y + 1.45, target.z);
-    let distTarget = this.distance;
+    let distTarget = this.mode === 'aim' ? this.aimDistance : this.distance;
+    if (this.mode === 'aim') {
+      this.yaw += this.edgePan * dt;
+      this.pitch = damp(this.pitch, this.aimPitch, 0.35, dt);
+    }
     if (inCombat && this.threatCount > 0) {
       this.tmp.copy(this.threatCenter).sub(target);
       this.tmp.y = 0;
@@ -66,7 +76,7 @@ export class ThirdPersonCamera {
       distTarget += Math.min(this.threatCount, 6) * 0.22 + d * 0.08;
     }
     // recentraliza atrás do personagem quando anda sem mexer a câmera
-    if (this.autoRecenter && moving && this.idleLook > 1.2 && !inCombat) {
+    if (this.mode === 'free' && this.autoRecenter && moving && this.idleLook > 1.2 && !inCombat) {
       this.yaw = dampAngle(this.yaw, targetYaw + Math.PI, 1.4, dt);
     }
     if (!this.initialized) {

@@ -119,6 +119,62 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
     perf() {
       return perf.report();
     },
+    /** Estado dos controles/mira (cenário `npm run capture controls`). */
+    aimState() {
+      const p = game.player;
+      return {
+        camMode: game.input.camMode,
+        hovered: game.aim.enemy ? game.aim.enemy.actor.id : null,
+        body: game.aim.body ? true : false,
+        playerState: p.state,
+        attackId: p.lastAttackId,
+        chargeLevel: p.chargeLevel,
+        charging: game.input.charging,
+        target: p.currentTarget ? p.currentTarget.actor.id : null,
+        hp: p.actor.hp,
+        wolf: game.wolf.state,
+        moveSpeed: p.moveSpeed,
+        yaw: p.actor.yaw,
+        corpses: game.corpses.length,
+        cursor: { inside: game.input.cursorInside, locked: game.input.pointerLocked, px: [game.input.cursorPx.x, game.input.cursorPx.y], touch: game.input.usingTouch, pad: game.input.usingGamepad },
+      };
+    },
+    /** Pixel na tela de um ponto do mundo (para mover o mouse até ele nos testes). */
+    screenOf(x: number, y: number, z: number) {
+      const v = new THREE.Vector3(x, y, z).project(game.renderer.camera);
+      const el = game.renderer.gl.domElement;
+      return [((v.x + 1) / 2) * el.clientWidth, ((1 - v.y) / 2) * el.clientHeight];
+    },
+    enemyScreen(id?: number) {
+      const e = id === undefined ? game.enemies.find((x) => x.alive) : game.enemies.find((x) => x.actor.id === id);
+      if (!e) return null;
+      const r = e.actor.model.root.position;
+      return { id: e.actor.id, px: api.screenOf(r.x, r.y + 1.25, r.z) };
+    },
+    bodyScreen() {
+      // corpo visível mais perto do Márcio
+      const pp = game.player.actor.pos;
+      const el = game.renderer.gl.domElement;
+      let best: number[] | null = null;
+      let bd = Infinity;
+      for (const c of game.corpses) {
+        if (c.actor === game.player.actor) continue;
+        const v = new THREE.Vector3();
+        if (c.ragdoll) c.ragdoll.torsoPosition(v);
+        else v.copy(c.model.root.position);
+        const px = api.screenOf(v.x, Math.max(0.15, v.y), v.z);
+        if (px[0]! < 20 || px[1]! < 20 || px[0]! > el.clientWidth - 20 || px[1]! > el.clientHeight - 20) continue;
+        if (v.distanceTo(pp) < bd) (bd = v.distanceTo(pp)), (best = px);
+      }
+      return best;
+    },
+    freezeEnemies(on = true) {
+      for (const e of game.enemies) (e as unknown as { frozen?: boolean }).frozen = on;
+      game.director.tokens = on ? 0 : 2;
+    },
+    hurt(n: number) {
+      game.player.actor.hp = Math.max(1, game.player.actor.hp - n);
+    },
     teleport(x: number, z: number) {
       game.player.actor.teleport(new THREE.Vector3(x, 0, z));
     },

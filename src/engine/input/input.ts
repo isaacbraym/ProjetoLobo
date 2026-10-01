@@ -1,21 +1,30 @@
 /**
- * Entrada abstrata: teclado/mouse, gamepad e toque viram as mesmas ações.
- * Ações de "pressionar" vão para um buffer curto (150–200 ms) consumido pelo combate.
+ * Entrada abstrata (DEC-0016, "poucos botões"): teclado/mouse, gamepad e toque viram as mesmas ações.
+ *  - Clique esquerdo = soco (toque sai na hora; segurar carrega e soltar = soco forte).
+ *  - Clique direito = chute (idem: chute forte). Shift = esquiva (toque) / correr (segurar).
+ *  - Ctrl ou C = contextual (agarrar/pegar/finalizar) · Espaço ou F = especial (lobo) · G = câmera-mira ↔ livre.
+ * Ações de "apertar" vão para um buffer curto (150–200 ms) consumido pelo combate.
  */
-export type ButtonAction = 'light' | 'heavy' | 'kick' | 'dodge' | 'interact' | 'drop' | 'wolf' | 'pause' | 'sprint';
+import { PressTracker, type PressEvent } from './pressTracker';
+
+export type ButtonAction = 'light' | 'heavy' | 'kick' | 'kickHeavy' | 'dodge' | 'interact' | 'special' | 'camToggle' | 'pause' | 'sprint';
+export type StrikeKind = 'punch' | 'kick';
+export type CamMode = 'aim' | 'free';
 
 const KEYMAP: Record<string, ButtonAction> = {
-  KeyF: 'kick',
-  Space: 'dodge',
-  KeyE: 'interact',
-  KeyQ: 'drop',
-  KeyR: 'wolf',
+  ControlLeft: 'interact',
+  ControlRight: 'interact',
+  KeyC: 'interact',
+  Space: 'special',
+  KeyF: 'special',
+  KeyG: 'camToggle',
   Escape: 'pause',
-  ShiftLeft: 'sprint',
-  ShiftRight: 'sprint',
-  KeyJ: 'light',
-  KeyK: 'heavy',
+  // aliases silenciosos (esquema antigo; não aparecem no menu)
+  KeyE: 'interact',
+  KeyR: 'special',
 };
+
+const CAM_KEY = 'lobo.camMode';
 
 interface Buffered {
   action: ButtonAction;
@@ -41,26 +50,59 @@ export class Input {
   private padPrev: boolean[] = [];
   /** Estado virtual vindo dos controles de toque. */
   touchMove = { x: 0, y: 0 };
-  heavyHeldTime = 0;
+  touchSprint = false;
+  private padSprint = false;
+  // ---- toque × segurar ----
+  readonly punch = new PressTracker('strike');
+  readonly kickT = new PressTracker('strike');
+  readonly shift = new PressTracker('shift');
+  private events: PressEvent[] = [];
+  /** Golpe sendo carregado (segurando) e há quanto tempo passou do limite. */
+  charging: StrikeKind | null = null;
+  /** Tempo de carga do último golpe forte solto (s além do limite). */
+  lastCharge = 0;
+  // ---- cursor / modo de câmera ----
+  camMode: CamMode = 'aim';
+  /** Cursor em coordenadas normalizadas (-1..1, y para cima) e em pixels do canvas. */
+  cursorNdcX = 0;
+  cursorNdcY = 0;
+  cursorPx = { x: 0, y: 0 };
+  cursorInside = false;
+  /** Bloqueia atalhos do navegador com Ctrl/Cmd enquanto o jogo roda (Ctrl+S/D/R/F…). */
+  gameActive = false;
+  private middleDrag = false;
 
   constructor(private canvas: HTMLElement) {
+    try {
+      const saved = localStorage.getItem(CAM_KEY);
+      if (saved === 'aim' || saved === 'free') this.camMode = saved;
+    } catch {
+      /* sem storage (aba privada): fica no padrão */
+    }
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     window.addEventListener('blur', () => {
       this.keys.clear();
       this.held.clear();
+      this.punch.cancel();
+      this.kickT.cancel();
+      this.shift.cancel();
+      this.charging = null;
     });
     canvas.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
+    canvas.addEventListener('mouseleave', () => (this.cursorInside = false));
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     document.addEventListener('pointerlockchange', () => {
       this.pointerLocked = document.pointerLockElement === this.canvas;
+      // pedido de lock da câmera livre que terminou depois de voltar para a câmera-mira: solta
+      if (this.pointerLocked && this.camMode === 'aim') document.exitPointerLock?.();
     });
   }
 
   requestPointerLock(): void {
-    if (this.usingTouch) return;
+    if (this.usingTouch || this.camMode !== 'free') return;
     try {
       const p = this.canvas.requestPointerLock() as unknown;
       if (p && typeof (p as Promise<void>).catch === 'function') (p as Promise<void>).catch(() => {});
@@ -69,44 +111,121 @@ export class Input {
     }
   }
 
+  /** Alterna câmera-mira ↔ livre e salva a escolha. */
+  toggleCamMode(): CamMode {
+    this.setCamMode(this.camMode === 'aim' ? 'free' : 'aim');
+    return this.camMode;
+  }
+
+  setCamMode(m: CamMode): void {
+    this.camMode = m;
+    try {
+      localStorage.setItem(CAM_KEY, m);
+    } catch {
+      /* ok */
+    }
+    if (m === 'aim' && document.pointerLockElement) document.exitPointerLock?.();
+    if (m === 'free') this.requestPointerLock();
+  }
+
   private onKeyDown = (e: KeyboardEvent) => {
+    if (this.gameActive && (e.ctrlKey || e.metaKey) && e.code !== 'ControlLeft' && e.code !== 'ControlRight') e.preventDefault();
+    if (this.gameActive && (e.code === 'Space' || e.code === 'Tab' || e.code.startsWith('Arrow') || e.code === 'ControlLeft' || e.code === 'ControlRight')) e.preventDefault();
     if (e.repeat) return;
     this.keys.add(e.code);
     this.usingGamepad = false;
-    const a = KEYMAP[e.code];
-    if (a) {
-      this.press(a);
-      if (a === 'dodge' || a === 'sprint') e.preventDefault();
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+      this.shift.press(this.events);
+      this.flushEvents('shift');
+      e.preventDefault();
+      return;
     }
+    const a = KEYMAP[e.code];
+    if (a) this.press(a);
   };
 
   private onKeyUp = (e: KeyboardEvent) => {
     this.keys.delete(e.code);
+    if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && !this.keys.has('ShiftLeft') && !this.keys.has('ShiftRight')) {
+      this.shift.release(this.events);
+      this.flushEvents('shift');
+      return;
+    }
     const a = KEYMAP[e.code];
     if (a) this.release(a);
   };
 
   private onMouseDown = (e: MouseEvent) => {
     if (this.usingTouch) return;
-    if (!this.pointerLocked) {
-      this.requestPointerLock();
+    this.usingGamepad = false;
+    if (this.camMode === 'free' && !this.pointerLocked) this.requestPointerLock();
+    if (e.button === 0) this.strikeDown('punch');
+    else if (e.button === 2) this.strikeDown('kick');
+    else if (e.button === 1) {
+      this.middleDrag = true; // câmera-mira: arrastar com o botão do meio gira a câmera
+      e.preventDefault();
     }
-    if (e.button === 0) this.press('light');
-    else if (e.button === 2) this.press('heavy');
-    else if (e.button === 1) this.press('kick');
   };
 
   private onMouseUp = (e: MouseEvent) => {
-    if (e.button === 0) this.release('light');
-    else if (e.button === 2) this.release('heavy');
-    else if (e.button === 1) this.release('kick');
+    if (e.button === 0) this.strikeUp('punch');
+    else if (e.button === 2) this.strikeUp('kick');
+    else if (e.button === 1) this.middleDrag = false;
   };
 
   private onMouseMove = (e: MouseEvent) => {
-    if (!this.pointerLocked) return;
-    this.lookDX += e.movementX * this.mouseSensitivity;
-    this.lookDY += e.movementY * this.mouseSensitivity;
+    if (this.pointerLocked) {
+      this.lookDX += e.movementX * this.mouseSensitivity;
+      this.lookDY += e.movementY * this.mouseSensitivity;
+      return;
+    }
+    const r = this.canvas.getBoundingClientRect();
+    this.cursorPx.x = e.clientX - r.left;
+    this.cursorPx.y = e.clientY - r.top;
+    this.cursorNdcX = (this.cursorPx.x / Math.max(1, r.width)) * 2 - 1;
+    this.cursorNdcY = 1 - (this.cursorPx.y / Math.max(1, r.height)) * 2;
+    this.cursorInside = this.cursorPx.x >= 0 && this.cursorPx.y >= 0 && this.cursorPx.x <= r.width && this.cursorPx.y <= r.height;
+    if (this.middleDrag) {
+      this.lookDX += e.movementX * this.mouseSensitivity;
+      this.lookDY += e.movementY * this.mouseSensitivity * 0.5;
+    }
   };
+
+  /** Soco/chute físico (mouse, gamepad, toque) apertado/solto — passa pelo toque × segurar. */
+  strikeDown(k: StrikeKind): void {
+    (k === 'punch' ? this.punch : this.kickT).press(this.events);
+    this.flushEvents(k);
+  }
+
+  strikeUp(k: StrikeKind): void {
+    (k === 'punch' ? this.punch : this.kickT).release(this.events);
+    this.flushEvents(k);
+  }
+
+  private flushEvents(k: StrikeKind | 'shift'): void {
+    for (const ev of this.events) {
+      if (k === 'shift') {
+        if (ev.kind === 'tap') this.press('dodge'), this.release('dodge');
+        continue;
+      }
+      if (ev.kind === 'tap') this.press(k === 'punch' ? 'light' : 'kick'), this.release(k === 'punch' ? 'light' : 'kick');
+      else if (ev.kind === 'charge') this.charging = k;
+      else if (ev.kind === 'release') {
+        this.lastCharge = Math.max(0, ev.held - (k === 'punch' ? this.punch : this.kickT).holdAt);
+        if (this.charging === k) this.charging = null;
+        this.press(k === 'punch' ? 'heavy' : 'kickHeavy');
+        this.release(k === 'punch' ? 'heavy' : 'kickHeavy');
+      }
+    }
+    this.events.length = 0;
+  }
+
+  /** Tempo de carga do golpe sendo segurado (s além do limite). */
+  chargeTime(): number {
+    if (this.charging === 'punch') return this.punch.held - this.punch.holdAt;
+    if (this.charging === 'kick') return this.kickT.held - this.kickT.holdAt;
+    return 0;
+  }
 
   press(a: ButtonAction): void {
     if (!this.held.has(a)) {
@@ -125,6 +244,13 @@ export class Input {
     this.now += dt;
     // expira buffer
     while (this.buffer.length && this.now - this.buffer[0]!.t > this.bufferWindow) this.buffer.shift();
+    // toque × segurar avança no tempo (carga começa sozinha ao passar do limite)
+    this.punch.update(dt, this.events);
+    this.flushEvents('punch');
+    this.kickT.update(dt, this.events);
+    this.flushEvents('kick');
+    this.shift.update(dt, this.events);
+    this.flushEvents('shift');
 
     let mx = 0;
     let my = 0;
@@ -149,7 +275,8 @@ export class Input {
     });
     this.moveX = mx;
     this.moveY = my;
-    if (this.held.has('heavy')) this.heavyHeldTime += dt;
+    if (this.shift.holding || this.padSprint || this.touchSprint) this.held.add('sprint');
+    else this.held.delete('sprint');
   }
 
   private pollGamepad(dt: number, setMove: (x: number, y: number) => void): void {
@@ -166,32 +293,29 @@ export class Input {
     setMove(lx, -ly);
     this.lookDX += rx * 2.6 * dt;
     this.lookDY += ry * 1.8 * dt;
-    // mapeamento padrão (Xbox): 0 A, 1 B, 2 X, 3 Y, 4 LB, 5 RB, 6 LT, 7 RT, 9 Start, 10 L3
-    const map: [number, ButtonAction][] = [
-      [0, 'dodge'],
-      [1, 'kick'],
-      [2, 'light'],
-      [3, 'heavy'],
-      [5, 'interact'],
-      [4, 'drop'],
-      [9, 'pause'],
-      [10, 'sprint'],
-    ];
-    for (const [i, a] of map) {
+    // padrão Xbox: 0 A esquiva · 1 B chute (segurar = forte) · 2 X soco (segurar = forte) · 3 Y soco forte direto ·
+    // 5 RB contextual · 9 Start pausa · 10 L3 correr · LT+RT especial
+    const edge = (i: number, down: () => void, up: () => void) => {
       const p = !!pad.buttons[i]?.pressed;
-      if (p && !this.padPrev[i]) this.press(a);
-      if (!p && this.padPrev[i]) this.release(a);
+      if (p && !this.padPrev[i]) down();
+      if (!p && this.padPrev[i]) up();
       this.padPrev[i] = p;
-    }
+    };
+    edge(0, () => this.press('dodge'), () => this.release('dodge'));
+    edge(1, () => this.strikeDown('kick'), () => this.strikeUp('kick'));
+    edge(2, () => this.strikeDown('punch'), () => this.strikeUp('punch'));
+    edge(3, () => this.press('heavy'), () => this.release('heavy'));
+    edge(5, () => this.press('interact'), () => this.release('interact'));
+    edge(9, () => this.press('pause'), () => this.release('pause'));
+    edge(10, () => {}, () => {});
     const lt = (pad.buttons[6]?.value ?? 0) > 0.5;
     const rt = (pad.buttons[7]?.value ?? 0) > 0.5;
     const both = lt && rt;
-    if (both && !this.padPrev[99]) this.press('wolf');
-    if (!both && this.padPrev[99]) this.release('wolf');
+    if (both && !this.padPrev[99]) this.press('special');
+    if (!both && this.padPrev[99]) this.release('special');
     this.padPrev[99] = both;
-    // analógico no máximo = correr
-    if (Math.hypot(lx, ly) > 0.95) this.held.add('sprint');
-    else if (!this.padPrev[10] && !this.keys.has('ShiftLeft')) this.held.delete('sprint');
+    // analógico no máximo ou L3 = correr
+    this.padSprint = Math.hypot(lx, ly) > 0.95 || !!this.padPrev[10];
   }
 
   /** Consome a ação mais antiga do buffer que esteja em `accept`. */

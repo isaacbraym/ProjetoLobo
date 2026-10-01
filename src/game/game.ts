@@ -23,11 +23,13 @@ import { CombatDirector } from './ai/combatDirector';
 import { CombatSystem } from './combat/combatSystem';
 import { Ragdoll } from './corpses/ragdoll';
 import { buildSandboxLobby, type LevelHandle } from './levels/sandboxLobby';
-import { archetypesData, difficultyData, type DifficultyName } from './data/gameData';
+import { archetypesData, attacksData, difficultyData, type DifficultyName } from './data/gameData';
 import authoredJson from '../../data/anim/authored.json';
 import wolfJson from '../../data/werewolf.json';
 import { WerewolfSystem } from './werewolf/werewolf';
 import { FinisherSystem } from './combat/finishers';
+import { AimPicker, type BodyRef } from './player/aim';
+import { Reticle, type ReticleState } from '../presentation/ui/reticle';
 
 interface Corpse {
   model: CharacterModel;
@@ -81,6 +83,13 @@ export class Game {
   readonly timings = { sim: 0, anim: 0, physics: 0, render: 0, frame: 0 };
   godMode = false;
   kills = 0;
+  /** Câmera-mira: o que está sob o cursor. */
+  readonly aim = new AimPicker();
+  private reticle!: Reticle;
+  private bodies: BodyRef[] = [];
+  private eaten = new WeakSet<object>();
+  /** Pausa (Esc / Start): o jogo para, a UI decide o que mostrar. */
+  onPauseRequest: (() => void) | null = null;
 
   constructor(canvas: HTMLCanvasElement, private uiRoot: HTMLElement) {
     this.renderer = new Renderer(canvas);
@@ -181,11 +190,14 @@ export class Game {
     this.camera.yaw = 0;
     this.hud = new Hud(this.uiRoot);
     this.hud.el.classList.add('hidden');
+    this.reticle = new Reticle(this.uiRoot);
     this.wolf = new WerewolfSystem(this.player, this.camera, this.loop, r, this.particles, () => this.enemies, this.uiRoot);
     this.finishers = new FinisherSystem(this.player, this.camera, this.loop, this.particles, r, () => this.enemies);
     this.player.onInteract = () => this.finishers.tryStart();
     events.on('FinisherStarted', () => this.addWolf(wolfJson.meter.perFinisher));
+    this.player.onKickOverride = () => this.tryEat();
     this.player.onWolfRequest = () => {
+      if (this.wolf.state === 'wolf') return this.wolf.specialRoar();
       const ok = this.wolf.trigger();
       if (!ok && this.wolf.state === 'human') {
         this.hud.setHint(`RAIVA ${Math.floor(this.wolf.meter)}%`);
@@ -243,8 +255,107 @@ export class Game {
     audio.play('bodyfall', 0.8);
   }
 
+  /** Lobo + corpo sob o cursor (ou bem à frente, na câmera livre/gamepad) → devorar. */
+  private tryEat(): boolean {
+    if (this.wolf.state !== 'wolf') return false;
+    const W = wolfJson.special;
+    const pa = this.player.actor;
+    let body = this.aim.body;
+    if (body && Math.hypot(body.pos.x - pa.pos.x, body.pos.z - pa.pos.z) > W.eatLunge) body = null;
+    if (!body) {
+      // sem cursor: corpo mais próximo dentro do alcance e mais ou menos à frente
+      let best = Infinity;
+      for (const b of this.bodies) {
+        const dx = b.pos.x - pa.pos.x, dz = b.pos.z - pa.pos.z;
+        const d = Math.hypot(dx, dz);
+        const ang = Math.abs(((Math.atan2(dx, dz) - pa.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+        if (d < W.eatRange && ang < 1.4 && d < best) (best = d), (body = b);
+      }
+    }
+    if (!body) return false;
+    const target = { pos: body.pos.clone(), key: body.key, enemy: body.enemy };
+    this.eaten.add(target.key);
+    this.player.startEat(target.pos, () => {
+      // mordida: sangue, som, cura e mais tempo de lobo
+      pa.hp = Math.min(pa.maxHp, pa.hp + W.eatHeal);
+      this.wolf.feed(W.eatSeconds);
+      const p = target.pos;
+      this.particles.blood(p.x, p.y + 0.25, p.z, 2.2, 0, 1);
+      this.decals.add(p.x, p.z, 1.3);
+      audio.play('punchHeavy', 0.9);
+      audio.play('bodyfall', 0.5);
+      this.camera.addTrauma(0.35);
+      this.renderer.chromaKick = Math.max(this.renderer.chromaKick, 0.6);
+      this.hud.setHint(`+${W.eatHeal} VIDA  ·  +${W.eatSeconds}s LOBO`);
+      setTimeout(() => this.hud.setHint(null), 900);
+      if (target.enemy && target.enemy.alive) {
+        const atk = attacksData.attacks.w_swipe2 ?? attacksData.attacks.p_slam!;
+        target.enemy.takeHit({ attacker: pa, attack: { ...atk, bleed: true }, damage: 9999, dirX: 0, dirZ: 1, heavy: true });
+      }
+    });
+    return true;
+  }
+
+  /** Corpos comestíveis: cadáveres (tronco) e inimigos caídos. Reaproveita os objetos (sem alocação por frame). */
+  private refreshBodies(): void {
+    let n = 0;
+    const put = (key: object, x: number, y: number, z: number, enemy?: Enemy) => {
+      if (this.eaten.has(key)) return;
+      let b = this.bodies[n];
+      if (!b) (b = { pos: new THREE.Vector3(), key }), this.bodies.push(b);
+      b.key = key;
+      b.pos.set(x, y, z);
+      b.enemy = enemy;
+      n++;
+    };
+    for (const c of this.corpses) {
+      if (c.actor === this.player.actor) continue;
+      if (c.ragdoll) c.ragdoll.torsoPosition(this.tmpBody);
+      else this.tmpBody.copy(c.model.root.position);
+      put(c, this.tmpBody.x, Math.max(0.15, this.tmpBody.y), this.tmpBody.z);
+    }
+    for (const e of this.enemies) if (e.alive && e.state === 'down') put(e, e.actor.pos.x, 0.25, e.actor.pos.z, e);
+    this.bodies.length = n;
+  }
+
+  private tmpBody = new THREE.Vector3();
+
+  /** Mira por frame: câmera-mira usa o cursor; câmera livre usa o centro da tela (só para devorar). */
+  private updateAim(): void {
+    const inp = this.input;
+    const pa = this.player.actor;
+    this.refreshBodies();
+    const mouseAim = this.started && !inp.usingTouch && !inp.usingGamepad && inp.camMode === 'aim';
+    const cam = this.renderer.camera;
+    const h = this.renderer.gl.domElement.clientHeight || 720;
+    let state: ReticleState = 'idle';
+    if (mouseAim && inp.cursorInside) {
+      const info = this.aim.update(cam, inp.cursorNdcX, inp.cursorNdcY, h, this.enemies, this.bodies, pa.pos);
+      this.player.aim = info;
+      // cursor na borda da tela gira a câmera devagar
+      const ex = Math.abs(inp.cursorNdcX);
+      this.camera.edgePan = ex > 0.86 ? -Math.sign(inp.cursorNdcX) * ((ex - 0.86) / 0.14) * 1.4 : 0;
+    } else {
+      this.aim.update(cam, 0, 0, h, [], this.bodies, pa.pos);
+      this.player.aim = null;
+      this.camera.edgePan = 0;
+    }
+    if (this.wolf.state === 'wolf' && this.aim.body !== null) state = 'eat';
+    else if (this.aim.enemy && mouseAim) state = 'enemy';
+    for (const e of this.enemies) e.actor.model.setHighlight(mouseAim && e === this.aim.enemy ? 1 : 0);
+    this.camera.mode = inp.camMode === 'aim' && !inp.usingTouch && !inp.usingGamepad ? 'aim' : 'free';
+    this.reticle.update(this.started && !this.loop.paused && !inp.usingTouch && !inp.usingGamepad && (mouseAim ? inp.cursorInside : true), inp.cursorPx.x, inp.cursorPx.y, state, this.player.chargeLevel, !mouseAim);
+    document.body.classList.toggle('aim-cursor', mouseAim && !this.loop.paused);
+  }
+
+  toggleCamera(): void {
+    const m = this.input.toggleCamMode();
+    this.hud.toast(m === 'aim' ? '<b>CÂMERA-MIRA</b> · o mouse escolhe em quem bater · <b>G</b> troca' : '<b>CÂMERA LIVRE</b> · o mouse gira a câmera · <b>G</b> troca');
+  }
+
   start(): void {
     this.started = true;
+    this.input.gameActive = true;
     void audio.loadBuffer('fala_lobinho', 'assets/audio/transform_fala_lobinho.mp3');
     this.hud.el.classList.remove('hidden');
     this.hud.setLives(this.player.lives);
@@ -360,6 +471,9 @@ export class Game {
     this.input.poll(frameDt);
     const look = this.input.takeLook();
     this.camera.rotate(look.dx, look.dy);
+    if (this.started && this.input.consume((a) => a === 'camToggle')) this.toggleCamera();
+    if (this.started && this.input.consume((a) => a === 'pause')) this.onPauseRequest?.();
+    this.updateAim();
 
     // visual dos atores
     const a0 = performance.now();
@@ -419,8 +533,10 @@ export class Game {
       this.hud.setHealth(pa.hp / pa.maxHp);
       this.hud.setWolf(this.wolf.active ? this.wolf.timerFraction : this.wolf.meter / 100, this.wolf.active);
       const fin = this.finishers.candidate();
-      if (fin) this.hud.setHint(this.input.usingTouch ? 'PEGAR  —  FINALIZAR' : 'E  —  FINALIZAR');
-      else if (this.wolf.ready) this.hud.setHint(this.input.usingTouch ? 'LOBO  —  FALA LOBINHO' : 'APERTE  R  —  FALA LOBINHO');
+      const inp = this.input;
+      if (fin) this.hud.setHint(inp.usingTouch ? 'PEGAR  —  FINALIZAR' : inp.usingGamepad ? 'RB  —  FINALIZAR' : 'CTRL  —  FINALIZAR');
+      else if (this.wolf.ready) this.hud.setHint(inp.usingTouch ? 'LOBO  —  FALA LOBINHO' : inp.usingGamepad ? 'LT + RT  —  FALA LOBINHO' : 'ESPAÇO  —  FALA LOBINHO');
+      else if (this.wolf.state === 'wolf' && this.aim.body && this.player.state !== 'eat') this.hud.setHint(inp.usingTouch ? 'CHUTE NO CORPO  —  DEVORAR' : inp.usingGamepad ? 'B  —  DEVORAR' : 'CLIQUE DIREITO NO CORPO  —  DEVORAR');
       else if (!this.finishers.active) this.hud.setHint(null);
       const tgt = this.player.currentTarget;
       this.hud.update(frameDt, this.enemies, this.renderer.camera, tgt && tgt.kind === 'enemy' ? (tgt as Enemy) : null);

@@ -22,6 +22,7 @@ export class WerewolfSystem {
   state: WolfState = 'human';
   meter = 0;
   timer = 0;
+  private roarCd = 0;
   private t = 0;
   private roared = false;
   private voiced = false;
@@ -83,6 +84,7 @@ export class WerewolfSystem {
   /** Chamado por frame com dt REAL (não escalado): a cinemática roda em tempo real com o mundo lento. */
   update(realDt: number): void {
     const p = this.player.actor;
+    this.roarCd = Math.max(0, this.roarCd - realDt);
     switch (this.state) {
       case 'transforming': {
         this.t += realDt;
@@ -153,6 +155,20 @@ export class WerewolfSystem {
   /** Aplicar depois do mixer (escala de ossos sobrescreve pose). */
   applyVisual(): void {
     this.visual.apply(this.visual.amount);
+  }
+
+  /** Especial como lobo (Espaço/F): rugido em área com recarga. */
+  specialRoar(): boolean {
+    if (this.state !== 'wolf' || this.roarCd > 0) return false;
+    this.roarCd = wolfJson.special.roarCooldown;
+    this.player.actor.model.animator.play('wolfRoar', { speed: 1.6, start: 0.6, end: 2.2, fade: 0.08, fadeOut: 0.2 });
+    this.roar();
+    return true;
+  }
+
+  /** Lobo comeu um corpo: estende o tempo de lobo. */
+  feed(seconds: number): void {
+    if (this.state === 'wolf') this.timer = Math.min(wolfJson.duration.max, this.timer + seconds);
   }
 
   private roar(): void {

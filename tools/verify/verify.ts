@@ -6,6 +6,7 @@ import { spawnSync, spawn, type ChildProcess } from 'node:child_process';
 import { writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { ROOT, launch, openGame, outDir, lobo } from './browser';
+import { runControls } from './scenarioControls';
 
 const quick = process.argv.includes('--quick');
 const PREVIEW_PORT = 4180;
@@ -117,11 +118,18 @@ async function e2e(): Promise<void> {
       steps.push({ name: 'e2e:combat-bot', ok: s.kills >= 3 && errors.length === 0, ms: 0, detail: { kills: s.kills, corpses: s.corpses, errors, perf } });
       steps.push({ name: 'e2e:tokens', ok: maxAttackers <= tokens, ms: 0, detail: { maxAttackers, tokens } });
     }
+    // 3) controles "poucos botões" (DEC-0016): mira, toque × segurar, Shift, G, Ctrl+W, lobo devorando
+    {
+      const { page, logs } = await openGame(browser, '');
+      const r = await runControls(page, null);
+      const errors = logs.filter((l) => l.startsWith('[pageerror]') || l.startsWith('[error]'));
+      steps.push({ name: 'e2e:controls', ok: r.failed.length === 0 && errors.length === 0, ms: 0, detail: { failed: r.failed, errors, checks: r.checks } });
+    }
   } finally {
     await browser.close();
     killTree(server);
   }
-  for (const s of steps.slice(-3)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
+  for (const s of steps.slice(-4)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
   steps.push({ name: 'e2e', ok: true, ms: Date.now() - t0 });
 }
 

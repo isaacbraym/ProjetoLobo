@@ -13,6 +13,8 @@ export class Hud {
   private comboNum: HTMLSpanElement;
   private banner: HTMLDivElement;
   private hint: HTMLDivElement;
+  private toastEl: HTMLDivElement;
+  private toastT = 0;
   private vignette: HTMLDivElement;
   private bars = new Map<Enemy, HTMLDivElement>();
   private barLayer: HTMLDivElement;
@@ -31,6 +33,7 @@ export class Hud {
       <div class="hud__combo"><span>0</span><small>COMBO</small></div>
       <div class="hud__banner"></div>
       <div class="hud__hint"></div>
+      <div class="hud__toast"></div>
       <div class="hud__bars"></div>`;
     root.appendChild(this.el);
     this.vignette = document.createElement('div');
@@ -46,6 +49,7 @@ export class Hud {
     this.comboNum = q('.hud__combo span');
     this.banner = q('.hud__banner');
     this.hint = q('.hud__hint');
+    this.toastEl = q('.hud__toast');
     this.barLayer = q('.hud__bars');
   }
 
@@ -82,6 +86,13 @@ export class Hud {
     this.hint.classList.toggle('on', !!text);
   }
 
+  /** Aviso curto no topo (ex.: troca de câmera). Aceita <b>. */
+  toast(html: string, seconds = 2.2): void {
+    this.toastEl.innerHTML = html;
+    this.toastEl.classList.add('on');
+    this.toastT = seconds;
+  }
+
   damageFlash(): void {
     this.vignette.style.transition = 'none';
     this.vignette.style.opacity = '1';
@@ -91,6 +102,10 @@ export class Hud {
   }
 
   update(dt: number, enemies: Enemy[], camera: THREE.Camera, target: Enemy | null): void {
+    if (this.toastT > 0) {
+      this.toastT -= dt;
+      if (this.toastT <= 0) this.toastEl.classList.remove('on');
+    }
     if (this.bannerTimer > 0) {
       this.bannerTimer -= dt;
       if (this.bannerTimer <= 0) this.banner.classList.remove('on');

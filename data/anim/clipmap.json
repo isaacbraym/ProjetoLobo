@@ -39,7 +39,8 @@
     "wolfFlex": ["mx_mutant_flexing_muscles"],
     "hostageKneel": ["mx_kneeling_idle", "mx_kneeling"],
     "hostageScared": ["mx_hostage_situation_idle_hostage", "mx_praying"],
-    "villainGuard": ["mx_hostage_situation_idle_villain"]
+    "villainGuard": ["mx_hostage_situation_idle_villain"],
+    "wolfEat": ["mx_zombie_neck_bite", "mx_picking_up"]
   },
   "locoSpeedFallback": { "walk": 1.25, "jog": 3.4, "sprint": 5.6, "strafeL": 1.6, "strafeR": 1.6, "wolfWalk": 1.6, "wolfRun": 5.5 }
 }

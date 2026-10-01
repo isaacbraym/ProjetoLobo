@@ -12,7 +12,20 @@ Atualizado: 2026-10-01 · Por: sessão 2 (Claude Opus 5.5) — seguindo `docs/PR
   landmarks **2,2%** da distância interocular (meta ≤ 3%) · SSIM 0,58 (informativo, DEC-0019).
   Evidência: `npm run capture face` → `face_compare.png`, `face_metrics.json`; QA do Blender em
   `.agent-tmp/characters/marcio/face_qa_*.png`. Detalhes: `tools/face/README.md`.
-- Próximo: **A2** (controles "poucos botões" + mira no mouse).
+- **A2 ✔ Controles "poucos botões" + mira no mouse** (DEC-0016): `PressTracker` (toque sai na hora; segurar ≥ 0,22 s
+  carrega; soltar = golpe forte com bônus de carga em `data/combat/attacks.json → combos.charge`, pose `chargeAt`),
+  clique esq. soco / dir. chute, Shift esquiva/correr, Ctrl ou C contextual, Espaço/F especial (lobo: rugido com
+  recarga), G alterna **câmera-mira** (padrão: cursor visível com retícula, inimigo sob o cursor destacado e alvo do
+  golpe, borda da tela gira a câmera, botão do meio arrasta) ↔ **câmera livre** (pointer lock), salvo em localStorage.
+  Lobo: clique direito sobre corpo/inimigo caído = investida + mordida (`mx_zombie_neck_bite`), +25 vida, +3 s.
+  JOGAR no desktop: tela cheia + Keyboard Lock + `beforeunload`; Ctrl+atalhos com `preventDefault`. Pausa (Esc/Start,
+  ou perda do pointer lock) com CONTINUAR / CÂMERA / CONTROLES. Menu → CONTROLES com abas (mouse+teclado, controle,
+  toque) e ícones em SVG/CSS. Toque: SOCO/CHUTE seguram para forte. Bot e cenários atualizados.
+  Evidência: `npm run capture controls` (todas as verificações ok) e **`e2e:controls` no `npm run verify`**;
+  `npm run capture menu` → `menu_controls_*.png`; teste unitário `tests/unit/pressTracker.test.ts`.
+  **NÃO VALIDADO:** captura real de Ctrl+W com tela cheia + Keyboard Lock (headless não tem tela cheia de verdade),
+  gamepad físico, toque em celular real.
+- Próximo: **B** (cinemática de abertura) e **B2** (andar 1 explorável, sem ondas).
 
 **Estado:** M0 ✔ · M1 v1 ✔ (Márcio gerado no Blender) · M2 em andamento (combate jogável, inimigos reais) ·
 M3 v1 ✔ (rosto por projeção da foto) · M5 v1 ✔ (transformação em lobisomem jogável, sem morph targets ainda).

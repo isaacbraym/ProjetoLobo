@@ -11,7 +11,17 @@ import { rngs } from '../../core/rng';
 import { events } from '../../core/events';
 import { audio } from '../../engine/audio/audio';
 
-type PState = 'move' | 'attack' | 'dodge' | 'hit' | 'dead' | 'cine';
+type PState = 'move' | 'attack' | 'charge' | 'eat' | 'dodge' | 'hit' | 'dead' | 'cine';
+
+/** Mira vinda do jogo (câmera-mira): inimigo sob o cursor ou direção do cursor no chão. */
+export interface AimInfo {
+  enemy: Fighter | null;
+  dirX: number;
+  dirZ: number;
+}
+
+/** Trecho do clipe de mordida (mx_zombie_neck_bite) — conferido por folha de contato. */
+const eatClip = { start: 2.9, end: 4.3, biteAfter: 0.5, total: 1.15 };
 
 const RUN = 4.0;
 const SPRINT = 6.2;
@@ -45,8 +55,22 @@ export class Player implements Fighter {
   damageMul = 1;
   speedMul = 1;
   damageTakenMul = 1;
-  /** Pedido de transformação (o jogo decide se pode). */
+  /** Especial (Espaço/F): transformar com a barra cheia; como lobo, rugido em área. O jogo decide. */
   onWolfRequest: (() => boolean) | null = null;
+  /** Clique direito pode virar outra ação (lobo comendo um corpo sob o cursor). */
+  onKickOverride: (() => boolean) | null = null;
+  /** Mira do cursor (null = câmera livre: free-flow pela direção do movimento/câmera). */
+  aim: AimInfo | null = null;
+  // ---- golpe forte carregado (segurar) ----
+  private chargeKind: 'punch' | 'kick' | null = null;
+  private chargeHeld = 0;
+  /** Bônus de carga do golpe atual (0..1), para efeitos. */
+  chargeBonus = 0;
+  // ---- lobo comendo ----
+  private eatAt = new THREE.Vector3();
+  private eatBite: (() => void) | null = null;
+  private eatBitten = false;
+  private eatPhase: 'go' | 'bite' = 'go';
   /** Interação contextual (finalização, pegar arma…). */
   onInteract: (() => boolean) | null = null;
   /** Bot de teste pode dirigir no lugar do jogador. */
@@ -64,7 +88,11 @@ export class Player implements Fighter {
     return false;
   }
   get inCombatAction(): boolean {
-    return this.state === 'attack' || this.state === 'dodge';
+    return this.state === 'attack' || this.state === 'dodge' || this.state === 'charge' || this.state === 'eat';
+  }
+  /** Carga atual 0..1 (HUD/retícula). */
+  get chargeLevel(): number {
+    return this.state === 'charge' ? clamp(this.chargeHeld / (attacksData.combos.charge?.full ?? 0.8), 0, 1) : 0;
   }
   get currentTarget(): Fighter | null {
     return this.target;
@@ -101,6 +129,11 @@ export class Player implements Fighter {
     const dirZ = _f.z * my + _r.z * mx;
     const mag = clamp(Math.hypot(mx, my), 0, 1);
 
+    // segurar soco/chute: entra na pose de carga (do parado, ou depois do impacto do golpe em curso)
+    if (input.charging && (this.state === 'move' || (this.state === 'attack' && this.attack && a.model.animator.shotTime >= this.attack.hitAt))) {
+      this.startCharge(input.charging, dirX, dirZ, mag);
+    }
+
     switch (this.state) {
       case 'move':
         this.updateMove(dt, dirX, dirZ, mag, sprint);
@@ -108,6 +141,12 @@ export class Player implements Fighter {
         break;
       case 'attack':
         this.updateAttack(dt, input, dirX, dirZ, mag);
+        break;
+      case 'charge':
+        this.updateCharge(dt, input, dirX, dirZ, mag);
+        break;
+      case 'eat':
+        this.updateEat(dt);
         break;
       case 'dodge':
         this.updateDodge(dt, input, dirX, dirZ, mag);
@@ -138,16 +177,17 @@ export class Player implements Fighter {
   }
 
   private tryActions(input: Input, dx: number, dz: number, mag: number): boolean {
-    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'dodge' || x === 'wolf' || x === 'interact');
+    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'kickHeavy' || x === 'dodge' || x === 'special' || x === 'interact');
     if (!act) return false;
     if (act === 'interact') {
       this.onInteract?.();
       return true;
     }
-    if (act === 'wolf') {
+    if (act === 'special') {
       this.onWolfRequest?.();
       return true;
     }
+    if (act === 'kick' && this.onKickOverride?.()) return true;
     if (act === 'dodge') {
       this.startDodge(dx, dz, mag);
       return true;
@@ -166,7 +206,13 @@ export class Player implements Fighter {
       this.lightStep = (this.lightStep + 1) % c.wolfLight.length;
       return step.length > 1 ? rngs.combat.weighted(step, () => 1, this.lastLightVariant) : step[0]!;
     }
-    if (wolf && kind === 'heavy' && c.wolfHeavy) return c.wolfHeavy[0]![0]!;
+    if (wolf && (kind === 'heavy' || kind === 'kickHeavy') && c.wolfHeavy) return c.wolfHeavy[0]![0]!;
+    if (kind === 'kickHeavy') {
+      const list = c.kickHeavy?.[0] ?? c.kick[0]!;
+      const id = list.length > 1 ? rngs.combat.weighted(list, () => 1, this.lastHeavy) : list[0]!;
+      this.lastHeavy = id;
+      return id;
+    }
     if (kind === 'kick' && this.state === 'dodge' && c.afterDodgeKick) return c.afterDodgeKick;
     if (kind === 'light') {
       if (!comboAlive) this.lightStep = 0;
@@ -179,7 +225,11 @@ export class Player implements Fighter {
       return id;
     }
     if (kind === 'heavy') {
-      const id = comboAlive && this.lightStep >= 2 ? c.lightToHeavy : c.heavy[0]![0]!;
+      const list = c.heavy[0]!;
+      let id = list.length > 1 ? rngs.combat.weighted(list, () => 1, this.lastHeavy) : list[0]!;
+      // depois de 2+ leves (sem carregar), o forte vira o uppercut que fecha a sequência (L, L, FORTE)
+      if (comboAlive && this.lightStep >= 2 && this.state !== 'charge') id = c.lightToHeavy;
+      this.lastHeavy = id;
       this.lightStep = 0;
       return id;
     }
@@ -190,9 +240,10 @@ export class Player implements Fighter {
   }
 
   private lastKick = '';
+  private lastHeavy = '';
 
   /** Free-flow: melhor alvo no cone da direção desejada (ou da frente). */
-  private chooseTarget(dx: number, dz: number, mag: number, maxDist: number): Fighter | null {
+  private chooseTarget(dx: number, dz: number, mag: number, maxDist: number, coneOverride?: number): Fighter | null {
     const a = this.actor;
     let wantYaw = a.yaw;
     if (mag > 0.2) wantYaw = Math.atan2(dx, dz);
@@ -204,7 +255,7 @@ export class Player implements Fighter {
       if (d > maxDist) continue;
       const yawTo = a.yawTo(f.actor);
       let ang = Math.abs(((yawTo - wantYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
-      const limit = mag > 0.2 ? 1.25 : d < 2.2 ? Math.PI : 1.6;
+      const limit = coneOverride ?? (mag > 0.2 ? 1.25 : d < 2.2 ? Math.PI : 1.6);
       if (ang > limit) continue;
       const score = d * 0.55 + ang * 2.4 - (f.staggered ? 0.6 : 0);
       if (score < bestScore) {
@@ -215,19 +266,159 @@ export class Player implements Fighter {
     return best;
   }
 
-  private startAttack(kind: ButtonAction, dx: number, dz: number, mag: number): void {
-    const id = this.pickAttack(kind);
-    const def = attacksData.attacks[id]!;
+  /** Alvo do golpe: com a câmera-mira, o inimigo sob o cursor (ou o cone na direção do cursor); senão free-flow. */
+  private resolveTarget(dx: number, dz: number, mag: number, maxDist: number): Fighter | null {
+    const aim = this.aim;
+    if (aim) {
+      if (aim.enemy && aim.enemy.alive && this.actor.distanceTo(aim.enemy.actor) <= maxDist + 1.5) return aim.enemy;
+      const t = this.chooseTarget(aim.dirX, aim.dirZ, 1, maxDist, 0.75);
+      if (!t && Math.hypot(aim.dirX, aim.dirZ) > 0.1) this.actor.yaw = Math.atan2(aim.dirX, aim.dirZ); // golpe vai para o cursor
+      return t;
+    }
+    return this.chooseTarget(dx, dz, mag, maxDist);
+  }
+
+  private startAttack(kind: ButtonAction, dx: number, dz: number, mag: number, fromCharge = false, forcedId?: string): void {
+    const id = forcedId ?? this.pickAttack(kind);
+    let def = attacksData.attacks[id]!;
+    this.chargeBonus = 0;
+    const ch = attacksData.combos.charge;
+    if (fromCharge && ch) {
+      // golpe forte carregado: mais dano, mais peso e mais impacto conforme o tempo segurado
+      const k = clamp(this.chargeHeld / ch.full, 0, 1);
+      this.chargeBonus = k;
+      def = {
+        ...def,
+        damage: def.damage * (1 + ch.damageBonus * k),
+        poise: def.poise * (1 + ch.poiseBonus * k),
+        hitstop: Math.min(0.25, def.hitstop + ch.hitstopBonus * k),
+        shake: Math.min(1, def.shake + ch.shakeBonus * k),
+        critChance: Math.min(1, (def.critChance ?? 0.15) + ch.critBonus * k),
+      };
+    }
     this.attack = def;
     this.lastAttackId = id;
     this.hitDone = false;
     this.sinceAttack = 0;
-    this.target = this.chooseTarget(dx, dz, mag, def.warp + 1);
+    this.target = this.resolveTarget(dx, dz, mag, def.warp + 1);
     this.warpFrom.copy(this.actor.pos);
     const anim = this.actor.model.animator;
     anim.play(def.clip, { speed: def.speed, start: def.start, end: def.end, fade: 0.06 });
     audio.play(def.heavy ? 'whooshHeavy' : 'whoosh', 0.5);
     this.setState('attack');
+  }
+
+  /** Segurando soco/chute: toca o golpe forte até a pose de carga (`chargeAt`) e segura ali. */
+  private startCharge(kind: 'punch' | 'kick', dx: number, dz: number, mag: number): void {
+    const id = this.pickAttack(kind === 'punch' ? 'heavy' : 'kickHeavy');
+    const def = attacksData.attacks[id]!;
+    this.chargeKind = kind;
+    this.chargeHeld = 0;
+    this.attack = def;
+    this.lastAttackId = id;
+    this.hitDone = false;
+    this.target = this.resolveTarget(dx, dz, mag, def.warp + 1);
+    this.actor.model.animator.play(def.clip, { speed: def.speed * 1.4, start: def.start, end: def.end, fade: 0.08 });
+    audio.play('whoosh', 0.25);
+    this.setState('charge');
+  }
+
+  private updateCharge(dt: number, input: Input, dx: number, dz: number, mag: number): void {
+    const a = this.actor;
+    const def = this.attack!;
+    const anim = a.model.animator;
+    const hold = def.chargeAt ?? Math.max(def.start, def.hitAt - 0.2);
+    // chega na pose de carga e segura ali enquanto o botão estiver apertado
+    if (anim.shotTime >= hold) {
+      anim.setShotSpeed(0);
+      this.chargeHeld += dt;
+    }
+    a.model.animator.speed = 0;
+    this.moveSpeed = 0;
+    // mira durante a carga: vira para o alvo/cursor
+    const tgt = this.target && this.target.alive ? this.target : null;
+    if (tgt) a.yaw = dampAngle(a.yaw, a.yawTo(tgt.actor), 0.04, dt);
+    else if (this.aim && Math.hypot(this.aim.dirX, this.aim.dirZ) > 0.1) a.yaw = dampAngle(a.yaw, Math.atan2(this.aim.dirX, this.aim.dirZ), 0.05, dt);
+    else if (mag > 0.2) a.yaw = dampAngle(a.yaw, Math.atan2(dx, dz), 0.06, dt);
+    a.move(0, 0, dt);
+    const kindHeavy: ButtonAction = this.chargeKind === 'kick' ? 'kickHeavy' : 'heavy';
+    const released = input.consume((x) => x === kindHeavy);
+    const maxHold = attacksData.combos.charge?.maxHold ?? 2.5;
+    if (released || this.chargeHeld >= maxHold) {
+      // solta o golpe a partir da pose de carga (não recomeça o clipe)
+      const t = anim.shotTime;
+      // mesmo golpe que estava carregando (não sorteia de novo), continuando da pose de carga
+      this.startAttack(kindHeavy, dx, dz, mag, true, this.lastAttackId);
+      const d2 = this.attack!;
+      anim.play(d2.clip, { speed: d2.speed * 1.15, start: Math.max(d2.start, Math.min(t, d2.hitAt - 0.05)), end: d2.end, fade: 0.02 });
+      this.chargeKind = null;
+      return;
+    }
+    // botão solto sem gerar golpe (ex.: perdeu o foco) ou esquiva: cancela a carga
+    if (!input.charging) {
+      if (input.consume((x) => x === 'dodge')) {
+        this.chargeKind = null;
+        this.startDodge(dx, dz, mag);
+        return;
+      }
+      if (this.stateTime > 0.3) {
+        this.chargeKind = null;
+        anim.stopShot(0.15);
+        this.setState('move');
+      }
+    }
+  }
+
+  /** Lobisomem comendo: vai até o corpo e morde (cura e estende o lobo no momento da mordida). */
+  startEat(at: THREE.Vector3, onBite: () => void): void {
+    this.eatAt.copy(at);
+    this.eatBite = onBite;
+    this.eatBitten = false;
+    this.attack = null;
+    this.actor.invulnerable = Math.max(this.actor.invulnerable, 1.6);
+    this.setState('eat');
+    // longe: investida de lobo até o corpo; perto: morde direto
+    this.eatPhase = Math.hypot(at.x - this.actor.pos.x, at.z - this.actor.pos.z) > 1.1 ? 'go' : 'bite';
+    if (this.eatPhase === 'bite') this.beginBite();
+  }
+
+  private beginBite(): void {
+    this.eatPhase = 'bite';
+    this.stateTime = 0;
+    this.actor.model.animator.play('wolfEat', { speed: 1.25, start: eatClip.start, end: eatClip.end, fade: 0.08, fadeOut: 0.2 });
+    audio.play('whooshHeavy', 0.4);
+  }
+
+  private updateEat(dt: number): void {
+    const a = this.actor;
+    a.model.animator.speed = 0;
+    this.moveSpeed = 0;
+    const dx = this.eatAt.x - a.pos.x;
+    const dz = this.eatAt.z - a.pos.z;
+    const d = Math.hypot(dx, dz) || 1;
+    a.yaw = dampAngle(a.yaw, Math.atan2(dx, dz), this.eatPhase === 'go' ? 0.02 : 0.03, dt);
+    const gap = d - 0.75;
+    if (this.eatPhase === 'go') {
+      // investida (corrida de lobo) até o corpo
+      const step = Math.min(Math.max(0, gap), 11 * dt);
+      a.move((dx / d) * step, (dz / d) * step, dt);
+      this.moveSpeed = 11;
+      a.model.animator.speed = 11;
+      if (gap < 0.15 || this.stateTime > 0.9) this.beginBite();
+      return;
+    }
+    if (gap > 0.02 && this.stateTime < 0.3) {
+      const step = Math.min(gap, 9 * dt);
+      a.move((dx / d) * step, (dz / d) * step, dt);
+    } else a.move(0, 0, dt);
+    if (!this.eatBitten && this.stateTime >= eatClip.biteAfter) {
+      this.eatBitten = true;
+      this.eatBite?.();
+    }
+    if (this.stateTime >= eatClip.total) {
+      a.model.animator.stopShot(0.2);
+      this.setState('move');
+    }
   }
 
   private updateAttack(dt: number, input: Input, dx: number, dz: number, mag: number): void {
