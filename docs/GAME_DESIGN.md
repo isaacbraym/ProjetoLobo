@@ -10,10 +10,13 @@ tudo e todos. Quando a raiva enche, vira o **Lobisomem Márcio** ("FALA LOBINHO!
 
 Tom: brutal e engraçado ao mesmo tempo. Reféns comemoram… até Márcio acertar um deles.
 
-## 2. Loop
+## 2. Loop (exploração, NÃO ondas — DEC-0017)
 Explorar a sala → perceber ameaça (reféns vigiados, criminosos patrulhando) → briga (pequena ou arena trancada) →
 reféns reagem → saquear armas improvisadas/itens/segredos → avançar → arena principal → boss → elevador → próximo andar.
 Sessão de um andar: 20–35 min. Jogo completo: ~1h30–2h.
+
+> O jogo é **explorar o prédio**, rico em detalhes, com inimigos **posicionados** em grupos (patrulha, vigiando reféns,
+> descansando). Não há ondas. O sandbox de ondas existe só como cena de teste (`?scene=sandbox-combat`).
 
 ## 3. Controles (DEC-0016 — esquema "poucos botões", pedido do usuário)
 **Teclado + mouse (desktop):** WASD + 2 cliques + Shift + Ctrl + Espaço/F + G. Nada além disso é obrigatório.

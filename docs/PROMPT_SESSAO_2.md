@@ -19,7 +19,8 @@ Você vai continuar SOZINHO, por muitas horas e SEM NINGUÉM para responder ou a
 2) git log --oneline -30 ; git status ; npm install ; npx playwright install chromium ; npm run verify:quick ; npm run capture combat (e olhe as imagens) — entenda o estado ANTES de mudar.
 3) Leia o código principal: src/game/game.ts, src/game/player/player.ts, src/game/ai/enemy.ts, src/game/combat/*, src/engine/anim/*, src/presentation/camera/thirdPersonCamera.ts, src/engine/render/*, tools/blender/build_character.py, tools/blender/retarget_mixamo.py.
 
-=== 2. PRIORIDADES DESTA SESSÃO (em ordem: A, A2, B, C, D, E, F, G; commit+push ao fim de cada uma) ===
+=== 2. PRIORIDADES DESTA SESSÃO (em ordem: A, A2, B, B2, C, D, E, F, G; commit+push ao fim de cada uma) ===
+IMPORTANTE: o jogo é EXPLORAÇÃO DO PRÉDIO rica em detalhes, NÃO ondas de inimigos (ver B2).
 
 A) ROSTO DO MÁRCIO v2 — NOVA FOTO REAL (prioridade máxima)
 - Use a foto real nova: assets-src/characters/marcio_face_src (PNG 659x659 SEM extensão, versionado com autorização do usuário — DEC-0015; cópia também em refs/marcio/marcio_face_real.png). Ela substitui a imagem antiga SÓ para o rosto/cabeça (o corpo/roupa continuam de refs/marcio/marcio_front.png). O que importa para o usuário: O ROSTO FICAR IDÊNTICO.
@@ -57,13 +58,46 @@ A2) CONTROLES "POUCOS BOTÕES" + MIRA NO MOUSE (pedido do usuário — fazer log
 - Atualize o bot de teste e os cenários de captura para o novo esquema; adicione teste unitário da lógica toque×segurar.
 
 B) CINEMÁTICA DE ABERTURA (o jogo começa com um filminho)
-- Ao clicar JOGAR: letterbox, câmera estabelecendo o saguão do Edifício Vértice → Márcio entra DISTRAÍDO (andando olhando o celular / tomando café — crie o prop por código) → BELO ZOOM no rosto dele (push-in lento, profundidade de campo, luz de borda, foco no rosto da foto real) → bandidos surgem (de trás das colunas/da recepção, um rendendo reféns: clipes mx_hostage_situation_idle_villain / mx_hostage_situation_idle_hostage / mx_kneeling_idle / mx_praying já existem) → Márcio se assusta, fecha a cara (troca para mx_fighting_idle), título "MÁRCIO" estilizado → controle passa ao jogador e a primeira onda começa. 20–35 s, pulável (qualquer tecla/toque após 1 s), legendas curtas em PT-BR com humor de filme de ação.
+- Ao clicar JOGAR: letterbox, câmera estabelecendo o saguão do Edifício Vértice → Márcio entra DISTRAÍDO (andando olhando o celular / tomando café — crie o prop por código) → BELO ZOOM no rosto dele (push-in lento, profundidade de campo, luz de borda, foco no rosto da foto real) → bandidos surgem (de trás das colunas/da recepção, um rendendo reféns: clipes mx_hostage_situation_idle_villain / mx_hostage_situation_idle_hostage / mx_kneeling_idle / mx_praying já existem) → Márcio se assusta, fecha a cara (troca para mx_fighting_idle), título "MÁRCIO" estilizado → controle passa ao jogador, que começa a EXPLORAR o andar 1 (B2) — sem ondas. 20–35 s, pulável (qualquer tecla/toque após 1 s), legendas curtas em PT-BR com humor de filme de ação.
 - Faça data-driven: data/cinematics/intro.json (chaves de câmera pos/look/fov/dof, ações de atores: caminho, clipe, spawn, fala, áudio, cortes). Sistema reutilizável depois para intro do boss Clóvis.
 - Capture a sequência (cenário novo `npm run capture intro` com folha de contato de ~12 quadros) e revise como um diretor: enquadramento, ritmo, ninguém atravessando nada, pés no chão.
 
+B2) ANDAR 1 EXPLORÁVEL, RICO EM DETALHES — SEM ONDAS (pedido explícito do usuário; prioridade alta)
+- O usuário NÃO quer jogo de ondas. O loop atual de "ONDA 1, ONDA 2… SALA LIMPA" no saguão vira SÓ cena de teste
+  (`?scene=sandbox-combat`, usada pelo verify/bot). O JOGO de verdade é EXPLORAR O PRÉDIO: a cinemática de abertura
+  termina com o Márcio no térreo do Edifício Vértice e ele explora livremente (docs/GAME_DESIGN.md §2 e §11, Andar 1).
+- Construa o ANDAR 1 a partir de dados (data/levels/floor1/layout.json: salas, portas, corredores, tipo de sala, regras
+  de mobília, grupos de inimigos, reféns, segredos, barricadas). Comece com um construtor em three.js (modular,
+  geometria estática mesclada por material e fatiada por sala, props repetidos em InstancedMesh, culling por sala);
+  o bake de luz no Blender (docs/ASSET_PIPELINE.md §10) é um passo de qualidade depois, se der tempo.
+- Ambientes (escala e arquitetura críveis, nada de corredor aleatório): átrio monumental com mezanino (evolua o saguão
+  atual), recepção, catracas da segurança, sala de segurança com monitores de CCTV, cafeteria (balcão, máquina de café,
+  mesas, cardápio), corredor de serviço (rota alternativa), sala de correspondência, banheiros (refém escondido = segredo),
+  depósito (guitarra = segredo), elevadores (travados até o boss) e escada, auditório (arena final do Clóvis — por
+  enquanto fechado/placeholder com porta trancada e placa).
+- RIQUEZA DE DETALHES (é o que o usuário quer ver): mobília com variação (mesas, cadeiras de escritório, sofás, plantas,
+  vasos, bebedouros, lixeiras, extintores, quadros, placas de sinalização em PT-BR, mapa do prédio na parede, crachás,
+  papéis no chão, copos de café, cones, fitas de isolamento, malas e mochilas largadas, cadeiras derrubadas, marcas de
+  bala/arrombamento, luzes de emergência piscando em salas tomadas), TVs com telejornal, monitores, iluminação com
+  intenção por sala (quente/fria, luminárias, luz de janela, sombras), narrativa ambiental (o que aconteceu ali antes).
+  Props destrutíveis com materiais (docs/GAME_DESIGN.md §10) onde fizer sentido.
+- INIMIGOS POSICIONADOS, NÃO EM ONDAS: grupos colocados no cenário com comportamento de antes da briga — patrulhando,
+  vigiando reféns (mx_hostage_situation_idle_villain), jogando cartas/fumando/conversando (Idle_Talking_Loop,
+  Sitting_Idle_Loop), guarda na porta. Percepção (visão em cone + barulho de briga) e alerta que se espalha pela sala.
+  Arenas: em 2–3 salas grandes as saídas fecham (grade, mesas empilhadas, porta de segurança) até derrotar o grupo, e
+  abrem de formas diferentes. Reféns com estados (cativo → esperança → fuga pela saída; pânico se o Márcio bater neles).
+- HUD sem contador de onda: no lugar, objetivo discreto ("Encontre a entrada do auditório", "Liberte os reféns 3/7"),
+  e um banner curto ao limpar uma sala-arena. Checkpoint ao entrar nas salas grandes.
+- Performance com o andar inteiro: só a sala atual + vizinhas ativas (IA dormindo longe), culling por sala/portal,
+  orçamento de draw calls do docs/PERFORMANCE_PLAN.md. Capture todas as salas (`npm run capture floor1`) e revise:
+  escala, luz, coerência, riqueza.
+- Atualize o verify: o e2e de combate continua no sandbox; adicione um percurso automático do bot pelo andar 1 que detecta
+  travamento (sem progresso por 30 s = falha).
+
 C) CÂMERA PROFISSIONAL (o usuário pediu para melhorar)
 - Reescreva/eleve src/presentation/camera/thirdPersonCamera.ts: molas críticas (sem tremedeira), distância/altura/ombro dinâmicos por velocidade e estado, recentralização suave atrás do Márcio ao andar sem mexer a câmera, enquadramento de combate que inclui o alvo atual + ameaças próximas sem perder o Márcio, assistência de mira suave (lock-on leve) no alvo do free-flow, oclusão elegante (paredes/colunas entre câmera e Márcio ficam transparentes/dithered em vez de a câmera pular), FOV dinâmico na corrida/sprint/lobo, sensibilidades separadas mouse/gamepad/toque, nunca entra em parede, nunca faz movimento brusco.
-- Câmera de AÇÃO (sem atrapalhar o jogo): em crítico → punch-in curto + micro slow-mo; última morte da onda → kill-cam em câmera lenta; finalização → 2–3 ângulos cortados; todos com duração máxima curta e retorno suave. Tudo em dados.
+- A câmera precisa funcionar MUITO bem em interiores (corredores, portas, salas pequenas) — é um jogo de exploração de prédio.
+- Câmera de AÇÃO (sem atrapalhar o jogo): em crítico → punch-in curto + micro slow-mo; último inimigo de um grupo → kill-cam em câmera lenta; finalização → 2–3 ângulos cortados; todos com duração máxima curta e retorno suave. Tudo em dados.
 
 D) CINEMÁTICA DE GOLPES E CRÍTICOS (foco do usuário)
 - Críticos já existem (DEC-0012: 1,5x, sangue só em crítico/arma branca/fatal). Eleve o espetáculo: texto "CRÍTICO!" estilizado com animação, impact frame (1–2 quadros de flash/silhueta estilo anime) só em crítico/finalização, linhas de velocidade/blur radial curto, hitstop em níveis, perfis de tremor por tipo de golpe, som de crítico mais grave, partículas de impacto melhores.
@@ -93,6 +127,6 @@ G) BUGS/DÍVIDAS CONHECIDAS
 - Pode usar subagentes para trabalho realmente independente (ex.: pipeline do rosto no Blender enquanto você faz câmera), mas integre e verifique você mesmo.
 - Atualize docs/PROJECT_STATE.md ao fim de cada prioridade e a cada ~2 h (outra sessão pode precisar retomar). Atualize docs/RETOMAR.md se o procedimento mudar. Decisões novas → docs/DECISIONS.md.
 - Nunca declare pronto sem verify PASS + capturas inspecionadas. O que não validou: "NÃO VALIDADO" no PROJECT_STATE.
-- Ao terminar A–G, volte ao combate (prioridade nº 1 do projeto) e continue melhorando; depois siga o DEVELOPMENT_ROADMAP (andar 1 real, reféns, Clóvis).
+- Ao terminar A–G, volte ao combate (prioridade nº 1 do projeto) e à riqueza do andar 1; depois siga o DEVELOPMENT_ROADMAP (Clóvis no auditório, andares 2 e 3).
 - Ao encerrar: verify, PROJECT_STATE completo, commit+push, e um resumo final do que mudou + o que ficou pendente.
 ```

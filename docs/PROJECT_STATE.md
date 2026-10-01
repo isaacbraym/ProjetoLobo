@@ -36,7 +36,7 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
   (`state()`, `spawn()`, `bot(true)`, `transform()`, `faceCam(true, dist, ângulo)`, `perf()`…), overlay `?perf=1`.
 
 ### Próximo passo (em ordem)
-> **Sessão 2:** seguir `docs/PROMPT_SESSAO_2.md` (rosto v2 com a foto real `refs/marcio/marcio_face_real.png`,
+> **Sessão 2:** o jogo é EXPLORAÇÃO do prédio, não ondas (DEC-0017). Seguir `docs/PROMPT_SESSAO_2.md` (rosto v2 com a foto real `refs/marcio/marcio_face_real.png`,
 > cinemática de abertura, câmera profissional, cinemática de golpes/críticos, animações, otimização + visual).
 
 1. **Rosto v2:** os 5 pontos da foto foram marcados à mão em `data/characters/marcio.json` (`face.landmarks`).
