@@ -31,7 +31,8 @@ export class CharacterModel {
     this.root.add(this.model);
     if (!look) {
       if (scale !== 1) this.model.scale.setScalar(scale);
-      this.flashMats.push(...applyMaterialLibrary(this.model, { tint, faceMap }));
+      // olhos usam emissão própria (emissiveMap): ficam fora do flash de acerto, que zera a emissão ao terminar
+      this.flashMats.push(...applyMaterialLibrary(this.model, { tint, faceMap }).filter((m) => !m.emissiveMap));
       const pel = this.model.getObjectByName('pelvis');
       if (pel) lib = lib.derivedFor(pel.position);
       this.model.traverse((o) => {

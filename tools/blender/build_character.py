@@ -15,10 +15,12 @@ from pathlib import Path
 
 import bmesh
 import bpy
+import numpy as np
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, UAL_GLB, NAME_MAP, activate, args, clear_scene, material, sha256, srgb, write_report  # noqa: E402
+import face_fit as FF  # noqa: E402
 
 A = args()
 RECIPE_PATH = ROOT / A.get('recipe', 'data/characters/marcio.json')
@@ -303,119 +305,121 @@ def edge_alpha(obj, hops=3, rgb_fn=None):
 
 
 
-def face_projection(body, parts, region, co, dom, report):
-    """Rosto v1 (WWE 2K-lite): alinha pontos-chave da foto (olhos, nariz, boca, queixo) aos mesmos pontos da cabeça
-    3D, cria a UV 'FaceProj' (projeção frontal ortográfica → pixel da foto) e a máscara 'FaceMask' (alfa por vértice:
-    frente do rosto, desvanece nas laterais/pescoço). O runtime mistura a foto sobre a pele com essa máscara."""
-    F = R.get('face')
-    if not F:
-        return None
-    photo = ROOT / F['photo']
-    if not photo.exists():
-        print(f'[face] foto ausente ({photo}); pulando projeção')
-        return None
-    cx0, cy0, cw, ch = F['crop']
-    L = F['landmarks']
-    # ---- pontos da malha (espaço de bind, frente = -Y; x da imagem cresce com x da malha) ----
-    eyes = sorted([p for n, p in parts.items() if n.startswith('Eye_')], key=lambda o: sum(v.co.x for v in o.data.vertices))
-    def centroid(o):
-        n = len(o.data.vertices)
-        return Vector((sum(v.co.x for v in o.data.vertices) / n, sum(v.co.y for v in o.data.vertices) / n, sum(v.co.z for v in o.data.vertices) / n))
-    eA, eB = centroid(eyes[0]), centroid(eyes[1])
-    head_vs = [i for i in range(len(co)) if NAME_MAP.get(dom[i], dom[i]) == 'Head']
-    nose = min((co[i] for i in head_vs), key=lambda p: p.y)
-    lips = list(region.get('lips', []))
-    mouth = Vector((0.0, 0.0, sum(co[i].z for i in lips) / max(1, len(lips))))
-    front = [co[i] for i in head_vs if abs(co[i].x) < 0.02 and co[i].y < nose.y + 0.07]
-    chin = min(front, key=lambda p: p.z)
-    # ---- ajuste: x por distância entre olhos; z por mínimos quadrados (olhos, nariz, boca, queixo) ----
-    sx = (L['eyeB'][0] - L['eyeA'][0]) / (eB.x - eA.x)
-    cxp = (L['eyeA'][0] + L['eyeB'][0]) / 2 - sx * (eA.x + eB.x) / 2
-    zs = [(eA.z + eB.z) / 2, nose.z, mouth.z, chin.z]
-    ps = [(L['eyeA'][1] + L['eyeB'][1]) / 2, L['nose'][1], L['mouth'][1], L['chin'][1]]
-    mz, mp = sum(zs) / 4, sum(ps) / 4
-    cov = sum((z - mz) * (p - mp) for z, p in zip(zs, ps))
-    var = sum((z - mz) ** 2 for z in zs)
-    sz = -cov / var
-    cyp = mp + sz * mz
-    resid = [round(abs((cyp - sz * z) - p), 2) for z, p in zip(zs, ps)]
-    report['face'] = {'sx': round(sx, 2), 'sz': round(sz, 2), 'residual_px': resid, 'eyeDistMesh': round(eB.x - eA.x, 4)}
+def set_col(obj, rgba):
+    """Atributo de cor por vértice 'Col' (RGBA float) a partir de um array (N, 4)."""
+    me = obj.data
+    for ca in list(me.color_attributes):
+        me.color_attributes.remove(ca)
+    attr = me.color_attributes.new('Col', 'FLOAT_COLOR', 'POINT')
+    attr.data.foreach_set('color', np.asarray(rgba, dtype=np.float32).ravel())
+    me.color_attributes.active_color = attr
 
-    def to_uv(p):
-        px = sx * p.x + cxp
-        py = cyp - sz * p.z
-        return (px / cw, 1.0 - py / ch)  # Blender: v para cima; o export glTF inverte
 
-    # ---- olhos: mesma projeção (íris e esclera da foto na posição exata) ----
+def mesh_arrays(obj):
+    me = obj.data
+    n = len(me.vertices)
+    P = np.empty(n * 3)
+    N = np.empty(n * 3)
+    me.vertices.foreach_get('co', P)
+    me.vertices.foreach_get('normal', N)
+    return P.reshape(n, 3), N.reshape(n, 3)
+
+
+def set_face_uv(obj, fit):
+    """UV 'FaceProj' = pixel da foto (câmera estimada no ajuste); o export vira TEXCOORD_1 (uv1 no three.js)."""
+    me = obj.data
+    P, _ = mesh_arrays(obj)
+    px = FF.photo_px(fit, P)
+    uv_v = np.stack([px[:, 0] / fit['res'], 1.0 - px[:, 1] / fit['res']], 1)
+    uvl = me.uv_layers.get('FaceProj') or me.uv_layers.new(name='FaceProj')
+    li = np.empty(len(me.loops), dtype=np.int64)
+    me.loops.foreach_get('vertex_index', li)
+    uvl.data.foreach_set('uv', uv_v[li].ravel())
+    inframe = ((px[:, 0] > 6) & (px[:, 0] < fit['res'] - 6) & (px[:, 1] > 6) & (px[:, 1] < fit['res'] - 6)).astype(float)
+    return px, inframe
+
+
+
+def edge_hops(obj, hops):
+    """Alfa de borda (0 na borda da casca → 1 a `hops` arestas para dentro)."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.verts.ensure_lookup_table()
+    dist = {v.index: (0 if v.is_boundary else None) for v in bm.verts}
+    frontier = [v for v in bm.verts if v.is_boundary]
+    d = 0
+    while frontier and d < hops:
+        d += 1
+        nxt = []
+        for v in frontier:
+            for e in v.link_edges:
+                o = e.other_vert(v)
+                if dist[o.index] is None:
+                    dist[o.index] = d
+                    nxt.append(o)
+        frontier = nxt
+    bm.free()
+    return np.array([1.0 if dist[i] is None else min(1.0, dist[i] / hops) for i in range(len(obj.data.vertices))])
+
+
+def pelt_colors(obj, fit, hops, grey_fn, geo_fn):
+    """Casca de pelo com a foto: UV 'FaceProj' + cor por vértice R = peso da cor da foto (de frente), G = alfa de
+    borda, B = grisalho do fallback (onde a foto não vê), A = peso do recorte da foto. Runtime: materialLibrary."""
+    px, inframe = set_face_uv(obj, fit)
+    P, N = mesh_arrays(obj)
+    facing = -N[:, 1]
+    inframe = inframe * np.clip((FF.sample_valid(fit['valid'], px) - 0.4) / 0.4, 0, 1)  # fora da pessoa: fallback
+    w_col = np.clip((facing - 0.3) / 0.35, 0, 1) * inframe  # cor da foto só de frente (senão a foto estica)
+    # recorte pela foto só onde ela vê bem; nas laterais a projeção estica a borda do rosto → recorte geométrico
+    w_cut = np.clip((facing - 0.22) / 0.25, 0, 1) * inframe
+    alpha = edge_hops(obj, hops) * np.clip(geo_fn(P), 0, 1)
+    rgba = np.stack([w_col, alpha, np.clip(grey_fn(P), 0, 1), w_cut], 1)
+    set_col(obj, rgba)
+
+
+def face_projection(body, parts, fit, dom, ears):
+    """Rosto v2 (WWE 2K, face_fit.py): UV da foto em corpo e olhos + máscara 'FaceMask' (alfa por vértice)."""
+    _px, inframe = set_face_uv(body, fit)
     for nm, o in parts.items():
-        if not nm.startswith('Eye_'):
-            continue
-        euv = o.data.uv_layers.new(name='FaceProj')
-        for loop in o.data.loops:
-            euv.data[loop.index].uv = to_uv(o.data.vertices[loop.vertex_index].co)
-    # ---- UV e máscara no corpo (a barba herda ao ser criada depois) ----
+        if nm.startswith('Eye_'):
+            set_face_uv(o, fit)
+    P, N = mesh_arrays(body)
+    facing = -N[:, 1]
+    fw = np.clip((facing - 0.12) / 0.33, 0, 1)
+    below = np.clip((P[:, 2] - (fit['chin_z'] - 0.05)) / 0.03, 0, 1)
+    headish = np.array([NAME_MAP.get(d, d) in ('Head', 'neck_01') for d in dom], dtype=float)
+    ear = np.zeros(len(P))
+    ear[list(ears)] = 1.0
+    a = fw * below * headish * inframe * (1.0 - ear)
     me = body.data
-    uvl = me.uv_layers.new(name='FaceProj')
-    for loop in me.loops:
-        uvl.data[loop.index].uv = to_uv(me.vertices[loop.vertex_index].co)
     mask = me.color_attributes.new('FaceMask', 'FLOAT_COLOR', 'POINT')
-    face_top = eA.z + (eA.z - chin.z) * 0.9
-    for v in me.vertices:
-        p = v.co
-        facing = max(0.0, -v.normal.y)
-        fw = min(1.0, max(0.0, (facing - 0.3) / 0.4))
-        below = min(1.0, max(0.0, (p.z - (chin.z - 0.03)) / 0.03))
-        above = min(1.0, max(0.0, (face_top - p.z) / 0.04))
-        side = min(1.0, max(0.0, (0.085 - abs(p.x)) / 0.03))
-        a = fw * below * above * side if NAME_MAP.get(dom[v.index], dom[v.index]) in ('Head', 'neck_01') else 0.0
-        mask.data[v.index].color = (1.0, 1.0, 1.0, a)
+    rgba = np.ones((len(P), 4))
+    rgba[:, 3] = a
+    mask.data.foreach_set('color', rgba.astype(np.float32).ravel())
     me.color_attributes.active_color = mask
-    # ---- recorte da foto + tom de pele das bochechas ----
-    img = bpy.data.images.load(str(photo))
-    W, H = img.size
-    px = img.pixels[:]
-    def sample(x, y, r=4):
-        acc = [0.0, 0.0, 0.0]
-        n = 0
-        for yy in range(int(y) - r, int(y) + r + 1):
-            for xx in range(int(x) - r, int(x) + r + 1):
-                X, Y = xx + cx0, (H - 1) - (yy + cy0)
-                i = (Y * W + X) * 4
-                for k in range(3):
-                    acc[k] += px[i + k]
-                n += 1
-        return [a / n for a in acc]
-    c1 = sample(L['eyeA'][0], L['nose'][1])
-    c2 = sample(L['eyeB'][0], L['nose'][1])
-    def to_lin(c):
-        return (c / 12.92) if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-    # pixels de PNG vêm em sRGB; o material quer linear. Leve escurecida: a bochecha da foto tem luz de estúdio.
-    skin_lin = tuple(to_lin((a + b) / 2) * 0.82 for a, b in zip(c1, c2))
-    out_img = ROOT / F['out']
-    out_img.parent.mkdir(parents=True, exist_ok=True)
-    crop = bpy.data.images.new('FaceCrop', cw, ch)
-    new = [0.0] * (cw * ch * 4)
-    for y in range(ch):
-        srcY = (H - 1) - (cy0 + (ch - 1 - y))
-        for x in range(cw):
-            si = (srcY * W + (cx0 + x)) * 4
-            di = (y * cw + x) * 4
-            new[di:di + 4] = px[si:si + 4]
-    crop.pixels[:] = new
-    crop.filepath_raw = str(out_img)
-    crop.file_format = 'JPEG'
-    bpy.context.scene.render.image_settings.quality = 92
-    crop.save()
-    report['face']['skinFromPhoto'] = [round(c, 4) for c in skin_lin]
-    report['face']['texture'] = str(out_img.relative_to(ROOT))
-    return skin_lin
 
 
 def main():
     clear_scene()
     body, mrig = mpfb_human()
+    fit = tex = None
+    F = R.get('face')
+    if F and (ROOT / F['photo']).exists():
+        photo_res, tex = FF.prepare_photo(F)
+        fit = FF.fit_face(body, F, photo_res, report)
+        fit['valid'] = FF.load_valid(tex['validPath'])
+        report['faceTexture'] = {'out': F['out'], **tex}
     bake_shape_keys(body)
+    before, _ = mesh_arrays(body)
     t_pose(body, mrig)
+    if fit:
+        after, _ = mesh_arrays(body)
+        # a pose T move a cabeça (pescoço endireita): a projeção desfaz esse movimento rígido antes de usar a câmera
+        hv = (before[:, 2] > fit['eye_c'][2] - 0.06) & (np.abs(before[:, 0]) < 0.1)
+        Rk, tk = FF.kabsch(after[hv], before[hv])
+        fit['post_to_pre'] = (Rk, tk)
+        report['faceFit']['tposeHeadShiftMm'] = round(float(np.abs(after[hv] - before[hv]).max() * 1000), 2)
+        report['faceFit']['tposeRigidResidualMm'] = round(float(np.abs(after[hv] @ Rk.T + tk - before[hv]).max() * 1000), 3)
     # helpers úteis antes de aplicar a máscara
     parts = {}
     for grp, nm in [('helper-l-eye', 'Eye_L'), ('helper-r-eye', 'Eye_R'), ('helper-upper-teeth', 'TeethUp'), ('helper-lower-teeth', 'TeethLow'), ('helper-tongue', 'Tongue'), ('helper-l-eyelashes-1', 'Lash_L'), ('helper-r-eyelashes-1', 'Lash_R')]:
@@ -443,7 +447,9 @@ def main():
         d = t - h
         return (co[vi] - h).dot(d) / max(1e-6, d.length_squared)
 
-    face_skin = face_projection(body, parts, region, co, dom, report)
+    if fit:
+        face_projection(body, parts, fit, dom, region.get('ears', set()))
+    face_skin = tuple(c * R['face'].get('skinGain', 0.9) for c in tex['skinLin']) if fit else None
     pelvis_z = ub['pelvis'][0].z
     ankle_z = R['clothes'].get('ankleZ', 0.12)
     sleeve = R['clothes'].get('sleeve', 0.55)  # fração do braço coberta pela manga
@@ -484,8 +490,9 @@ def main():
     m_shirt = material(R['clothes'].get('shirtMaterial', 'M_Polo'), srgb(C['shirt']), 0.85)
     m_pants = material(R['clothes'].get('pantsMaterial', 'M_Jeans'), srgb(C['pants']), 0.8)
     m_shoe = material(R['clothes'].get('shoeMaterial', 'M_Shoes'), srgb(C['shoes']), 0.5)
-    m_hair = material('M_Hair', srgb(C['hair']), 0.45)
-    m_beard = material('M_Beard', srgb(C['beard']), 0.7)
+    # rosto v2: cor-base de cabelo/barba amostrada da foto (onde a foto não vê, ex.: nuca e embaixo do queixo)
+    m_hair = material('M_Hair', tuple(tex['hairTop']) if fit else srgb(C['hair']), 0.45)
+    m_beard = material('M_Beard', tuple(tex['beardChin']) if fit else srgb(C['beard']), 0.7)
     m_eye = material('M_Eye', srgb(C.get('eye', '#e8e2da')), 0.15)
     m_teeth = material('M_Teeth', srgb('#e6dccb'), 0.3)
     m_tongue = material('M_Tongue', srgb('#9a4a48'), 0.5)
@@ -514,7 +521,7 @@ def main():
         body, lambda f: any_dom(f, shirt_bones), 'Shirt',
         lambda v: cl['shirtOffset'] + (belly if (v.co.y < ub['spine_01'][0].y - 0.04 and v.co.z < ub['spine_03'][0].z) else 0),
         m_shirt, solidify=0.004, smooth=6, smooth_factor=0.45,
-        cuts=[((0, 0, hem_z), (0, 0, -1)), ((0, -0.03, neck_z + 0.035), (0, -0.75, 1))] + arm_cuts)
+        cuts=[((0, 0, hem_z), (0, 0, -1)), ((0, -0.03, neck_z + cl.get('collarHeight', 0.035)), (0, -cl.get('collarSlope', 0.75), 1))] + arm_cuts)
     pants = shell_from_faces(
         body, lambda f: any_dom(f, {'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r'}), 'Pants', cl['pantsOffset'],
         m_pants, solidify=0.003, smooth=14, smooth_factor=0.55,
@@ -534,49 +541,121 @@ def main():
     scalp = region.get('scalp', set())
     hl_y = nose.y + hair_cfg.get('hairlineBack', 0.05)
     hair = None
-    if R.get('hair'):
-      hair = shell_from_faces(
-        body, lambda f: any(v.index in scalp for v in f.verts) or (any_dom(f, {'Head'}) and f.calc_center_median().z > head_top - 0.09), 'Hair',
-        lambda v: hair_cfg.get('thickness', 0.008) + max(0.0, (v.co.z - (head_top - 0.07))) * hair_cfg.get('volumeTop', 0.25),
-        m_hair, solidify=0.002, smooth=2, smooth_factor=0.4,
-        cuts=[((0, hl_y, head_top - 0.03), (0, -1, -0.45)), ((0, 0, head_bot + (head_top - head_bot) * hair_cfg.get('sideBottom', 0.45)), (0, 0, -1))])
-      head_cy = nose.y + 0.09  # centro aproximado da cabeça em profundidade
-      def hair_front(p):
-          f = max(0.0, min(1.0, (head_cy - p.y) / 0.07 + 0.35))
-          return (f, f, f)
-      edge_alpha(hair, hops=2, rgb_fn=hair_front)
-
-    beard_cfg = R.get('beard')
     beard = None
-    if beard_cfg:
-        cx_back = nose.y + beard_cfg.get('backDepth', 0.085)
-        top_z = lips_z + beard_cfg.get('aboveLips', 0.012)
-        mus_z = min(lips_z + beard_cfg.get('mustache', 0.03), nose.z - 0.022)
+    if fit:
+        # ---- rosto v2: cascas com cor e alfa vindos da foto (linha do cabelo, entradas, barba exata) ----
+        ears = region.get('ears', set())
+        ear_pts = [co[i] for i in ears]
+        ear_front_y = min(p.y for p in ear_pts) if ear_pts else nose.y + 0.09
+        ear_top_z = max(p.z for p in ear_pts) if ear_pts else fit['eye_c'][2]
+        nape_z = (min(p.z for p in ear_pts) - 0.012) if ear_pts else head_bot + 0.05
+        brow_z = fit['eye_c'][2] + 0.022
+        chin_z = fit['chin_z']
+        report['faceFit']['hairBounds'] = {'earFrontY': round(ear_front_y, 4), 'napeZ': round(nape_z, 4), 'browZ': round(float(brow_z), 4)}
+        if R.get('hair'):
+            hc = R['hair']
 
-        def beard_pred(f):
-            c = f.calc_center_median()
-            if any(v.index in lips for v in f.verts):
-                return False
-            if not any_dom(f, {'Head', 'neck_01'}):
-                return False
-            if c.y > cx_back or c.z > mus_z:
-                return False
-            if c.z > top_z and abs(c.x) > 0.032:
-                return False
-            if c.z < head_bot - beard_cfg.get('neckDepth', 0.01):
-                return False
-            return True
+            def hair_pred(f):
+                if any(v.index in ears for v in f.verts) or not any_dom(f, {'Head'}):
+                    return False
+                c = f.calc_center_median()
+                if c.z < nape_z:
+                    return False
+                if c.y > ear_front_y + 0.01:
+                    return True  # atrás das orelhas: laterais de trás e nuca
+                if c.z < nose.z:
+                    return False  # bochecha abaixo do nariz é da barba
+                if abs(c.x) < 0.058 and c.z < brow_z:
+                    return False  # olhos/nariz
+                return True
 
-        beard = shell_from_faces(body, beard_pred, 'Beard', beard_cfg.get('thickness', 0.006), m_beard, solidify=0.0, smooth=1, smooth_factor=0.3)
-        chin_z = head_bot
+            hair = shell_from_faces(body, hair_pred, 'Hair',
+                                    lambda v: hc.get('thickness', 0.004) + max(0.0, v.co.z - (head_top - 0.07)) * hc.get('volumeTop', 0.12),
+                                    m_hair, solidify=0.0, smooth=1, smooth_factor=0.3)
+            ear_lobe_z = nape_z + 0.012
 
-        def beard_rgb(p):
-            t = max(0.0, min(1.0, (p.z - chin_z) / max(0.01, (mus_z - chin_z))))
-            side = min(1.0, abs(p.x) / 0.07)
-            k = 1.0 - 0.55 * max(t * 0.8, side * 0.7)
-            return (k, k, k)
+            def hair_geo(P):
+                # costeleta (faixa de ~2 cm na frente da orelha até o lóbulo) + tudo acima do topo da orelha ou atrás dela
+                behind = np.clip((P[:, 1] - (ear_front_y - 0.004)) / 0.008, 0, 1)
+                above = np.clip((P[:, 2] - (ear_top_z - 0.004)) / 0.008, 0, 1)
+                burn = np.clip((P[:, 1] - (ear_front_y - 0.022)) / 0.006, 0, 1) * np.clip((P[:, 2] - ear_lobe_z) / 0.008, 0, 1)
+                return np.maximum.reduce([behind, above, burn])
 
-        edge_alpha(beard, hops=3, rgb_fn=beard_rgb)
+            pelt_colors(hair, fit, hops=2, grey_fn=lambda P: 0.55 * np.clip((ear_top_z + 0.01 - P[:, 2]) / 0.05, 0, 1), geo_fn=hair_geo)
+        if R.get('beard'):
+            bc = R['beard']
+
+            def beard_pred(f):
+                if any(v.index in lips or v.index in ears for v in f.verts):
+                    return False
+                if not any_dom(f, {'Head', 'neck_01'}):
+                    return False
+                c = f.calc_center_median()
+                if c.z > nose.z - 0.012 or c.y > ear_front_y + bc.get('backReach', 0.005) or f.normal.y > 0.25:
+                    return False
+                return c.z > chin_z - bc.get('neckDepth', 0.045)
+
+            def beard_off(v):
+                # fina onde está de frente (alinha com a foto, sem paralaxe); o volume cresce para baixo, sob o queixo
+                low = max(0.0, min(1.0, (lips_z - v.co.z) / max(0.01, lips_z - chin_z)))
+                down = max(0.0, min(1.0, -v.normal.z * 1.4))
+                return bc.get('thickness', 0.0045) + bc.get('chinVolume', 0.006) * low * down
+
+            beard = shell_from_faces(body, beard_pred, 'Beard', beard_off, m_beard, solidify=0.0, smooth=1, smooth_factor=0.3)
+            lip_y = min(co[i].y for i in lips) if lips else nose.y + 0.02
+
+            def beard_geo(P):
+                # linha da bochecha: do lóbulo da orelha (costeleta) descendo até o canto da boca
+                t = np.clip((P[:, 1] - lip_y) / max(0.01, ear_front_y - lip_y), 0, 1)
+                zline = (lips_z + 0.018) * (1 - t) + (nape_z + 0.012) * t
+                return np.clip((zline + 0.005 - P[:, 2]) / 0.01, 0, 1)
+
+            pelt_colors(beard, fit, hops=3, grey_fn=lambda P: np.clip((lips_z - 0.012 - P[:, 2]) / 0.03, 0, 1), geo_fn=beard_geo)
+    else:
+        hair = None
+        if R.get('hair'):
+          hair = shell_from_faces(
+            body, lambda f: any(v.index in scalp for v in f.verts) or (any_dom(f, {'Head'}) and f.calc_center_median().z > head_top - 0.09), 'Hair',
+            lambda v: hair_cfg.get('thickness', 0.008) + max(0.0, (v.co.z - (head_top - 0.07))) * hair_cfg.get('volumeTop', 0.25),
+            m_hair, solidify=0.002, smooth=2, smooth_factor=0.4,
+            cuts=[((0, hl_y, head_top - 0.03), (0, -1, -0.45)), ((0, 0, head_bot + (head_top - head_bot) * hair_cfg.get('sideBottom', 0.45)), (0, 0, -1))])
+          head_cy = nose.y + 0.09  # centro aproximado da cabeça em profundidade
+          def hair_front(p):
+              f = max(0.0, min(1.0, (head_cy - p.y) / 0.07 + 0.35))
+              return (f, f, f)
+          edge_alpha(hair, hops=2, rgb_fn=hair_front)
+
+        beard_cfg = R.get('beard')
+        beard = None
+        if beard_cfg:
+            cx_back = nose.y + beard_cfg.get('backDepth', 0.085)
+            top_z = lips_z + beard_cfg.get('aboveLips', 0.012)
+            mus_z = min(lips_z + beard_cfg.get('mustache', 0.03), nose.z - 0.022)
+
+            def beard_pred(f):
+                c = f.calc_center_median()
+                if any(v.index in lips for v in f.verts):
+                    return False
+                if not any_dom(f, {'Head', 'neck_01'}):
+                    return False
+                if c.y > cx_back or c.z > mus_z:
+                    return False
+                if c.z > top_z and abs(c.x) > 0.032:
+                    return False
+                if c.z < head_bot - beard_cfg.get('neckDepth', 0.01):
+                    return False
+                return True
+
+            beard = shell_from_faces(body, beard_pred, 'Beard', beard_cfg.get('thickness', 0.006), m_beard, solidify=0.0, smooth=1, smooth_factor=0.3)
+            chin_z = head_bot
+
+            def beard_rgb(p):
+                t = max(0.0, min(1.0, (p.z - chin_z) / max(0.01, (mus_z - chin_z))))
+                side = min(1.0, abs(p.x) / 0.07)
+                k = 1.0 - 0.55 * max(t * 0.8, side * 0.7)
+                return (k, k, k)
+
+            edge_alpha(beard, hops=3, rgb_fn=beard_rgb)
 
     # ---------- corpo: lábios, esconde pele coberta ----------
     bm = bmesh.new()
@@ -671,6 +750,24 @@ def main():
     report['bones'] = len(arm.data.bones)
     report['meshes'] = {o.name: len(o.data.vertices) for o in meshes}
     report['materials'] = sorted({m.name for o in meshes for m in o.data.materials})
+
+    # ---------- F11: conferência do rosto (foto projetada, sem luz) + métrica de landmarks ----------
+    if fit:
+        shots, det = FF.qa_face([o for o in meshes if o.name in ('Body', 'Hair', 'Beard', 'Eye_L', 'Eye_R')], fit, ROOT / R['face']['out'], QA_DIR, tuple(tex['skinLin']))
+        photo_lm = np.array(json.loads((FF.TMP / 'photo.json').read_text(encoding='utf-8'))['landmarks'])[:, :2]
+        core = [i for i in FF.LEFT_EYE + FF.RIGHT_EYE + FF.NOSE + FF.LIPS + FF.LEFT_BROW + FF.RIGHT_BROW]
+        qa = {}
+        for d, nm in zip(det, ('front', 'three_quarter')):
+            if not d['found']:
+                qa[nm] = 'rosto não detectado'
+                continue
+            L = np.array(d['landmarks'])[:, :2]
+            Rm, tt = FF.similarity(L[core], photo_lm[core], np.ones(len(core)))
+            err = np.linalg.norm(L[core] @ Rm.T + tt - photo_lm[core], axis=1)
+            io = np.linalg.norm(photo_lm[33] - photo_lm[263])
+            qa[nm] = {'meanErrPctInterocular': round(float(100 * err.mean() / io), 2), 'maxErrPct': round(float(100 * err.max() / io), 2)}
+        report['faceQA'] = {'renders': [str(v.relative_to(ROOT)) for v in shots.values()], **qa}
+        print('[face] QA:', json.dumps(qa, ensure_ascii=False))
 
     # ---------- export ----------
     OUT_GLB.parent.mkdir(parents=True, exist_ok=True)

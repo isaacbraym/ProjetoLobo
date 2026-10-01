@@ -15,3 +15,6 @@
 *.blend binary
 *.fbx binary
 *.woff2 binary
+# texturas/fotos sem extensão (DEC-0015)
+public/assets/characters/marcio_f binary
+assets-src/characters/marcio_face_src binary

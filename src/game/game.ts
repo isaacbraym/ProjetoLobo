@@ -103,10 +103,13 @@ export class Game {
     this.charGltf = gltf;
     this.marcioGltf = marcio;
     try {
-      this.marcioFace = await new THREE.TextureLoader().loadAsync(assetUrl('assets/characters/marcio_face.jpg'));
+      // rosto v2: foto inteira em resolução nativa, arquivo sem extensão (DEC-0015) — o <img> detecta o PNG pelo
+      // conteúdo. RGB = foto tratada, A = máscara de pelo (cabelo/barba) usada pelas cascas.
+      this.marcioFace = await new THREE.TextureLoader().loadAsync(assetUrl('assets/characters/marcio_f'));
       this.marcioFace.flipY = false;
       this.marcioFace.colorSpace = THREE.SRGBColorSpace;
-      this.marcioFace.anisotropy = 4;
+      this.marcioFace.anisotropy = 8;
+      this.marcioFace.generateMipmaps = true;
     } catch {
       console.warn('[game] foto do rosto ausente');
     }

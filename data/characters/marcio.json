@@ -1,9 +1,9 @@
 {
-  "$comment": "Receita do Márcio v1 (tools/blender/build_character.py). Referência: refs/marcio/marcio_front.png. Rosto fiel vem no M3 (técnica WWE 2K).",
+  "$comment": "Receita do Márcio (tools/blender/build_character.py). Corpo/roupa: refs/marcio/marcio_front.png. Rosto v2: foto real (DEC-0014/0015) pela técnica WWE 2K automática (tools/blender/face_fit.py + tools/face/).",
   "id": "marcio",
   "out": "public/assets/characters/marcio.glb",
   "macros": {
-    "gender": 1.0,
+    "gender": 1,
     "age": 0.68,
     "muscle": 0.66,
     "weight": 0.8,
@@ -52,19 +52,19 @@
     "pantsOffset": 0.017,
     "shoeOffset": 0.012,
     "sleeve": 0.55,
-    "ankleZ": 0.11
+    "ankleZ": 0.11,
+    "collarHeight": 0.012,
+    "collarSlope": 0.9
   },
   "hair": {
-    "thickness": 0.008,
-    "volumeTop": 0.3,
-    "hairlineBack": 0.068
+    "thickness": 0.004,
+    "volumeTop": 0.12
   },
   "beard": {
-    "thickness": 0.007,
-    "backDepth": 0.09,
-    "aboveLips": 0.012,
-    "mustache": 0.03,
-    "neckDepth": -0.005
+    "thickness": 0.0035,
+    "chinVolume": 0.014,
+    "neckDepth": 0.05,
+    "backReach": 0.02
   },
   "decimate": 0.75,
   "dropParts": [
@@ -73,36 +73,19 @@
     "Lash_R"
   ],
   "face": {
-    "photo": "refs/marcio/marcio_front.png",
-    "crop": [
-      330,
-      0,
-      360,
-      340
+    "photo": "assets-src/characters/marcio_face_src",
+    "out": "public/assets/characters/marcio_f",
+    "beardDepth": 0.016,
+    "ridge": 800,
+    "maxWeight": 1,
+    "tpsSmooth": 0.0003,
+    "camDistances": [
+      0.3,
+      0.4,
+      0.5,
+      0.7
     ],
-    "out": "public/assets/characters/marcio_face.jpg",
-    "landmarks": {
-      "eyeA": [
-        147,
-        157
-      ],
-      "eyeB": [
-        210,
-        157
-      ],
-      "nose": [
-        179,
-        191
-      ],
-      "mouth": [
-        179,
-        220
-      ],
-      "chin": [
-        179,
-        262
-      ]
-    },
-    "$comment": "pontos no recorte (x,y em pixels; eyeA = olho à esquerda da imagem). Ajustar pelo face_compare."
+    "skinGain": 1,
+    "$comment": "Foto inteira (659x659, sem extensão). Landmarks/segmentação pelo MediaPipe; ajuste dos modificadores MPFB por mínimos quadrados + resíduo TPS; textura sem extensão em resolução nativa."
   }
 }

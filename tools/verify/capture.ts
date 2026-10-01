@@ -4,23 +4,30 @@
  */
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { launch, openGame, outDir, lobo } from './browser';
+import { launch, openGame, outDir, lobo, ROOT } from './browser';
 
 const scenario = process.argv[2] ?? 'combat';
 const dir = outDir('captures');
 const browser = await launch();
 try {
   if (scenario === 'face') {
-    const { page, logs } = await openGame(browser, 'perf=1', { width: 900, height: 900 });
+    const { page, logs } = await openGame(browser, '', { width: 900, height: 900 });
     await lobo(page, 'godMode(true)');
     await page.waitForTimeout(1500);
     // pausa os inimigos longe para não atrapalhar a foto
-    for (const [n, ang, dist] of [['front', 0, 0.75], ['three_quarter', 35, 0.8], ['profile', 85, 0.85], ['body', 0, 2.6]] as const) {
-      await lobo(page, `faceCam(true, ${dist}, ${ang})`);
-      await page.waitForTimeout(900);
+    // face_photo imita a foto de referência (pose parada, olhos na altura da câmera, perto) para comparação lado a lado
+    const shots = [['photo', 0, 0.3, true, 60], ['front', 0, 0.75, false, 30], ['three_quarter', 35, 0.8, true, 30], ['profile', 85, 0.85, true, 30], ['body', 0, 2.6, false, 30]] as const;
+    for (const [n, ang, dist, neutral, fov] of shots) {
+      await lobo(page, `faceCam(true, ${dist}, ${ang}, ${neutral}, ${fov})`);
+      await page.waitForTimeout(neutral ? 1400 : 900);
+      await lobo(page, `faceCam(true, ${dist}, ${ang}, ${neutral}, ${fov})`); // reenquadra depois da pose assentar
+      await page.waitForTimeout(300);
       await page.screenshot({ path: resolve(dir, `face_${n}.png`) });
     }
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+    // F11 no jogo: landmarks + SSIM da captura frontal contra a foto (tools/face/compare.ts)
+    const { compareFace } = await import('../face/compare');
+    console.log('[capture] rosto vs foto:', JSON.stringify(await compareFace(resolve(ROOT, 'assets-src/characters/marcio_face_src'), resolve(dir, 'face_photo.png'), dir)));
   } else if (scenario === 'wolf') {
     const { page, logs } = await openGame(browser, 'perf=1');
     await lobo(page, 'seed(42)');

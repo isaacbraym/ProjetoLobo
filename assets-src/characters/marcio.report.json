@@ -2,35 +2,108 @@
   "id": "marcio",
   "recipe": "data\\characters\\marcio.json",
   "generatorVersion": 1,
-  "joints_moved": 52,
-  "face": {
-    "sx": 1074.87,
-    "sz": 864.68,
-    "residual_px": [
-      0.48,
-      1.69,
-      1.53,
-      0.32
-    ],
-    "eyeDistMesh": 0.0586,
-    "skinFromPhoto": [
-      0.7541,
-      0.2803,
-      0.1416
-    ],
-    "texture": "public\\assets\\characters\\marcio_face.jpg"
+  "faceFit": {
+    "camDist": 0.3,
+    "rmsBeforePct": 7.8,
+    "rmsAfterPct": 4.09,
+    "weights": {
+      "head-scale-horiz-incr": 0.413,
+      "head-scale-vert-decr": 0.016,
+      "forehead-temple-incr": 0.068,
+      "nose-scale-horiz-decr": 0.069,
+      "nose-scale-vert-incr": 0.348,
+      "nose-scale-vert-decr": 0.19,
+      "nose-flaring-decr": 0.049,
+      "nose-point-width-incr": 0.023,
+      "nose-point-width-decr": 0.054,
+      "nose-nostrils-width-decr": 0.106,
+      "nose-width2-incr": 0.063,
+      "nose-width3-decr": 0.128,
+      "mouth-scale-horiz-incr": 0.065,
+      "mouth-upperlip-height-incr": 0.098,
+      "mouth-lowerlip-width-decr": 0.049,
+      "mouth-upperlip-width-incr": 0.022,
+      "chin-width-incr": 0.048,
+      "chin-width-decr": 0.017,
+      "chin-height-decr": 0.381,
+      "chin-bones-incr": 0.704,
+      "chin-bones-decr": 0.042,
+      "chin-jaw-drop-decr": 0.177,
+      "nose-trans-up": 0.877,
+      "mouth-trans-up": 0.492,
+      "eyebrows-trans-up": 0.018,
+      "mouth-angles-down": 0.489,
+      "eyebrows-angle-up": 0.255,
+      "head-oval": 0.367,
+      "head-round": 0.376,
+      "head-invertedtriangular": 0.299,
+      "head-diamond": 0.122,
+      "eye-trans-down": 0.757,
+      "eye-trans-in": 0.589,
+      "eye-height2-incr": 0.017,
+      "eye-corner1-down": 0.126,
+      "cheek-bones-incr": 0.31,
+      "cheek-volume-incr": 0.497,
+      "cheek-inner-incr": 0.032
+    },
+    "landmarks": 466,
+    "rmsAfterTpsPx": 2.01,
+    "meanErrPctInterocular": 0.66,
+    "maxResidualMm": 21.2,
+    "tposeHeadShiftMm": 0.17,
+    "tposeRigidResidualMm": 0.17,
+    "hairBounds": {
+      "earFrontY": -0.064,
+      "napeZ": 1.5616,
+      "browZ": 1.6478
+    }
   },
-  "triangles": 27086,
-  "height_m": 1.7656,
+  "faceTexture": {
+    "out": "public/assets/characters/marcio_f",
+    "size": [
+      659,
+      659
+    ],
+    "skinLin": [
+      0.4718,
+      0.2738,
+      0.193
+    ],
+    "hairTop": [
+      0.1229,
+      0.0955,
+      0.093
+    ],
+    "hairSide": [
+      0.1208,
+      0.105,
+      0.1106
+    ],
+    "beardChin": [
+      0.1906,
+      0.1689,
+      0.1619
+    ],
+    "mustache": [
+      0.1278,
+      0.096,
+      0.0895
+    ],
+    "delight": 0.55,
+    "validPath": "C:\\PROJETOS\\Lobo\\.agent-tmp\\face\\texture_valid.png"
+  },
+  "joints_moved": 52,
+  "triangles": 27542,
+  "height_m": 1.7508,
   "bones": 65,
   "meshes": {
-    "Body": 6525,
-    "Shirt": 3021,
+    "Body": 6527,
+    "Shirt": 2933,
     "Pants": 2051,
     "Shoe_L": 1409,
     "Shoe_R": 1409,
-    "Hair": 632,
-    "Beard": 391,
+    "Hair": 766,
+    "Beard": 699,
     "Eye_L": 72,
     "Eye_R": 72,
     "TeethUp": 68,
@@ -47,13 +120,22 @@
     "M_Skin",
     "M_Teeth"
   ],
-  "out": "public\\assets\\characters\\marcio.glb",
-  "outHash": "bc31d8aa5ba0739691d4cda02c49845efb45f5e791ea54943b186604749ff804",
-  "mixamo": {
-    "clips": 242,
-    "meta": "public\\assets\\anims\\mixamo_meta.json"
+  "faceQA": {
+    "renders": [
+      ".agent-tmp\\characters\\marcio\\face_qa_front.png",
+      ".agent-tmp\\characters\\marcio\\face_qa_three_quarter.png",
+      ".agent-tmp\\characters\\marcio\\face_qa_profile.png"
+    ],
+    "front": {
+      "meanErrPctInterocular": 0.61,
+      "maxErrPct": 1.58
+    },
+    "three_quarter": {
+      "meanErrPctInterocular": 9.55,
+      "maxErrPct": 29.82
+    }
   },
-  "anims": "public\\assets\\anims\\humanoid_anims.glb",
-  "animCount": 285,
+  "out": "public\\assets\\characters\\marcio.glb",
+  "outHash": "e9aa7bf96be0c099b32659c7f1a134950e4e6ab7531b398b91faf4843fd24b7c",
   "qa": ".agent-tmp\\characters\\marcio"
 }

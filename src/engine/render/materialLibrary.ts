@@ -134,6 +134,27 @@ function strandsTexture(): THREE.Texture {
   }, true, 6);
 }
 
+/** Fios curtos e finos (corte rente / barba): pouco contraste, para virar textura de pelo e não "cabelo molhado". */
+function fineStrandsTexture(): THREE.Texture {
+  return canvasTex('fineStrands', 256, (ctx, s) => {
+    const rng = new Rng(11);
+    ctx.fillStyle = '#9a9a9a';
+    ctx.fillRect(0, 0, s, s);
+    for (let i = 0; i < 5200; i++) {
+      const x = rng.next() * s;
+      const y = rng.next() * s;
+      const l = 2 + rng.next() * 5;
+      const v = Math.floor(110 + rng.next() * 110);
+      ctx.strokeStyle = `rgb(${v},${v},${v})`;
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + (rng.next() - 0.5) * 2.5, y + l);
+      ctx.stroke();
+    }
+  }, true, 10);
+}
+
 /** Recentraliza a UV do olho para a íris cair no meio da malha do olho (helpers do MPFB). */
 function centerEyeUv(mesh: THREE.Mesh): void {
   const uv = mesh.geometry.getAttribute('uv') as THREE.BufferAttribute | undefined;
@@ -163,6 +184,41 @@ const ribNormal = () =>
   heightToNormal('rib', 64, (x) => (x % 4 < 2 ? 1 : 0), 1.2);
 const twillNormal = () =>
   heightToNormal('twill', 64, (x, y) => ((x + y * 2) % 8 < 4 ? 1 : 0), 0.9);
+
+/** Cinza da barba/têmporas no fallback (onde a foto não vê: nuca, embaixo do queixo). */
+const PELT_GREY = new THREE.Color('#8a8582');
+
+/**
+ * Cabelo/barba do rosto v2 (casca com a foto): cor de vértice R = peso da cor da foto (de frente), G = alfa de borda,
+ * B = grisalho do fallback, A = peso do recorte da foto. A foto traz no alfa a máscara de pelo → a linha do cabelo, as entradas e o desenho da
+ * barba saem exatamente da foto; onde a foto não vê, cor-base amostrada da foto com fios procedurais.
+ */
+function peltPhotoMaterial(name: string, color: THREE.Color, faceMap: THREE.Texture, g: THREE.BufferGeometry, roughness: number): THREE.MeshStandardMaterial {
+  if (!g.getAttribute('faceUv')) g.setAttribute('faceUv', g.getAttribute('uv1'));
+  const m = new THREE.MeshStandardMaterial({ name, color, roughness, metalness: 0, vertexColors: true, map: fineStrandsTexture(), alphaHash: true, side: THREE.DoubleSide, envMapIntensity: 0.12 });
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.faceMap = { value: faceMap };
+    sh.uniforms.peltGrey = { value: PELT_GREY };
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute vec2 faceUv; varying vec2 vFaceUv;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFaceUv = faceUv;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform sampler2D faceMap; uniform vec3 peltGrey; varying vec2 vFaceUv;')
+      .replace(
+        '#include <color_fragment>',
+        `vec4 ph = texture2D(faceMap, vFaceUv);
+        float pw = clamp(vColor.r, 0.0, 1.0);
+        // variação dos fios normalizada pela média da textura (~0,36 linear): não escurece o tom-base
+        float detail = clamp(diffuseColor.r / max(diffuse.r, 1e-3) / 0.36, 0.55, 1.5);
+        vec3 fb = mix(diffuse, peltGrey, clamp(vColor.b, 0.0, 1.0)) * detail;
+        diffuseColor.rgb = mix(fb, ph.rgb * mix(1.0, detail, 0.25), pw);
+        // o recorte (linha do cabelo, entradas, desenho da barba) obedece a foto assim que ela enxerga o ponto
+        diffuseColor.a = clamp(vColor.g, 0.0, 1.0) * mix(1.0, ph.a, clamp(vColor.a, 0.0, 1.0));`,
+      );
+  };
+  m.customProgramCacheKey = () => 'pelt-photo';
+  return m;
+}
 
 export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrides = {}): THREE.MeshStandardMaterial[] {
   const created: THREE.MeshStandardMaterial[] = [];
@@ -196,7 +252,8 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
               .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFaceUv = faceUv; vFaceMask = faceMask;');
             sh.fragmentShader = sh.fragmentShader
               .replace('#include <common>', '#include <common>\nuniform sampler2D faceMap; varying vec2 vFaceUv; varying float vFaceMask;')
-              .replace('#include <map_fragment>', '#include <map_fragment>\nvec4 faceC = texture2D(faceMap, vFaceUv);\ndiffuseColor.rgb = mix(diffuseColor.rgb, faceC.rgb, clamp(vFaceMask, 0.0, 1.0));');
+              // a foto já traz sombreamento: um pouco de "luz própria" na área da foto evita sombra dupla (olheira/queixo pretos)
+              .replace('#include <map_fragment>', '#include <map_fragment>\nvec4 faceC = texture2D(faceMap, vFaceUv);\nfloat fm = clamp(vFaceMask, 0.0, 1.0);\ndiffuseColor.rgb = mix(diffuseColor.rgb, faceC.rgb, fm);\ntotalEmissiveRadiance += faceC.rgb * fm * 0.14;');
           };
           phys.customProgramCacheKey = () => 'skin-face';
         }
@@ -227,47 +284,26 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
       case 'M_Shoes':
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.55 });
         break;
-      case 'M_Hair': {
-        const hm = new THREE.MeshStandardMaterial({ name, color, roughness: 0.72, metalness: 0, vertexColors: true, transparent: true, alphaTest: 0.02, map: strandsTexture(), envMapIntensity: 0.35 });
+      case 'M_Hair':
+      case 'M_Beard': {
         const g = mesh.geometry;
-        if (opts.faceMap && g.getAttribute('uv1')) {
-          // frente/laterais do cabelo pegam a foto (linha do cabelo, grisalho das têmporas); nuca fica na cor base
-          if (!g.getAttribute('faceUv')) g.setAttribute('faceUv', g.getAttribute('uv1'));
-          const faceMap = opts.faceMap;
-          hm.onBeforeCompile = (sh) => {
-            sh.uniforms.faceMap = { value: faceMap };
-            sh.vertexShader = sh.vertexShader
-              .replace('#include <common>', '#include <common>\nattribute vec2 faceUv; varying vec2 vFaceUv;')
-              .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFaceUv = faceUv;');
-            sh.fragmentShader = sh.fragmentShader
-              .replace('#include <common>', '#include <common>\nuniform sampler2D faceMap; varying vec2 vFaceUv;')
-              .replace('#include <color_fragment>', '#if defined( USE_COLOR_ALPHA )\n diffuseColor.a *= vColor.a;\n vec3 hp = texture2D(faceMap, vFaceUv).rgb;\n float hl = dot(hp, vec3(0.299, 0.587, 0.114));\n diffuseColor.rgb = mix(diffuseColor.rgb, hp * 1.05, clamp(vColor.r, 0.0, 1.0) * (1.0 - smoothstep(0.28, 0.42, hl)));\n#endif');
-          };
-          hm.customProgramCacheKey = () => 'hair-face';
+        if (opts.faceMap && g.getAttribute('uv1') && g.getAttribute('color')) {
+          m = peltPhotoMaterial(name, color, opts.faceMap, g, name === 'M_Hair' ? 0.86 : 0.88);
+          break;
         }
-        m = hm;
+        m = name === 'M_Hair'
+          ? new THREE.MeshStandardMaterial({ name, color, roughness: 0.72, metalness: 0, vertexColors: true, transparent: true, alphaTest: 0.02, map: strandsTexture(), envMapIntensity: 0.35 })
+          : new THREE.MeshStandardMaterial({ name, color, roughness: 0.75, vertexColors: true, transparent: true, alphaTest: 0.12, map: strandsTexture() });
         break;
       }
-      case 'M_Beard':
-        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.75, vertexColors: true, transparent: true, alphaTest: 0.12, map: strandsTexture() });
-        if (opts.faceMap && mesh.geometry.getAttribute('uv1')) {
-          const fm = opts.faceMap.clone();
-          fm.channel = 1;
-          fm.needsUpdate = true;
-          m.map = fm;
-          m.color.set(0xffffff);
-          m.vertexColors = false;
-          m.alphaTest = 0;
-          m.transparent = false;
-        }
-        break;
       case 'M_Eye':
         if (opts.faceMap && mesh.geometry.getAttribute('uv1')) {
           // olho com a foto projetada (mesma UV do rosto): íris/esclera exatamente como na referência
           const fm = opts.faceMap.clone();
           fm.channel = 1;
           fm.needsUpdate = true;
-          m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: fm, roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05 });
+          // reflexo discreto (o clearcoat forte espelhava a cidade e deixava a íris cinza-azulada) + um pouco de luz própria
+          m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: fm, roughness: 0.25, clearcoat: 0.45, clearcoatRoughness: 0.12, envMapIntensity: 0.25, emissive: 0xffffff, emissiveMap: fm, emissiveIntensity: 0.16 });
         } else {
           centerEyeUv(mesh);
           m = new THREE.MeshPhysicalMaterial({ name, color: 0xffffff, map: irisTexture(opts.iris ?? '#5a3a1e'), roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05 });

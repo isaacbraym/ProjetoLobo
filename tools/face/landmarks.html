@@ -1,0 +1,47 @@
+<!doctype html>
+<!-- Página local do pipeline do rosto (ASSET_PIPELINE §3, F2/F11). Aberta pelo Playwright em tools/face/analyze.ts;
+     os arquivos são servidos por page.route (origem falsa http://face.local). Nada aqui vai para o jogo. -->
+<html>
+<head><meta charset="utf-8"><title>face</title></head>
+<body>
+<script type="module">
+  import { FilesetResolver, FaceLandmarker, ImageSegmenter } from '/vision_bundle.mjs';
+  const files = await FilesetResolver.forVisionTasks('/wasm');
+  const landmarker = await FaceLandmarker.createFromOptions(files, {
+    baseOptions: { modelAssetPath: '/models/face_landmarker.task', delegate: 'CPU' },
+    runningMode: 'IMAGE', numFaces: 1, minFaceDetectionConfidence: 0.2, minFacePresenceConfidence: 0.2,
+    outputFaceBlendshapes: true, outputFacialTransformationMatrixes: true,
+  });
+  let segmenter = null;
+  async function seg() {
+    segmenter ??= await ImageSegmenter.createFromOptions(files, {
+      baseOptions: { modelAssetPath: '/models/selfie_multiclass_256x256.tflite', delegate: 'CPU' },
+      runningMode: 'IMAGE', outputCategoryMask: true, outputConfidenceMasks: true,
+    });
+    return segmenter;
+  }
+  function loadImg(url) {
+    return new Promise((ok, err) => { const i = new Image(); i.onload = () => ok(i); i.onerror = err; i.src = url; });
+  }
+  // classes do selfie_multiclass: 0 fundo, 1 cabelo, 2 pele do corpo, 3 pele do rosto, 4 roupa, 5 outros (acessórios)
+  window.analyze = async (url, wantSeg) => {
+    const img = await loadImg(url);
+    const r = landmarker.detect(img);
+    const out = { w: img.naturalWidth, h: img.naturalHeight, found: r.faceLandmarks.length > 0 };
+    if (out.found) {
+      out.landmarks = r.faceLandmarks[0].map((p) => [p.x * img.naturalWidth, p.y * img.naturalHeight, p.z * img.naturalWidth]);
+      out.blendshapes = Object.fromEntries((r.faceBlendshapes[0]?.categories ?? []).map((c) => [c.categoryName, +c.score.toFixed(4)]));
+      out.matrix = r.facialTransformationMatrixes[0] ? Array.from(r.facialTransformationMatrixes[0].data) : null;
+    }
+    if (wantSeg) {
+      const s = (await seg()).segment(img);
+      const conf = s.confidenceMasks.map((m) => Array.from(m.getAsFloat32Array(), (v) => Math.round(v * 255)));
+      out.seg = { w: s.confidenceMasks[0].width, h: s.confidenceMasks[0].height, conf };
+      s.close();
+    }
+    return out;
+  };
+  window.ready = true;
+</script>
+</body>
+</html>

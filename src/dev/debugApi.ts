@@ -73,21 +73,48 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
     wolfState() {
       return { state: game.wolf.state, meter: game.wolf.meter, timer: game.wolf.timer, amount: game.wolf.visual.amount, duck: 0 };
     },
-    /** Câmera fixa no rosto do Márcio (comparação com a foto). angle em graus (0 = de frente). */
-    faceCam(on = true, dist = 0.75, angleDeg = 0) {
+    /**
+     * Câmera fixa no rosto do Márcio (comparação com a foto). angle em graus (0 = de frente).
+     * neutral: pose parada (sem guarda de luta) e câmera na altura dos olhos, como na foto de referência.
+     */
+    faceCam(on = true, dist = 0.75, angleDeg = 0, neutral = false, fov = 30) {
+      const anim = game.player.actor.model.animator;
       if (!on) {
         game.camera.cine = null;
         game.player.setCine(false);
+        anim.setLocoSet({ idle: 'idleCombat' });
         return;
       }
       game.player.setCine(true);
+      if (neutral) anim.setLocoSet({ idle: 'idle' }, true);
       const p = game.player.actor;
       const head = new THREE.Vector3();
       p.model.boneWorld('Head', head);
-      head.y += 0.06;
       const a = p.yaw + THREE.MathUtils.degToRad(angleDeg);
+      if (neutral) {
+        // segue a direção real do rosto (a pose pode inclinar a cabeça): eixo local do osso mais alinhado com a frente
+        const bone = p.model.bone('Head')!;
+        bone.updateWorldMatrix(true, false);
+        const fwd = new THREE.Vector3(Math.sin(p.yaw), 0, Math.cos(p.yaw));
+        const up = new THREE.Vector3(0, 1, 0);
+        let bestF = fwd.clone();
+        let bestU = up.clone();
+        let sf = -2;
+        let su = -2;
+        for (let i = 0; i < 3; i++)
+          for (const sg of [1, -1]) {
+            const ax = new THREE.Vector3().setFromMatrixColumn(bone.matrixWorld, i).normalize().multiplyScalar(sg);
+            if (ax.dot(fwd) > sf) (sf = ax.dot(fwd)), bestF.copy(ax);
+            if (ax.dot(up) > su) (su = ax.dot(up)), bestU.copy(ax);
+          }
+        const eye = head.clone().addScaledVector(bestU, 0.06).addScaledVector(bestF, 0.09);
+        const dir = bestF.clone().applyAxisAngle(bestU, THREE.MathUtils.degToRad(angleDeg));
+        game.camera.cine = { pos: eye.clone().addScaledVector(dir, dist), look: eye, fov, blend: 1 };
+        return;
+      }
+      head.y += 0.06;
       const pos = new THREE.Vector3(head.x + Math.sin(a) * dist, head.y + 0.02, head.z + Math.cos(a) * dist);
-      game.camera.cine = { pos, look: head.clone(), fov: 30, blend: 1 };
+      game.camera.cine = { pos, look: head.clone(), fov, blend: 1 };
     },
     perf() {
       return perf.report();

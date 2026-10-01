@@ -59,10 +59,18 @@ if (!run('build', 'npx', ['vite', 'build'])) finish();
 
 // e2e contra o preview do build de produção
 let server: ChildProcess | null = null;
+/** No Windows `kill()` num processo com shell:true só mata o cmd e deixa o vite órfão segurando a porta. */
+function killTree(p: ChildProcess | null): void {
+  if (!p?.pid) return;
+  if (process.platform === 'win32') spawnSync('taskkill', ['/PID', String(p.pid), '/T', '/F'], { stdio: 'ignore' });
+  else p.kill();
+}
 async function e2e(): Promise<void> {
   const t0 = Date.now();
-  server = spawn('npx', ['vite', 'preview', '--port', String(PREVIEW_PORT), '--strictPort'], { cwd: ROOT, shell: true, stdio: 'ignore' });
   const previewUrl = `http://localhost:${PREVIEW_PORT}/ProjetoLobo/`;
+  // porta ocupada = um preview antigo serviria um build velho e o e2e testaria a coisa errada
+  if (await fetch(previewUrl).then(() => true, () => false)) throw new Error(`porta ${PREVIEW_PORT} já ocupada (preview órfão?) — mate o processo e rode de novo`);
+  server = spawn('npx', ['vite', 'preview', '--port', String(PREVIEW_PORT), '--strictPort'], { cwd: ROOT, shell: true, stdio: 'ignore' });
   for (let i = 0; i < 60; i++) {
     try {
       const r = await fetch(previewUrl);
@@ -111,7 +119,7 @@ async function e2e(): Promise<void> {
     }
   } finally {
     await browser.close();
-    server?.kill();
+    killTree(server);
   }
   for (const s of steps.slice(-3)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
   steps.push({ name: 'e2e', ok: true, ms: Date.now() - t0 });

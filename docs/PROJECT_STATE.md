@@ -1,8 +1,19 @@
 # PROJECT_STATE — ponto de retomada
 
-Atualizado: 2026-10-01 · Por: sessão 1 (Claude Opus 5.5, "ultracode")
+Atualizado: 2026-10-01 · Por: sessão 2 (Claude Opus 5.5) — seguindo `docs/PROMPT_SESSAO_2.md`
 
 ## RETOMAR AQUI
+### Sessão 2 — progresso (ordem do prompt: A, A2, B, B2, C, D, E, F, G)
+- **A ✔ Rosto v2 (foto real)** — técnica WWE 2K automática: MediaPipe (478 pontos + segmentação) no Chromium headless →
+  render da cabeça-base + MediaPipe no render = correspondência → mínimos quadrados com limites nos modificadores do
+  MPFB (+ distância da câmera: selfie a 0,3 m) → resíduo TPS → UV da foto. Textura **sem extensão** na resolução nativa
+  (`public/assets/characters/marcio_f`, RGB foto tratada + A máscara de pelo). Cabelo curto com entradas e barba
+  (bigode escuro, queixo grisalho) saem da foto; laterais com recorte geométrico (DEC-0020). Métrica no jogo:
+  landmarks **2,2%** da distância interocular (meta ≤ 3%) · SSIM 0,58 (informativo, DEC-0019).
+  Evidência: `npm run capture face` → `face_compare.png`, `face_metrics.json`; QA do Blender em
+  `.agent-tmp/characters/marcio/face_qa_*.png`. Detalhes: `tools/face/README.md`.
+- Próximo: **A2** (controles "poucos botões" + mira no mouse).
+
 **Estado:** M0 ✔ · M1 v1 ✔ (Márcio gerado no Blender) · M2 em andamento (combate jogável, inimigos reais) ·
 M3 v1 ✔ (rosto por projeção da foto) · M5 v1 ✔ (transformação em lobisomem jogável, sem morph targets ainda).
 Jogo publicado: https://isaacbraym.github.io/ProjetoLobo/ (deploy automático a cada push em `main`).
@@ -39,10 +50,7 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
 > **Sessão 2:** o jogo é EXPLORAÇÃO do prédio, não ondas (DEC-0017). Seguir `docs/PROMPT_SESSAO_2.md` (rosto v2 com a foto real `refs/marcio/marcio_face_real.png`,
 > cinemática de abertura, câmera profissional, cinemática de golpes/críticos, animações, otimização + visual).
 
-1. **Rosto v2:** os 5 pontos da foto foram marcados à mão em `data/characters/marcio.json` (`face.landmarks`).
-   Automatizar com MediaPipe (ver `docs/ASSET_PIPELINE.md` §3) e ajustar a forma da cabeça (modificadores MPFB de
-   nariz/olhos/boca/mandíbula). Olhos já usam a foto projetada (feito). **Cabelo ainda é uma calota preta** —
-   melhorar volume, fios e o grisalho das laterais da referência (projetar a foto no cabelo também é uma opção).
+1. ~~Rosto v2~~ feito na sessão 2 (ver acima).
 2. **Lobisomem v2:** morph targets reais na malha do Márcio (Blender: `wolf_body`, `wolf_face`), roupa rasgando
    (dissolve), corrida de quatro (galope autorado), devorar, desmembramento. Pelo hoje é shells simples.
 3. **Combate restante (M2/M4):** (knockdown/levantar e finalizações já existem) agarrão/arremesso (`mx_goalie_throw`),
