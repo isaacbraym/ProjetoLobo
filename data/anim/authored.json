@@ -1,0 +1,36 @@
+{
+  "$comment": "Clipes autorados por pose-chave (src/engine/anim/poseAuthoring.ts). Rotações em ESPAÇO DO PERSONAGEM: Y para cima, frente = +Z, direita = -X. [eixoX, eixoY, eixoZ, graus]. Rotação positiva em X leva o topo para a frente.",
+  "clips": {
+    "hook": {
+      "base": "idleCombat", "baseTime": 0.0, "duration": 0.62,
+      "keys": [
+        { "t": 0.0 },
+        { "t": 0.1, "rot": { "spine_01": [0, 1, 0, 18], "spine_03": [0, 1, 0, 14], "upperarm_l": [0, 0, 1, -25], "lowerarm_l": [0, 1, 0, 20] } },
+        { "t": 0.26, "rot": { "spine_01": [0, 1, 0, -26], "spine_03": [0, 1, 0, -22], "upperarm_l": [0, 0, 1, -62], "lowerarm_l": [0, 1, 0, -70], "Head": [0, 1, 0, 10] }, "pelvis": [0, -0.03, 0.05] },
+        { "t": 0.34, "rot": { "spine_01": [0, 1, 0, -30], "spine_03": [0, 1, 0, -26], "upperarm_l": [0, 0, 1, -64], "lowerarm_l": [0, 1, 0, -82], "Head": [0, 1, 0, 12] }, "pelvis": [0, -0.03, 0.06] },
+        { "t": 0.62 }
+      ]
+    },
+    "uppercut": {
+      "base": "idleCombat", "baseTime": 0.0, "duration": 0.75,
+      "keys": [
+        { "t": 0.0 },
+        { "t": 0.13, "rot": { "spine_01": [1, 0, 0, 14], "spine_02": [0, 1, 0, 20], "upperarm_r": [1, 0, 0, 30], "lowerarm_r": [1, 0, 0, -20] }, "pelvis": [0, -0.12, 0] },
+        { "t": 0.28, "rot": { "spine_01": [1, 0, 0, -14], "spine_02": [0, 1, 0, -28], "upperarm_r": [1, 0, 0, -110], "lowerarm_r": [1, 0, 0, -60], "Head": [1, 0, 0, -12] }, "pelvis": [0, 0.06, 0.08] },
+        { "t": 0.4, "rot": { "spine_01": [1, 0, 0, -16], "spine_02": [0, 1, 0, -30], "upperarm_r": [1, 0, 0, -120], "lowerarm_r": [1, 0, 0, -58], "Head": [1, 0, 0, -14] }, "pelvis": [0, 0.07, 0.09] },
+        { "t": 0.75 }
+      ]
+    },
+    "kick": {
+      "base": "idleCombat", "baseTime": 0.0, "duration": 0.6,
+      "keys": [
+        { "t": 0.0 },
+        { "t": 0.12, "rot": { "thigh_r": [1, 0, 0, -75], "calf_r": [1, 0, 0, 95], "spine_01": [1, 0, 0, -8], "upperarm_l": [0, 0, 1, 15] } },
+        { "t": 0.24, "rot": { "thigh_r": [1, 0, 0, -92], "calf_r": [1, 0, 0, 8], "foot_r": [1, 0, 0, 25], "spine_01": [1, 0, 0, -16], "upperarm_l": [0, 0, 1, 22], "upperarm_r": [0, 0, 1, -18] }, "pelvis": [0, 0.02, 0.1] },
+        { "t": 0.34, "rot": { "thigh_r": [1, 0, 0, -88], "calf_r": [1, 0, 0, 12], "foot_r": [1, 0, 0, 25], "spine_01": [1, 0, 0, -15], "upperarm_l": [0, 0, 1, 20], "upperarm_r": [0, 0, 1, -16] }, "pelvis": [0, 0.02, 0.1] },
+        { "t": 0.44, "rot": { "thigh_r": [1, 0, 0, -60], "calf_r": [1, 0, 0, 90], "spine_01": [1, 0, 0, -6] } },
+        { "t": 0.6 }
+      ]
+    }
+  }
+}

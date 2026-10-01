@@ -12,3 +12,6 @@ Formato: `DEC-xxxx · data · status · decisão · motivo · origem`. Status: P
 | DEC-0006 | 2026-09-30 | APROVADA | Clóvis: sorriso arregalado permanente, bengala (principal), perna-cobra (secundária) | Indicação do usuário | Resposta do usuário |
 | DEC-0007 | 2026-09-30 | PROPOSTA | Esqueleto único MPFB2 `game_engine`; lobisomem como morph targets da malha do Márcio | Todas as animações servem a todos; transformação real por morph | `ARCHITECTURE.md`, `ASSET_PIPELINE.md` |
 | DEC-0008 | 2026-09-30 | PROPOSTA | Áudio da transformação com ducking −18 dB + passa-baixa na música | Pedido "abafar bem a música" | Mensagem do usuário |
+| DEC-0009 | 2026-10-01 | PROPOSTA | Esqueleto de runtime = esqueleto UE do Quaternius UAL (65 ossos, `Head` maiúsculo). Corpos MPFB2 são riggados nele ajustando só as posições das juntas (rotações de repouso preservadas) → clipes UAL servem sem retarget; Mixamo/CMU retargetados offline para ele | Mais rápido e robusto que retargetar tudo para o `game_engine` do MPFB2 | sessão 1 |
+| DEC-0010 | 2026-10-01 | APROVADA | Push/deploy automático autorizado pelo usuário | Pedido do usuário | mensagem do usuário |
+| DEC-0011 | 2026-10-01 | APROVADA | Portas: dev 5180, preview 4180 (5173/4173 são do projeto Karimbolandia) | Conflito de porta | sessão 1 |

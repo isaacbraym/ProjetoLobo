@@ -1,0 +1,8 @@
+{
+  "$comment": "Arquétipos de inimigo (docs/GAME_DESIGN.md §6). attackSet referencia data/combat/attacks.json. Visual provisório (manequim) até o gerador modular do M4.",
+  "archetypes": {
+    "thug":  { "name": "Capanga", "tier": 1, "hp": 60,  "poise": 20, "speed": 3.0, "walk": 1.4, "aggression": 0.5, "attackSet": ["e_jab", "e_cross"], "tokenCost": 1, "scale": 1.0,  "width": 1.0,  "colors": { "main": "#5a1e1e", "joints": "#1c1a1f" }, "bar": "#ff4d5e" },
+    "fast":  { "name": "Ligeiro", "tier": 1, "hp": 45,  "poise": 10, "speed": 4.2, "walk": 1.8, "aggression": 0.8, "attackSet": ["e_jab", "e_jab", "e_cross"], "tokenCost": 1, "scale": 0.96, "width": 0.92, "colors": { "main": "#26324a", "joints": "#111" }, "bar": "#4db8ff" },
+    "heavy": { "name": "Brutamontes", "tier": 2, "hp": 180, "poise": 80, "speed": 2.2, "walk": 1.1, "aggression": 0.6, "attackSet": ["e_slam", "e_cross"], "tokenCost": 2, "scale": 1.12, "width": 1.28, "colors": { "main": "#2d2d2d", "joints": "#5a3a1a" }, "bar": "#ffb02e" }
+  }
+}

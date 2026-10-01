@@ -1,0 +1,46 @@
+{
+  "name": "projeto-lobo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Márcio — jogo 3D de ação no navegador (Projeto Lobo)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "validate:data": "tsx tools/pipeline/validate-data.ts",
+    "lint:imports": "tsx tools/pipeline/lint-imports.ts",
+    "gate:hash": "tsx tools/pipeline/gate-hash.ts",
+    "assets:check": "tsx tools/pipeline/assets-check.ts",
+    "verify:quick": "tsx tools/verify/verify.ts --quick",
+    "verify": "tsx tools/verify/verify.ts",
+    "capture": "tsx tools/verify/capture.ts",
+    "perf": "tsx tools/verify/perf.ts",
+    "deploy:check": "tsx tools/pipeline/deploy-check.ts"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "0.21.0",
+    "postprocessing": "6.39.5",
+    "three": "0.186.1",
+    "three-mesh-bvh": "0.9.15",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.3",
+    "@types/pngjs": "6.0.5",
+    "@types/three": "0.186.0",
+    "meshoptimizer": "1.3.0",
+    "pixelmatch": "7.2.0",
+    "pngjs": "7.0.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.1",
+    "vitest": "5.0.3"
+  }
+}

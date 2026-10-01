@@ -7,7 +7,7 @@
 
 ## 0. Autorização de push/deploy (o usuário preenche antes de enviar)
 ```
-AUTORIZACAO_PUSH_DEPLOY = NAO
+AUTORIZACAO_PUSH_DEPLOY = SIM
 ```
 - `NAO` (padrão): commits locais à vontade; **nunca** `git push` nem deploy. Ao fim de cada milestone, deixe pronto
   e pergunte no `PENDENCIAS.md` + mensagem final.
