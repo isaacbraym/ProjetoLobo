@@ -8,7 +8,7 @@ import { damp, dampAngle } from '../../core/math';
 import { rngs } from '../../core/rng';
 import { events } from '../../core/events';
 
-export type EState = 'idle' | 'approach' | 'windup' | 'attack' | 'recover' | 'hit' | 'stagger' | 'dead';
+export type EState = 'idle' | 'approach' | 'windup' | 'attack' | 'recover' | 'hit' | 'stagger' | 'down' | 'getup' | 'dead';
 
 /**
  * Inimigo genérico dirigido por arquétipo (dados). Decide a 10 Hz; move a 60 Hz.
@@ -50,7 +50,7 @@ export class Enemy implements Fighter {
     return this.actor.alive;
   }
   get staggered(): boolean {
-    return this.state === 'stagger';
+    return this.state === 'stagger' || this.state === 'down';
   }
   get attacking(): boolean {
     return this.state === 'windup' || this.state === 'attack';
@@ -87,7 +87,7 @@ export class Enemy implements Fighter {
         this.telegraphAmount = Math.min(1, this.telegraphAmount + dt * 6);
         if (this.telegraph <= 0) {
           const act = a.model.animator;
-          act.play(this.attack!.clip, { speed: this.attack!.speed, start: this.attack!.start, end: this.attack!.end, fade: 0.05 });
+          act.setShotSpeed(this.attack!.speed);
           this.setState('attack');
         }
         break;
@@ -123,7 +123,31 @@ export class Enemy implements Fighter {
         this.telegraphAmount = 0;
         a.move(0, 0, dt);
         a.model.animator.speed = 0;
+        a.model.animator.strafe = 0;
         if (this.stun <= 0) this.setState('approach');
+        break;
+      case 'down':
+        // caído: escorrega com o impulso, fica no chão um tempo e levanta
+        this.stun -= dt;
+        a.move(0, 0, dt);
+        a.model.animator.speed = 0;
+        if (this.stun <= 0) {
+          const anim = a.model.animator;
+          if (anim.has('getup')) {
+            // Getting Up do Mixamo: o levantar de fato vai de ~2,2 s a ~6,6 s do clipe
+            anim.play('getup', { speed: 1.6, start: 2.2, end: 6.6, fade: 0.3 });
+            this.stun = (6.6 - 2.2) / 1.6 - 0.1;
+            this.setState('getup');
+          } else this.setState('approach');
+        }
+        break;
+      case 'getup':
+        this.stun -= dt;
+        a.move(0, 0, dt);
+        if (this.stun <= 0) {
+          a.model.animator.stopShot(0.3);
+          this.setState('approach');
+        }
         break;
     }
   }
@@ -155,7 +179,7 @@ export class Enemy implements Fighter {
       const yawTo = a.yawTo(p);
       tx = Math.cos(yawTo) * this.strafeDir;
       tz = -Math.sin(yawTo) * this.strafeDir;
-      speed = this.def.walk * 0.45;
+      speed = this.def.walk * 0.9;
     }
     this.moveSpeed = damp(this.moveSpeed, speed, 0.1, dt);
     a.move(tx * this.moveSpeed * dt, tz * this.moveSpeed * dt, dt);
@@ -163,6 +187,9 @@ export class Enemy implements Fighter {
     const faceYaw = dist < 7 ? a.yawTo(p) : Math.atan2(tx, tz);
     a.yaw = dampAngle(a.yaw, faceYaw, 0.08, dt);
     a.model.animator.speed = this.moveSpeed;
+    // componente lateral do movimento em relação à frente → strafe
+    const lat = tx * Math.cos(a.yaw) - tz * Math.sin(a.yaw);
+    a.model.animator.strafe = dist < 7 ? -lat : 0;
   }
 
   private beginAttack(): void {
@@ -198,11 +225,19 @@ export class Enemy implements Fighter {
     const react = info.attack.react;
     const heavyReact = react === 'knockdown' || react === 'launch';
     // golpe pesado ou poise zerado → stagger; golpe leve em Heavy com poise sobrando não interrompe ataque
-    if (a.poise <= 0 || heavyReact) {
+    if (heavyReact && a.model.animator.has('knockdown')) {
+      // derrubado de verdade: cai, fica no chão, levanta (Mixamo Knocked Down / Getting Up)
+      a.poise = this.def.poise;
+      this.stun = 1.6;
+      a.push.set(info.dirX * kb * 3.4, 0, info.dirZ * kb * 3.4);
+      a.model.animator.play('knockdown', { speed: 1.3, start: 0.2, end: 2.4, fade: 0.06, hold: true });
+      this.cancelAttack();
+      this.setState('down');
+    } else if (a.poise <= 0 || heavyReact) {
       a.poise = this.def.poise;
       this.stun = heavyReact ? 0.95 : 0.75;
       a.push.set(info.dirX * kb * 3.2, 0, info.dirZ * kb * 3.2);
-      a.model.animator.play('hitChest', { speed: 0.55, fade: 0.04 });
+      a.model.animator.play('hitBig', { speed: 1.25, start: 0, end: 1.15, fade: 0.06 });
       this.cancelAttack();
       this.setState('stagger');
     } else if (this.state === 'attack' && this.def.poise >= 60 && !info.heavy) {
@@ -211,7 +246,7 @@ export class Enemy implements Fighter {
     } else {
       this.stun = 0.34;
       a.push.set(info.dirX * kb * 2.4, 0, info.dirZ * kb * 2.4);
-      a.model.animator.play(react === 'head' ? 'hitHead' : 'hitChest', { speed: 1.05, fade: 0.03 });
+      a.model.animator.play(react === 'head' ? 'hitHead' : 'hitChest', { speed: 1.15, start: 0.05, end: 0.75, fade: 0.04, fadeOut: 0.25 });
       this.cancelAttack();
       this.setState('hit');
     }

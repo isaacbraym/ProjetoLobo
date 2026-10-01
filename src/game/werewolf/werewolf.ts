@@ -72,7 +72,9 @@ export class WerewolfSystem {
     this.meter = 0;
     this.player.setCine(true);
     this.player.actor.invulnerable = 99;
-    this.player.actor.model.animator.play('idleCombat', { fade: 0.1, hold: false });
+    const anim = this.player.actor.model.animator;
+    if (anim.has('wolfRoar')) anim.play('wolfRoar', { speed: 1.0, start: 0.2, fade: 0.15 });
+    else anim.play('idleCombat', { fade: 0.1, hold: false });
     this.loop.timeScale = T.worldTimeScale;
     events.emit('WolfStart', {});
     return true;
@@ -114,6 +116,7 @@ export class WerewolfSystem {
           this.roar();
         }
         if (t >= T.controlAt) {
+          this.player.actor.model.animator.setLocoSet({ idle: 'wolfIdle', walk: 'wolfWalk', jog: 'wolfRun', sprint: 'wolfRun' });
           this.state = 'wolf';
           this.timer = wolfJson.duration.base;
           this.camera.cine = null;
@@ -138,6 +141,7 @@ export class WerewolfSystem {
         this.visual.amount = Math.max(0, 1 - this.t / wolfJson.revert.total);
         if (Math.random() < 0.4) this.particles.dust(p.pos.x, 1.0, p.pos.z, 0.3);
         if (this.t >= wolfJson.revert.total) {
+          this.player.actor.model.animator.setLocoSet({ idle: 'idleCombat', walk: 'walk', jog: 'jog', sprint: 'sprint' });
           this.state = 'human';
           this.visual.amount = 0;
           events.emit('WolfEnd', {});

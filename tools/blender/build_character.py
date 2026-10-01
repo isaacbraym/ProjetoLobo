@@ -686,6 +686,14 @@ def main():
     report['out'] = str(OUT_GLB.relative_to(ROOT))
     report['outHash'] = sha256(OUT_GLB)
 
+    if A.get('anims') and A.get('mixamo'):
+        # retarget do Mixamo na MESMA sessão (repouso idêntico ao do personagem exportado)
+        from retarget_mixamo import retarget_all
+        only = set(A['only'].split('|')) if isinstance(A.get('only'), str) else None
+        mx_meta = retarget_all(arm, ROOT / 'assets-src/vendor/mixamo', only=only)
+        meta_path = ROOT / 'public/assets/anims/mixamo_meta.json'
+        meta_path.write_text(json.dumps(mx_meta, indent=1, ensure_ascii=False), encoding='utf-8')
+        report['mixamo'] = {'clips': len(mx_meta), 'meta': str(meta_path.relative_to(ROOT))}
     if A.get('anims'):
         out_anims = ROOT / 'public/assets/anims/humanoid_anims.glb'
         # objeto vazio só com o esqueleto + todas as ações
@@ -734,6 +742,22 @@ def main():
         cam_data.ortho_scale = 2.1
         scn.render.filepath = str(QA_DIR / 'pose.png')
         bpy.ops.render.render(write_still=True)
+    # folhas de conferência de clipes: --qa "mx_boxing|mx_hook" (4 quadros por clipe, vista 3/4)
+    if isinstance(A.get('qa'), str):
+        cam.location = (2.4, -2.4, 0.95)
+        cam.rotation_euler = (math.radians(90), 0, math.radians(45))
+        cam_data.ortho_scale = 2.4
+        scn.render.resolution_x, scn.render.resolution_y = 360, 480
+        for cname in A['qa'].split('|'):
+            act = bpy.data.actions.get(cname)
+            if not act:
+                continue
+            arm.animation_data.action = act
+            fa, fb = int(act.frame_range[0]), int(act.frame_range[1])
+            for k in range(4):
+                scn.frame_set(int(fa + (fb - fa) * k / 3))
+                scn.render.filepath = str(QA_DIR / 'clips' / f'{cname}_{k}.png')
+                bpy.ops.render.render(write_still=True)
     report['qa'] = str(QA_DIR.relative_to(ROOT))
     write_report(QA_DIR / 'report.json', report)
     write_report(ROOT / 'assets-src/characters' / f"{R['id']}.report.json", report)

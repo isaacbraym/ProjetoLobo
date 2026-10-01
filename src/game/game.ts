@@ -122,7 +122,14 @@ export class Game {
       }),
     );
     this.libMannequin.addFromGltf(gltf);
-    this.lib.addFromGltf(anims);
+    let meta: Record<string, import('../engine/anim/animLibrary').ClipMeta> | undefined;
+    try {
+      const res = await fetch(assetUrl('assets/anims/mixamo_meta.json'));
+      if (res.ok) meta = await res.json();
+    } catch {
+      /* sem metadado: usa velocidades padrão */
+    }
+    this.lib.addFromGltf(anims, meta);
     // golpes autorados por pose-chave (gancho, uppercut, chute) — um conjunto por esqueleto
     const authored = (authoredJson as { clips: Record<string, AuthoredClipDef> }).clips;
     const refM = skeletonClone(gltf.scene);

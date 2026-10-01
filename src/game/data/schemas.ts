@@ -32,6 +32,9 @@ export const AttacksFileSchema = z
       heavy: z.array(z.array(z.string()).min(1)).min(1),
       kick: z.array(z.array(z.string()).min(1)).min(1),
       lightToHeavy: z.string(),
+      afterDodgeKick: z.string().optional(),
+      wolfLight: z.array(z.array(z.string()).min(1)).optional(),
+      wolfHeavy: z.array(z.array(z.string()).min(1)).optional(),
       comboResetSeconds: z.number().positive(),
     }),
   })
@@ -40,7 +43,8 @@ export const AttacksFileSchema = z
       if (!(a.start < a.hitAt && a.hitAt <= a.cancelAt && a.cancelAt <= a.end))
         ctx.addIssue({ code: 'custom', message: `${id}: precisa start < hitAt <= cancelAt <= end` });
     }
-    const all = [...f.combos.light.flat(), ...f.combos.heavy.flat(), ...f.combos.kick.flat(), f.combos.lightToHeavy];
+    const all = [...f.combos.light.flat(), ...f.combos.heavy.flat(), ...f.combos.kick.flat(), f.combos.lightToHeavy,
+      ...(f.combos.wolfLight ?? []).flat(), ...(f.combos.wolfHeavy ?? []).flat(), ...(f.combos.afterDodgeKick ? [f.combos.afterDodgeKick] : [])];
     for (const id of all) if (!f.attacks[id]) ctx.addIssue({ code: 'custom', message: `combo referencia ataque inexistente: ${id}` });
   });
 export type AttacksFile = z.infer<typeof AttacksFileSchema>;

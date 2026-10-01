@@ -11,7 +11,8 @@
       "aggression": 0.5,
       "attackSet": [
         "e_jab",
-        "e_cross"
+        "e_cross",
+        "e_jabcross"
       ],
       "tokenCost": 1,
       "scale": 1.0,
@@ -55,9 +56,9 @@
       "walk": 1.8,
       "aggression": 0.8,
       "attackSet": [
+        "e_jabcross",
         "e_jab",
-        "e_jab",
-        "e_cross"
+        "e_kick"
       ],
       "tokenCost": 1,
       "scale": 0.96,
@@ -98,7 +99,8 @@
       "aggression": 0.6,
       "attackSet": [
         "e_slam",
-        "e_cross"
+        "e_cross",
+        "e_slam"
       ],
       "tokenCost": 2,
       "scale": 1.12,

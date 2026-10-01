@@ -1,0 +1,7020 @@
+{
+ "mx_body_block": {
+  "file": "Body Block.fbx",
+  "frames": 104,
+  "duration": 4.292,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.542,
+    "reach": 0.456
+   },
+   "hand_r": {
+    "t": 1.25,
+    "reach": 0.341
+   },
+   "foot_l": {
+    "t": 2.958,
+    "reach": 0.278
+   },
+   "foot_r": {
+    "t": 2.958,
+    "reach": -0.223
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_body_jab_cross": {
+  "file": "Body Jab Cross.fbx",
+  "frames": 64,
+  "duration": 2.625,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.588
+   },
+   "hand_r": {
+    "t": 0.833,
+    "reach": 0.5
+   },
+   "foot_l": {
+    "t": 0.458,
+    "reach": 0.408
+   },
+   "foot_r": {
+    "t": 1.667,
+    "reach": -0.155
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": true
+ },
+ "mx_boxing_1": {
+  "file": "Boxing (1).fbx",
+  "frames": 64,
+  "duration": 2.625,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.482
+   },
+   "hand_r": {
+    "t": 0.833,
+    "reach": 0.512
+   },
+   "foot_l": {
+    "t": 0.458,
+    "reach": 0.401
+   },
+   "foot_r": {
+    "t": 1.667,
+    "reach": -0.158
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_2": {
+  "file": "Boxing (2).fbx",
+  "frames": 67,
+  "duration": 2.75,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.0,
+    "reach": 0.301
+   },
+   "hand_r": {
+    "t": 0.583,
+    "reach": 0.226
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.312
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": -0.263
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_3": {
+  "file": "Boxing (3).fbx",
+  "frames": 75,
+  "duration": 3.083,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.125,
+    "reach": 0.324
+   },
+   "hand_r": {
+    "t": 1.5,
+    "reach": 0.251
+   },
+   "foot_l": {
+    "t": 0.667,
+    "reach": 0.515
+   },
+   "foot_r": {
+    "t": 1.208,
+    "reach": 0.487
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_4": {
+  "file": "Boxing (4).fbx",
+  "frames": 67,
+  "duration": 2.75,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.282
+   },
+   "hand_r": {
+    "t": 0.875,
+    "reach": 0.427
+   },
+   "foot_l": {
+    "t": 1.542,
+    "reach": 0.449
+   },
+   "foot_r": {
+    "t": 1.792,
+    "reach": -0.157
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_5": {
+  "file": "Boxing (5).fbx",
+  "frames": 66,
+  "duration": 2.708,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.31
+   },
+   "hand_r": {
+    "t": 0.875,
+    "reach": 0.417
+   },
+   "foot_l": {
+    "t": 1.583,
+    "reach": 0.404
+   },
+   "foot_r": {
+    "t": 2.417,
+    "reach": -0.217
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_6": {
+  "file": "Boxing (6).fbx",
+  "frames": 67,
+  "duration": 2.75,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.875,
+    "reach": 0.418
+   },
+   "hand_r": {
+    "t": 0.458,
+    "reach": 0.281
+   },
+   "foot_l": {
+    "t": 1.625,
+    "reach": 0.456
+   },
+   "foot_r": {
+    "t": 0.042,
+    "reach": -0.202
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_7": {
+  "file": "Boxing (7).fbx",
+  "frames": 61,
+  "duration": 2.5,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.583,
+    "reach": 0.478
+   },
+   "hand_r": {
+    "t": 2.167,
+    "reach": 0.206
+   },
+   "foot_l": {
+    "t": 1.333,
+    "reach": 0.5
+   },
+   "foot_r": {
+    "t": 2.375,
+    "reach": -0.189
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_8": {
+  "file": "Boxing (8).fbx",
+  "frames": 65,
+  "duration": 2.667,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.208,
+    "reach": 0.286
+   },
+   "hand_r": {
+    "t": 0.833,
+    "reach": 0.6
+   },
+   "foot_l": {
+    "t": 1.542,
+    "reach": 0.473
+   },
+   "foot_r": {
+    "t": 1.792,
+    "reach": -0.209
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing_9": {
+  "file": "Boxing (9).fbx",
+  "frames": 128,
+  "duration": 5.292,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.083,
+    "reach": 0.347
+   },
+   "hand_r": {
+    "t": 0.958,
+    "reach": 0.299
+   },
+   "foot_l": {
+    "t": 4.583,
+    "reach": 0.297
+   },
+   "foot_r": {
+    "t": 0.125,
+    "reach": -0.308
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_boxing": {
+  "file": "Boxing.fbx",
+  "frames": 53,
+  "duration": 2.167,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.542,
+    "reach": 0.657
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.175
+   },
+   "foot_l": {
+    "t": 1.042,
+    "reach": 0.508
+   },
+   "foot_r": {
+    "t": 1.875,
+    "reach": -0.29
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_brutal_assassination": {
+  "file": "Brutal Assassination.fbx",
+  "frames": 149,
+  "duration": 6.167,
+  "loop": false,
+  "speed": 0.213,
+  "travel": 1.316,
+  "hit": {
+   "hand_l": {
+    "t": 2.958,
+    "reach": 0.609
+   },
+   "hand_r": {
+    "t": 3.5,
+    "reach": 0.526
+   },
+   "foot_l": {
+    "t": 1.167,
+    "reach": 0.517
+   },
+   "foot_r": {
+    "t": 1.625,
+    "reach": 0.856
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_crawl_backwards": {
+  "file": "Crawl Backwards.fbx",
+  "frames": 120,
+  "duration": 4.958,
+  "loop": true,
+  "speed": 0.567,
+  "travel": 2.813,
+  "hit": {
+   "hand_l": {
+    "t": 3.708,
+    "reach": 0.513
+   },
+   "hand_r": {
+    "t": 3.417,
+    "reach": 0.079
+   },
+   "foot_l": {
+    "t": 2.167,
+    "reach": 1.0
+   },
+   "foot_r": {
+    "t": 1.833,
+    "reach": 1.003
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_crawling_backwards": {
+  "file": "Crawling Backwards.fbx",
+  "frames": 63,
+  "duration": 2.583,
+  "loop": true,
+  "speed": 0.572,
+  "travel": 1.477,
+  "hit": {
+   "hand_l": {
+    "t": 1.458,
+    "reach": 0.463
+   },
+   "hand_r": {
+    "t": 1.083,
+    "reach": 0.557
+   },
+   "foot_l": {
+    "t": 1.083,
+    "reach": -0.521
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": -0.618
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_crawling": {
+  "file": "Crawling.fbx",
+  "frames": 55,
+  "duration": 2.25,
+  "loop": true,
+  "speed": 0.365,
+  "travel": 0.821,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.47
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.515
+   },
+   "foot_l": {
+    "t": 0.042,
+    "reach": -0.36
+   },
+   "foot_r": {
+    "t": 1.125,
+    "reach": -0.305
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.131,
+  "hadMesh": false
+ },
+ "mx_cross_punch_1": {
+  "file": "Cross Punch (1).fbx",
+  "frames": 61,
+  "duration": 2.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.875,
+    "reach": 0.424
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.602
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.287
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": -0.241
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_cross_punch": {
+  "file": "Cross Punch.fbx",
+  "frames": 61,
+  "duration": 2.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.875,
+    "reach": 0.424
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.602
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.287
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": -0.241
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_crouch_to_stand": {
+  "file": "Crouch To Stand.fbx",
+  "frames": 101,
+  "duration": 4.167,
+  "loop": false,
+  "speed": 0.073,
+  "travel": 0.305,
+  "hit": {
+   "hand_l": {
+    "t": 1.25,
+    "reach": 0.271
+   },
+   "hand_r": {
+    "t": 1.25,
+    "reach": 0.211
+   },
+   "foot_l": {
+    "t": 1.083,
+    "reach": 0.183
+   },
+   "foot_r": {
+    "t": 2.792,
+    "reach": -0.06
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.313,
+  "hadMesh": false
+ },
+ "mx_crouch_turn_to_stand": {
+  "file": "Crouch Turn To Stand.fbx",
+  "frames": 26,
+  "duration": 1.042,
+  "loop": false,
+  "speed": 0.33,
+  "travel": 0.343,
+  "hit": {
+   "hand_l": {
+    "t": 0.167,
+    "reach": 0.156
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": 0.352
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": -0.085
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": 0.361
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.454,
+  "hadMesh": false
+ },
+ "mx_crouched_to_sprinting": {
+  "file": "Crouched To Sprinting.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 2.077,
+  "travel": 1.298,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.388
+   },
+   "hand_r": {
+    "t": 0.625,
+    "reach": 0.351
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": -0.161
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.213
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.608,
+  "hadMesh": true
+ },
+ "mx_crouching": {
+  "file": "Crouching.fbx",
+  "frames": 123,
+  "duration": 5.083,
+  "loop": false,
+  "speed": 0.014,
+  "travel": 0.07,
+  "hit": {
+   "hand_l": {
+    "t": 1.833,
+    "reach": 0.226
+   },
+   "hand_r": {
+    "t": 4.5,
+    "reach": 0.33
+   },
+   "foot_l": {
+    "t": 2.708,
+    "reach": 0.39
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.051
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.481,
+  "hadMesh": false
+ },
+ "mx_crying": {
+  "file": "Crying.fbx",
+  "frames": 189,
+  "duration": 7.833,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.667,
+    "reach": 0.196
+   },
+   "hand_r": {
+    "t": 0.583,
+    "reach": 0.259
+   },
+   "foot_l": {
+    "t": 0.542,
+    "reach": 0.068
+   },
+   "foot_r": {
+    "t": 6.667,
+    "reach": -0.042
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_dodging_1": {
+  "file": "Dodging (1).fbx",
+  "frames": 50,
+  "duration": 2.042,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.327
+   },
+   "hand_r": {
+    "t": 0.625,
+    "reach": 0.167
+   },
+   "foot_l": {
+    "t": 0.042,
+    "reach": 0.159
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.008
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_dodging": {
+  "file": "Dodging.fbx",
+  "frames": 71,
+  "duration": 2.917,
+  "loop": false,
+  "speed": 0.28,
+  "travel": 0.816,
+  "hit": {
+   "hand_l": {
+    "t": 0.708,
+    "reach": 0.357
+   },
+   "hand_r": {
+    "t": 2.083,
+    "reach": 0.347
+   },
+   "foot_l": {
+    "t": 1.833,
+    "reach": 0.3
+   },
+   "foot_r": {
+    "t": 0.292,
+    "reach": 0.249
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_draw_a_great_sword_1": {
+  "file": "draw a great sword 1.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 0.158,
+  "travel": 0.099,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.288
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.065
+   },
+   "foot_l": {
+    "t": 0.083,
+    "reach": -0.002
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.006
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.35,
+  "hadMesh": false
+ },
+ "mx_draw_a_great_sword_2": {
+  "file": "draw a great sword 2.fbx",
+  "frames": 25,
+  "duration": 1.0,
+  "loop": false,
+  "speed": 0.117,
+  "travel": 0.117,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.495
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": 0.492
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.166
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.01
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.52,
+  "hadMesh": false
+ },
+ "mx_dying": {
+  "file": "Dying.fbx",
+  "frames": 133,
+  "duration": 5.5,
+  "loop": false,
+  "speed": 0.056,
+  "travel": 0.31,
+  "hit": {
+   "hand_l": {
+    "t": 3.208,
+    "reach": 0.636
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.468
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.072
+   },
+   "foot_r": {
+    "t": 1.125,
+    "reach": 0.412
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.307,
+  "hadMesh": false
+ },
+ "mx_falling_back_death_1": {
+  "file": "Falling Back Death (1).fbx",
+  "frames": 67,
+  "duration": 2.75,
+  "loop": false,
+  "speed": 0.213,
+  "travel": 0.586,
+  "hit": {
+   "hand_l": {
+    "t": 0.125,
+    "reach": 0.412
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.456
+   },
+   "foot_l": {
+    "t": 1.542,
+    "reach": 0.828
+   },
+   "foot_r": {
+    "t": 1.0,
+    "reach": 0.842
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.538,
+  "hadMesh": false
+ },
+ "mx_falling_back_death": {
+  "file": "Falling Back Death.fbx",
+  "frames": 79,
+  "duration": 3.25,
+  "loop": false,
+  "speed": 0.275,
+  "travel": 0.893,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.341
+   },
+   "hand_r": {
+    "t": 0.917,
+    "reach": 0.482
+   },
+   "foot_l": {
+    "t": 1.208,
+    "reach": 0.918
+   },
+   "foot_r": {
+    "t": 2.292,
+    "reach": 0.794
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.499,
+  "hadMesh": false
+ },
+ "mx_falling": {
+  "file": "Falling.fbx",
+  "frames": 204,
+  "duration": 8.458,
+  "loop": false,
+  "speed": 0.268,
+  "travel": 2.266,
+  "hit": {
+   "hand_l": {
+    "t": 6.625,
+    "reach": 0.159
+   },
+   "hand_r": {
+    "t": 7.083,
+    "reach": 0.244
+   },
+   "foot_l": {
+    "t": 3.833,
+    "reach": 0.878
+   },
+   "foot_r": {
+    "t": 3.583,
+    "reach": 0.979
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.332,
+  "hadMesh": false
+ },
+ "mx_fighting_idle": {
+  "file": "Fighting Idle.fbx",
+  "frames": 100,
+  "duration": 4.125,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.292,
+    "reach": 0.424
+   },
+   "hand_r": {
+    "t": 0.583,
+    "reach": 0.103
+   },
+   "foot_l": {
+    "t": 1.042,
+    "reach": 0.249
+   },
+   "foot_r": {
+    "t": 1.292,
+    "reach": -0.16
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_flying_kick": {
+  "file": "Flying Kick.fbx",
+  "frames": 46,
+  "duration": 1.875,
+  "loop": false,
+  "speed": 1.053,
+  "travel": 1.975,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.561
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.297
+   },
+   "foot_l": {
+    "t": 0.667,
+    "reach": 1.002
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.307
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.471,
+  "hadMesh": false
+ },
+ "mx_getting_up_1": {
+  "file": "Getting Up (1).fbx",
+  "frames": 251,
+  "duration": 10.417,
+  "loop": false,
+  "speed": 0.065,
+  "travel": 0.675,
+  "hit": {
+   "hand_l": {
+    "t": 6.542,
+    "reach": 0.58
+   },
+   "hand_r": {
+    "t": 6.875,
+    "reach": 0.266
+   },
+   "foot_l": {
+    "t": 0.375,
+    "reach": 1.035
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": 0.75
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.943,
+  "hadMesh": false
+ },
+ "mx_getting_up": {
+  "file": "Getting Up.fbx",
+  "frames": 259,
+  "duration": 10.75,
+  "loop": false,
+  "speed": 0.026,
+  "travel": 0.281,
+  "hit": {
+   "hand_l": {
+    "t": 6.75,
+    "reach": 0.513
+   },
+   "hand_r": {
+    "t": 6.917,
+    "reach": 0.369
+   },
+   "foot_l": {
+    "t": 7.417,
+    "reach": 0.382
+   },
+   "foot_r": {
+    "t": 5.375,
+    "reach": -0.199
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.833,
+  "hadMesh": false
+ },
+ "mx_goalie_throw": {
+  "file": "Goalie Throw.fbx",
+  "frames": 116,
+  "duration": 4.792,
+  "loop": false,
+  "speed": 0.225,
+  "travel": 1.076,
+  "hit": {
+   "hand_l": {
+    "t": 1.792,
+    "reach": 0.466
+   },
+   "hand_r": {
+    "t": 2.125,
+    "reach": 0.547
+   },
+   "foot_l": {
+    "t": 1.625,
+    "reach": 0.604
+   },
+   "foot_r": {
+    "t": 1.375,
+    "reach": 0.086
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.233,
+  "hadMesh": false
+ },
+ "mx_goofy_running": {
+  "file": "Goofy Running.fbx",
+  "frames": 20,
+  "duration": 0.792,
+  "loop": true,
+  "speed": 1.285,
+  "travel": 1.017,
+  "hit": {
+   "hand_l": {
+    "t": 0.125,
+    "reach": 0.185
+   },
+   "hand_r": {
+    "t": 0.375,
+    "reach": 0.224
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.06
+   },
+   "foot_r": {
+    "t": 0.167,
+    "reach": 0.08
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.013,
+  "hadMesh": false
+ },
+ "mx_great_sword_180_turn_2": {
+  "file": "great sword 180 turn (2).fbx",
+  "frames": 18,
+  "duration": 0.708,
+  "loop": false,
+  "speed": 0.303,
+  "travel": 0.215,
+  "hit": {
+   "hand_l": {
+    "t": 0.042,
+    "reach": 0.318
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.385
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.636
+   },
+   "foot_r": {
+    "t": 0.333,
+    "reach": 0.166
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.078,
+  "hadMesh": false
+ },
+ "mx_great_sword_180_turn": {
+  "file": "great sword 180 turn.fbx",
+  "frames": 25,
+  "duration": 1.0,
+  "loop": false,
+  "speed": 0.022,
+  "travel": 0.022,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.22
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.315
+   },
+   "foot_l": {
+    "t": 0.792,
+    "reach": 0.391
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": 0.01
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.063,
+  "hadMesh": false
+ },
+ "mx_great_sword_attack": {
+  "file": "great sword attack.fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.667,
+    "reach": 0.509
+   },
+   "hand_r": {
+    "t": 0.667,
+    "reach": 0.45
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.153
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": -0.167
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_blocking_2": {
+  "file": "great sword blocking (2).fbx",
+  "frames": 30,
+  "duration": 1.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.281
+   },
+   "hand_r": {
+    "t": 0.25,
+    "reach": 0.303
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.13
+   },
+   "foot_r": {
+    "t": 0.292,
+    "reach": -0.109
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_blocking_3": {
+  "file": "great sword blocking (3).fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 0.146,
+  "travel": 0.092,
+  "hit": {
+   "hand_l": {
+    "t": 0.208,
+    "reach": 0.289
+   },
+   "hand_r": {
+    "t": 0.25,
+    "reach": 0.374
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.134
+   },
+   "foot_r": {
+    "t": 0.167,
+    "reach": -0.107
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.36,
+  "hadMesh": false
+ },
+ "mx_great_sword_blocking": {
+  "file": "great sword blocking.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 0.147,
+  "travel": 0.092,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.392
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": 0.419
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.13
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.111
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.36,
+  "hadMesh": false
+ },
+ "mx_great_sword_casting": {
+  "file": "great sword casting.fbx",
+  "frames": 145,
+  "duration": 6.0,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.792,
+    "reach": 0.65
+   },
+   "hand_r": {
+    "t": 2.833,
+    "reach": 0.594
+   },
+   "foot_l": {
+    "t": 5.042,
+    "reach": 0.356
+   },
+   "foot_r": {
+    "t": 5.667,
+    "reach": -0.191
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching_2": {
+  "file": "great sword crouching (2).fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": false,
+  "speed": 0.401,
+  "travel": 0.351,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.337
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.363
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.159
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.413,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching_3": {
+  "file": "great sword crouching (3).fbx",
+  "frames": 56,
+  "duration": 2.292,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.042,
+    "reach": 0.272
+   },
+   "hand_r": {
+    "t": 2.083,
+    "reach": 0.264
+   },
+   "foot_l": {
+    "t": 1.333,
+    "reach": 0.446
+   },
+   "foot_r": {
+    "t": 1.292,
+    "reach": -0.145
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching_4": {
+  "file": "great sword crouching (4).fbx",
+  "frames": 12,
+  "duration": 0.458,
+  "loop": false,
+  "speed": 0.166,
+  "travel": 0.076,
+  "hit": {
+   "hand_l": {
+    "t": 0.167,
+    "reach": 0.3
+   },
+   "hand_r": {
+    "t": 0.208,
+    "reach": 0.318
+   },
+   "foot_l": {
+    "t": 0.458,
+    "reach": 0.553
+   },
+   "foot_r": {
+    "t": 0.458,
+    "reach": -0.083
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.258,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching_5": {
+  "file": "great sword crouching (5).fbx",
+  "frames": 43,
+  "duration": 1.75,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.292,
+    "reach": 0.22
+   },
+   "hand_r": {
+    "t": 1.333,
+    "reach": 0.29
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.553
+   },
+   "foot_r": {
+    "t": 0.042,
+    "reach": -0.083
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching_6": {
+  "file": "great sword crouching (6).fbx",
+  "frames": 15,
+  "duration": 0.583,
+  "loop": false,
+  "speed": 0.131,
+  "travel": 0.076,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.282
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.287
+   },
+   "foot_l": {
+    "t": 0.083,
+    "reach": 0.557
+   },
+   "foot_r": {
+    "t": 0.083,
+    "reach": -0.08
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.258,
+  "hadMesh": false
+ },
+ "mx_great_sword_crouching": {
+  "file": "great sword crouching.fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": false,
+  "speed": 0.443,
+  "travel": 0.369,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.465
+   },
+   "hand_r": {
+    "t": 0.25,
+    "reach": 0.474
+   },
+   "foot_l": {
+    "t": 0.833,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": -0.157
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.414,
+  "hadMesh": false
+ },
+ "mx_great_sword_high_spin_attack": {
+  "file": "great sword high spin attack.fbx",
+  "frames": 57,
+  "duration": 2.333,
+  "loop": false,
+  "speed": 0.918,
+  "travel": 2.143,
+  "hit": {
+   "hand_l": {
+    "t": 0.167,
+    "reach": 0.537
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.536
+   },
+   "foot_l": {
+    "t": 1.042,
+    "reach": 0.467
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": 0.426
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.491,
+  "hadMesh": false
+ },
+ "mx_great_sword_idle_2": {
+  "file": "great sword idle (2).fbx",
+  "frames": 112,
+  "duration": 4.625,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.417,
+    "reach": 0.234
+   },
+   "hand_r": {
+    "t": 2.333,
+    "reach": 0.323
+   },
+   "foot_l": {
+    "t": 1.375,
+    "reach": 0.247
+   },
+   "foot_r": {
+    "t": 1.375,
+    "reach": -0.071
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_idle_3": {
+  "file": "great sword idle (3).fbx",
+  "frames": 111,
+  "duration": 4.583,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.542,
+    "reach": 0.292
+   },
+   "hand_r": {
+    "t": 3.708,
+    "reach": 0.363
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.249
+   },
+   "foot_r": {
+    "t": 1.75,
+    "reach": -0.07
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_idle_4": {
+  "file": "great sword idle (4).fbx",
+  "frames": 114,
+  "duration": 4.708,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.958,
+    "reach": 0.423
+   },
+   "hand_r": {
+    "t": 3.958,
+    "reach": 0.4
+   },
+   "foot_l": {
+    "t": 2.417,
+    "reach": 0.229
+   },
+   "foot_r": {
+    "t": 2.417,
+    "reach": -0.09
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_idle_5": {
+  "file": "great sword idle (5).fbx",
+  "frames": 228,
+  "duration": 9.458,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 8.083,
+    "reach": 0.334
+   },
+   "hand_r": {
+    "t": 8.292,
+    "reach": 0.372
+   },
+   "foot_l": {
+    "t": 5.333,
+    "reach": 0.215
+   },
+   "foot_r": {
+    "t": 5.333,
+    "reach": -0.103
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_idle": {
+  "file": "great sword idle.fbx",
+  "frames": 61,
+  "duration": 2.5,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.5,
+    "reach": 0.195
+   },
+   "hand_r": {
+    "t": 2.5,
+    "reach": 0.293
+   },
+   "foot_l": {
+    "t": 1.208,
+    "reach": 0.142
+   },
+   "foot_r": {
+    "t": 1.25,
+    "reach": -0.177
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_impact_2": {
+  "file": "great sword impact (2).fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.4
+   },
+   "hand_r": {
+    "t": 0.458,
+    "reach": 0.467
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.279
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.039
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_impact_3": {
+  "file": "great sword impact (3).fbx",
+  "frames": 39,
+  "duration": 1.583,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.312
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.317
+   },
+   "foot_l": {
+    "t": 0.667,
+    "reach": 0.252
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": -0.066
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_impact_4": {
+  "file": "great sword impact (4).fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.248
+   },
+   "hand_r": {
+    "t": 0.417,
+    "reach": 0.303
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.608
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": -0.028
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_impact_5": {
+  "file": "great sword impact (5).fbx",
+  "frames": 30,
+  "duration": 1.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.208,
+    "reach": 0.258
+   },
+   "hand_r": {
+    "t": 1.208,
+    "reach": 0.251
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.499
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": -0.093
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_impact": {
+  "file": "great sword impact.fbx",
+  "frames": 27,
+  "duration": 1.083,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.28
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.303
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.159
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": -0.079
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_jump_2": {
+  "file": "great sword jump (2).fbx",
+  "frames": 28,
+  "duration": 1.125,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.278
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": 0.369
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.195
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": -0.07
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_jump_attack": {
+  "file": "great sword jump attack.fbx",
+  "frames": 66,
+  "duration": 2.708,
+  "loop": false,
+  "speed": 1.078,
+  "travel": 2.919,
+  "hit": {
+   "hand_l": {
+    "t": 2.417,
+    "reach": 0.424
+   },
+   "hand_r": {
+    "t": 1.333,
+    "reach": 0.523
+   },
+   "foot_l": {
+    "t": 2.083,
+    "reach": 0.389
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.412
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.375,
+  "hadMesh": false
+ },
+ "mx_great_sword_jump": {
+  "file": "great sword jump.fbx",
+  "frames": 20,
+  "duration": 0.792,
+  "loop": false,
+  "speed": 1.976,
+  "travel": 1.565,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.531
+   },
+   "hand_r": {
+    "t": 0.458,
+    "reach": 0.582
+   },
+   "foot_l": {
+    "t": 0.125,
+    "reach": 0.269
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": 0.518
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_kick_2": {
+  "file": "great sword kick (2).fbx",
+  "frames": 53,
+  "duration": 2.167,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.292,
+    "reach": 0.31
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.356
+   },
+   "foot_l": {
+    "t": 1.0,
+    "reach": 1.007
+   },
+   "foot_r": {
+    "t": 0.958,
+    "reach": 0.267
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_kick": {
+  "file": "great sword kick.fbx",
+  "frames": 46,
+  "duration": 1.875,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.416
+   },
+   "hand_r": {
+    "t": 0.25,
+    "reach": 0.403
+   },
+   "foot_l": {
+    "t": 0.833,
+    "reach": 0.388
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": 0.98
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_great_sword_power_up": {
+  "file": "great sword power up.fbx",
+  "frames": 106,
+  "duration": 4.375,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.333,
+    "reach": 0.421
+   },
+   "hand_r": {
+    "t": 3.375,
+    "reach": 0.458
+   },
+   "foot_l": {
+    "t": 3.833,
+    "reach": 0.172
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": 0.004
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_run_2": {
+  "file": "great sword run (2).fbx",
+  "frames": 19,
+  "duration": 0.75,
+  "loop": true,
+  "speed": 3.141,
+  "travel": 2.356,
+  "hit": {
+   "hand_l": {
+    "t": 0.125,
+    "reach": 0.367
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.237
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.179
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": 0.145
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_run": {
+  "file": "great sword run.fbx",
+  "frames": 23,
+  "duration": 0.917,
+  "loop": true,
+  "speed": 1.896,
+  "travel": 1.738,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.336
+   },
+   "hand_r": {
+    "t": 0.458,
+    "reach": 0.385
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.296
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": 0.182
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_slash_2": {
+  "file": "great sword slash (2).fbx",
+  "frames": 107,
+  "duration": 4.417,
+  "loop": false,
+  "speed": 0.644,
+  "travel": 2.845,
+  "hit": {
+   "hand_l": {
+    "t": 0.958,
+    "reach": 0.475
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.495
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.299
+   },
+   "foot_r": {
+    "t": 1.667,
+    "reach": 0.548
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_great_sword_slash_3": {
+  "file": "great sword slash (3).fbx",
+  "frames": 56,
+  "duration": 2.292,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.25,
+    "reach": 0.354
+   },
+   "hand_r": {
+    "t": 1.167,
+    "reach": 0.428
+   },
+   "foot_l": {
+    "t": 2.25,
+    "reach": 0.134
+   },
+   "foot_r": {
+    "t": 1.417,
+    "reach": 0.379
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_slash_4": {
+  "file": "great sword slash (4).fbx",
+  "frames": 55,
+  "duration": 2.25,
+  "loop": false,
+  "speed": 0.46,
+  "travel": 1.034,
+  "hit": {
+   "hand_l": {
+    "t": 1.667,
+    "reach": 0.445
+   },
+   "hand_r": {
+    "t": 1.708,
+    "reach": 0.385
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.23
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": 0.417
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.131,
+  "hadMesh": false
+ },
+ "mx_great_sword_slash_5": {
+  "file": "great sword slash (5).fbx",
+  "frames": 44,
+  "duration": 1.792,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.083,
+    "reach": 0.5
+   },
+   "hand_r": {
+    "t": 1.125,
+    "reach": 0.502
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 1.042,
+    "reach": 0.507
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_slash": {
+  "file": "great sword slash.fbx",
+  "frames": 39,
+  "duration": 1.583,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.556
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.558
+   },
+   "foot_l": {
+    "t": 1.292,
+    "reach": 0.185
+   },
+   "foot_r": {
+    "t": 0.167,
+    "reach": -0.193
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_slide_attack": {
+  "file": "great sword slide attack.fbx",
+  "frames": 65,
+  "duration": 2.667,
+  "loop": false,
+  "speed": 1.199,
+  "travel": 3.197,
+  "hit": {
+   "hand_l": {
+    "t": 1.5,
+    "reach": 0.508
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.486
+   },
+   "foot_l": {
+    "t": 2.25,
+    "reach": 0.356
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": 0.492
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.487,
+  "hadMesh": false
+ },
+ "mx_great_sword_strafe_2": {
+  "file": "great sword strafe (2).fbx",
+  "frames": 36,
+  "duration": 1.458,
+  "loop": true,
+  "speed": 0.915,
+  "travel": 1.334,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.228
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": 0.341
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.186
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": -0.076
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_strafe_3": {
+  "file": "great sword strafe (3).fbx",
+  "frames": 18,
+  "duration": 0.708,
+  "loop": true,
+  "speed": 1.724,
+  "travel": 1.221,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.351
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": 0.455
+   },
+   "foot_l": {
+    "t": 0.083,
+    "reach": 0.098
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": -0.214
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_strafe_4": {
+  "file": "great sword strafe (4).fbx",
+  "frames": 20,
+  "duration": 0.792,
+  "loop": true,
+  "speed": 2.269,
+  "travel": 1.797,
+  "hit": {
+   "hand_l": {
+    "t": 0.792,
+    "reach": 0.326
+   },
+   "hand_r": {
+    "t": 0.042,
+    "reach": 0.419
+   },
+   "foot_l": {
+    "t": 0.542,
+    "reach": 0.125
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": -0.189
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_strafe": {
+  "file": "great sword strafe.fbx",
+  "frames": 34,
+  "duration": 1.375,
+  "loop": true,
+  "speed": 0.846,
+  "travel": 1.164,
+  "hit": {
+   "hand_l": {
+    "t": 1.292,
+    "reach": 0.225
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.347
+   },
+   "foot_l": {
+    "t": 1.25,
+    "reach": 0.166
+   },
+   "foot_r": {
+    "t": 0.958,
+    "reach": -0.061
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_great_sword_turn_2": {
+  "file": "great sword turn (2).fbx",
+  "frames": 26,
+  "duration": 1.042,
+  "loop": false,
+  "speed": 0.132,
+  "travel": 0.137,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.195
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.293
+   },
+   "foot_l": {
+    "t": 0.125,
+    "reach": 0.158
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": 0.218
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.031,
+  "hadMesh": false
+ },
+ "mx_great_sword_turn": {
+  "file": "great sword turn.fbx",
+  "frames": 23,
+  "duration": 0.917,
+  "loop": false,
+  "speed": 0.173,
+  "travel": 0.159,
+  "hit": {
+   "hand_l": {
+    "t": 0.042,
+    "reach": 0.197
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.286
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.136
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": -0.041
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.035,
+  "hadMesh": false
+ },
+ "mx_great_sword_walk_2": {
+  "file": "great sword walk (2).fbx",
+  "frames": 40,
+  "duration": 1.625,
+  "loop": true,
+  "speed": 0.739,
+  "travel": 1.2,
+  "hit": {
+   "hand_l": {
+    "t": 0.667,
+    "reach": 0.253
+   },
+   "hand_r": {
+    "t": 0.667,
+    "reach": 0.35
+   },
+   "foot_l": {
+    "t": 1.292,
+    "reach": 0.35
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.311
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_great_sword_walk": {
+  "file": "great sword walk.fbx",
+  "frames": 42,
+  "duration": 1.708,
+  "loop": true,
+  "speed": 0.797,
+  "travel": 1.362,
+  "hit": {
+   "hand_l": {
+    "t": 1.167,
+    "reach": 0.227
+   },
+   "hand_r": {
+    "t": 1.167,
+    "reach": 0.321
+   },
+   "foot_l": {
+    "t": 0.333,
+    "reach": 0.408
+   },
+   "foot_r": {
+    "t": 1.208,
+    "reach": 0.345
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_head_hit": {
+  "file": "Head Hit.fbx",
+  "frames": 44,
+  "duration": 1.792,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.875,
+    "reach": 0.4
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.318
+   },
+   "foot_l": {
+    "t": 0.792,
+    "reach": 0.313
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": -0.154
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_headbutt": {
+  "file": "Headbutt.fbx",
+  "frames": 64,
+  "duration": 2.625,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.278
+   },
+   "hand_r": {
+    "t": 1.042,
+    "reach": 0.213
+   },
+   "foot_l": {
+    "t": 1.417,
+    "reach": 0.515
+   },
+   "foot_r": {
+    "t": 2.292,
+    "reach": -0.19
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hit_reaction_1": {
+  "file": "Hit Reaction (1).fbx",
+  "frames": 49,
+  "duration": 2.0,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.667,
+    "reach": 0.346
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.276
+   },
+   "foot_l": {
+    "t": 1.542,
+    "reach": 0.331
+   },
+   "foot_r": {
+    "t": 1.542,
+    "reach": -0.129
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hit_reaction": {
+  "file": "Hit Reaction.fbx",
+  "frames": 83,
+  "duration": 3.417,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.488
+   },
+   "hand_r": {
+    "t": 2.667,
+    "reach": 0.449
+   },
+   "foot_l": {
+    "t": 1.083,
+    "reach": 0.218
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": -0.022
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hook_punch": {
+  "file": "Hook Punch.fbx",
+  "frames": 66,
+  "duration": 2.708,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.292,
+    "reach": 0.313
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.526
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.295
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": -0.201
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hook": {
+  "file": "Hook.fbx",
+  "frames": 89,
+  "duration": 3.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.5,
+    "reach": 0.532
+   },
+   "hand_r": {
+    "t": 0.958,
+    "reach": 0.307
+   },
+   "foot_l": {
+    "t": 0.833,
+    "reach": 0.424
+   },
+   "foot_r": {
+    "t": 2.542,
+    "reach": -0.039
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hostage_situation_idle_hostage": {
+  "file": "Hostage Situation Idle - Hostage.fbx",
+  "frames": 151,
+  "duration": 6.25,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.792,
+    "reach": 0.057
+   },
+   "hand_r": {
+    "t": 5.708,
+    "reach": 0.067
+   },
+   "foot_l": {
+    "t": 3.75,
+    "reach": 0.228
+   },
+   "foot_r": {
+    "t": 3.75,
+    "reach": -0.12
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_hostage_situation_idle_villain": {
+  "file": "Hostage Situation Idle - Villain.fbx",
+  "frames": 151,
+  "duration": 6.25,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 5.208,
+    "reach": 0.263
+   },
+   "hand_r": {
+    "t": 5.75,
+    "reach": 0.234
+   },
+   "foot_l": {
+    "t": 4.708,
+    "reach": 0.065
+   },
+   "foot_r": {
+    "t": 4.75,
+    "reach": -0.293
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_illegal_elbow_punch": {
+  "file": "Illegal Elbow Punch.fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.366
+   },
+   "hand_r": {
+    "t": 0.792,
+    "reach": 0.308
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.309
+   },
+   "foot_r": {
+    "t": 2.0,
+    "reach": -0.222
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_illegal_knee_1": {
+  "file": "Illegal Knee (1).fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.167,
+    "reach": 0.392
+   },
+   "hand_r": {
+    "t": 2.5,
+    "reach": 0.233
+   },
+   "foot_l": {
+    "t": 2.5,
+    "reach": 0.248
+   },
+   "foot_r": {
+    "t": 0.917,
+    "reach": 0.494
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_illegal_knee": {
+  "file": "Illegal Knee.fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.167,
+    "reach": 0.392
+   },
+   "hand_r": {
+    "t": 2.5,
+    "reach": 0.233
+   },
+   "foot_l": {
+    "t": 2.5,
+    "reach": 0.248
+   },
+   "foot_r": {
+    "t": 0.917,
+    "reach": 0.46
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_injured_walking": {
+  "file": "Injured Walking.fbx",
+  "frames": 31,
+  "duration": 1.25,
+  "loop": true,
+  "speed": 1.285,
+  "travel": 1.606,
+  "hit": {
+   "hand_l": {
+    "t": 0.125,
+    "reach": 0.139
+   },
+   "hand_r": {
+    "t": 0.792,
+    "reach": 0.157
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.301
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": 0.253
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.008,
+  "hadMesh": false
+ },
+ "mx_jab_cross_1": {
+  "file": "Jab Cross (1).fbx",
+  "frames": 60,
+  "duration": 2.458,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.567
+   },
+   "hand_r": {
+    "t": 0.833,
+    "reach": 0.577
+   },
+   "foot_l": {
+    "t": 1.417,
+    "reach": 0.353
+   },
+   "foot_r": {
+    "t": 2.25,
+    "reach": -0.247
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_jab_cross": {
+  "file": "Jab Cross.fbx",
+  "frames": 68,
+  "duration": 2.792,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.562
+   },
+   "hand_r": {
+    "t": 0.792,
+    "reach": 0.578
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.481
+   },
+   "foot_r": {
+    "t": 1.833,
+    "reach": -0.145
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_jump_attack": {
+  "file": "Jump Attack.fbx",
+  "frames": 115,
+  "duration": 4.75,
+  "loop": false,
+  "speed": 0.428,
+  "travel": 2.034,
+  "hit": {
+   "hand_l": {
+    "t": 3.5,
+    "reach": 0.605
+   },
+   "hand_r": {
+    "t": 0.667,
+    "reach": 0.557
+   },
+   "foot_l": {
+    "t": 3.708,
+    "reach": 0.561
+   },
+   "foot_r": {
+    "t": 1.958,
+    "reach": 0.193
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.455,
+  "hadMesh": false
+ },
+ "mx_kicking": {
+  "file": "Kicking.fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 0.557,
+  "travel": 1.579,
+  "hit": {
+   "hand_l": {
+    "t": 1.542,
+    "reach": 0.546
+   },
+   "hand_r": {
+    "t": 0.917,
+    "reach": 0.423
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.877
+   },
+   "foot_r": {
+    "t": 1.375,
+    "reach": 0.553
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_kneeling_down": {
+  "file": "Kneeling Down.fbx",
+  "frames": 84,
+  "duration": 3.458,
+  "loop": false,
+  "speed": 0.004,
+  "travel": 0.013,
+  "hit": {
+   "hand_l": {
+    "t": 2.875,
+    "reach": 0.282
+   },
+   "hand_r": {
+    "t": 2.625,
+    "reach": 0.212
+   },
+   "foot_l": {
+    "t": 2.458,
+    "reach": 0.247
+   },
+   "foot_r": {
+    "t": 2.458,
+    "reach": -0.003
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.436,
+  "hadMesh": false
+ },
+ "mx_kneeling_idle": {
+  "file": "Kneeling Idle.fbx",
+  "frames": 129,
+  "duration": 5.333,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 4.667,
+    "reach": 0.034
+   },
+   "hand_r": {
+    "t": 2.917,
+    "reach": 0.036
+   },
+   "foot_l": {
+    "t": 1.333,
+    "reach": -0.359
+   },
+   "foot_r": {
+    "t": 1.333,
+    "reach": -0.37
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_kneeling": {
+  "file": "Kneeling.fbx",
+  "frames": 141,
+  "duration": 5.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.279
+   },
+   "hand_r": {
+    "t": 3.667,
+    "reach": 0.122
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.239
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.011
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_knocked_down": {
+  "file": "Knocked Down.fbx",
+  "frames": 85,
+  "duration": 3.5,
+  "loop": false,
+  "speed": 0.463,
+  "travel": 1.621,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.361
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.337
+   },
+   "foot_l": {
+    "t": 2.667,
+    "reach": 1.0
+   },
+   "foot_r": {
+    "t": 2.458,
+    "reach": 0.974
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.466,
+  "hadMesh": false
+ },
+ "mx_knocked_out_1": {
+  "file": "Knocked Out (1).fbx",
+  "frames": 169,
+  "duration": 7.0,
+  "loop": false,
+  "speed": 0.178,
+  "travel": 1.248,
+  "hit": {
+   "hand_l": {
+    "t": 2.083,
+    "reach": 0.581
+   },
+   "hand_r": {
+    "t": 1.583,
+    "reach": 0.358
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.208
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.235
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.889,
+  "hadMesh": false
+ },
+ "mx_knocked_out": {
+  "file": "Knocked Out.fbx",
+  "frames": 149,
+  "duration": 6.167,
+  "loop": false,
+  "speed": 0.217,
+  "travel": 1.335,
+  "hit": {
+   "hand_l": {
+    "t": 1.292,
+    "reach": 0.445
+   },
+   "hand_r": {
+    "t": 4.833,
+    "reach": 0.457
+   },
+   "foot_l": {
+    "t": 2.375,
+    "reach": 0.758
+   },
+   "foot_r": {
+    "t": 2.917,
+    "reach": 0.821
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.9,
+  "hadMesh": false
+ },
+ "mx_left_strafe": {
+  "file": "Left Strafe.fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": true,
+  "speed": 3.251,
+  "travel": 2.709,
+  "hit": {
+   "hand_l": {
+    "t": 0.542,
+    "reach": 0.035
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.293
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.003
+   },
+   "foot_r": {
+    "t": 0.458,
+    "reach": 0.059
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_low_crawl": {
+  "file": "Low Crawl.fbx",
+  "frames": 71,
+  "duration": 2.917,
+  "loop": true,
+  "speed": 0.446,
+  "travel": 1.301,
+  "hit": {
+   "hand_l": {
+    "t": 2.417,
+    "reach": 0.664
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.647
+   },
+   "foot_l": {
+    "t": 1.25,
+    "reach": -0.35
+   },
+   "foot_r": {
+    "t": 2.792,
+    "reach": -0.23
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mma_kick": {
+  "file": "Mma Kick.fbx",
+  "frames": 46,
+  "duration": 1.875,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.392
+   },
+   "hand_r": {
+    "t": 0.5,
+    "reach": 0.525
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.253
+   },
+   "foot_r": {
+    "t": 0.75,
+    "reach": 0.882
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_breathing_idle": {
+  "file": "Mutant Breathing Idle.fbx",
+  "frames": 122,
+  "duration": 5.042,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.0,
+    "reach": 0.222
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.205
+   },
+   "foot_l": {
+    "t": 4.125,
+    "reach": 0.064
+   },
+   "foot_r": {
+    "t": 4.125,
+    "reach": 0.065
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_dying": {
+  "file": "Mutant Dying.fbx",
+  "frames": 139,
+  "duration": 5.75,
+  "loop": false,
+  "speed": 0.155,
+  "travel": 0.89,
+  "hit": {
+   "hand_l": {
+    "t": 1.042,
+    "reach": 0.451
+   },
+   "hand_r": {
+    "t": 2.417,
+    "reach": 0.412
+   },
+   "foot_l": {
+    "t": 3.542,
+    "reach": 0.956
+   },
+   "foot_r": {
+    "t": 2.75,
+    "reach": 0.974
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.405,
+  "hadMesh": false
+ },
+ "mx_mutant_flexing_muscles": {
+  "file": "Mutant Flexing Muscles.fbx",
+  "frames": 141,
+  "duration": 5.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.5,
+    "reach": 0.398
+   },
+   "hand_r": {
+    "t": 3.042,
+    "reach": 0.52
+   },
+   "foot_l": {
+    "t": 4.25,
+    "reach": 0.206
+   },
+   "foot_r": {
+    "t": 1.792,
+    "reach": 0.073
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_idle_1": {
+  "file": "Mutant Idle (1).fbx",
+  "frames": 428,
+  "duration": 17.792,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 10.083,
+    "reach": 0.386
+   },
+   "hand_r": {
+    "t": 10.0,
+    "reach": 0.295
+   },
+   "foot_l": {
+    "t": 11.542,
+    "reach": 0.078
+   },
+   "foot_r": {
+    "t": 11.542,
+    "reach": 0.078
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_idle": {
+  "file": "Mutant Idle.fbx",
+  "frames": 160,
+  "duration": 6.625,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 4.958,
+    "reach": 0.39
+   },
+   "hand_r": {
+    "t": 4.958,
+    "reach": 0.298
+   },
+   "foot_l": {
+    "t": 5.167,
+    "reach": 0.063
+   },
+   "foot_r": {
+    "t": 5.167,
+    "reach": 0.063
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_jump_attack": {
+  "file": "Mutant Jump Attack.fbx",
+  "frames": 112,
+  "duration": 4.625,
+  "loop": false,
+  "speed": 0.335,
+  "travel": 1.552,
+  "hit": {
+   "hand_l": {
+    "t": 2.042,
+    "reach": 0.541
+   },
+   "hand_r": {
+    "t": 0.667,
+    "reach": 0.556
+   },
+   "foot_l": {
+    "t": 4.5,
+    "reach": 0.066
+   },
+   "foot_r": {
+    "t": 1.917,
+    "reach": 0.104
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_jumping_1": {
+  "file": "Mutant Jumping (1).fbx",
+  "frames": 96,
+  "duration": 3.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.625,
+    "reach": 0.499
+   },
+   "hand_r": {
+    "t": 1.75,
+    "reach": 0.494
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.061
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": 0.061
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_jumping": {
+  "file": "Mutant Jumping.fbx",
+  "frames": 19,
+  "duration": 0.75,
+  "loop": false,
+  "speed": 0.002,
+  "travel": 0.002,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.304
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.494
+   },
+   "foot_l": {
+    "t": 0.75,
+    "reach": -0.022
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.054
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.213,
+  "hadMesh": false
+ },
+ "mx_mutant_left_turn_45": {
+  "file": "Mutant Left Turn 45.fbx",
+  "frames": 41,
+  "duration": 1.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.5,
+    "reach": 0.222
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": 0.345
+   },
+   "foot_l": {
+    "t": 1.333,
+    "reach": 0.086
+   },
+   "foot_r": {
+    "t": 1.458,
+    "reach": 0.114
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_punch": {
+  "file": "Mutant Punch.fbx",
+  "frames": 34,
+  "duration": 1.375,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.208,
+    "reach": 0.24
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.486
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.09
+   },
+   "foot_r": {
+    "t": 0.167,
+    "reach": 0.094
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_right_turn_45_1": {
+  "file": "Mutant Right Turn 45 (1).fbx",
+  "frames": 60,
+  "duration": 2.458,
+  "loop": false,
+  "speed": 0.003,
+  "travel": 0.007,
+  "hit": {
+   "hand_l": {
+    "t": 0.667,
+    "reach": 0.337
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.211
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.339
+   },
+   "foot_r": {
+    "t": 0.125,
+    "reach": 0.063
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.015,
+  "hadMesh": false
+ },
+ "mx_mutant_right_turn_45": {
+  "file": "Mutant Right Turn 45.fbx",
+  "frames": 41,
+  "duration": 1.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.542,
+    "reach": 0.351
+   },
+   "hand_r": {
+    "t": 1.5,
+    "reach": 0.226
+   },
+   "foot_l": {
+    "t": 1.458,
+    "reach": 0.114
+   },
+   "foot_r": {
+    "t": 1.333,
+    "reach": 0.087
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_right_turn_90": {
+  "file": "Mutant Right Turn 90.fbx",
+  "frames": 73,
+  "duration": 3.0,
+  "loop": false,
+  "speed": 0.005,
+  "travel": 0.014,
+  "hit": {
+   "hand_l": {
+    "t": 1.208,
+    "reach": 0.392
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.205
+   },
+   "foot_l": {
+    "t": 1.792,
+    "reach": 0.375
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": 0.071
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.03,
+  "hadMesh": false
+ },
+ "mx_mutant_roaring": {
+  "file": "Mutant Roaring.fbx",
+  "frames": 163,
+  "duration": 6.75,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.583,
+    "reach": 0.44
+   },
+   "hand_r": {
+    "t": 1.208,
+    "reach": 0.401
+   },
+   "foot_l": {
+    "t": 1.375,
+    "reach": 0.352
+   },
+   "foot_r": {
+    "t": 1.125,
+    "reach": 0.127
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_run": {
+  "file": "Mutant Run.fbx",
+  "frames": 27,
+  "duration": 1.083,
+  "loop": true,
+  "speed": 1.711,
+  "travel": 1.854,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.359
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.366
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.172
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": 0.145
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_mutant_swiping": {
+  "file": "Mutant Swiping.fbx",
+  "frames": 81,
+  "duration": 3.333,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.625,
+    "reach": 0.627
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.538
+   },
+   "foot_l": {
+    "t": 2.292,
+    "reach": 0.508
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": 0.31
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_mutant_walking": {
+  "file": "Mutant Walking.fbx",
+  "frames": 44,
+  "duration": 1.792,
+  "loop": true,
+  "speed": 0.942,
+  "travel": 1.687,
+  "hit": {
+   "hand_l": {
+    "t": 1.292,
+    "reach": 0.357
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.246
+   },
+   "foot_l": {
+    "t": 0.375,
+    "reach": 0.367
+   },
+   "foot_r": {
+    "t": 1.25,
+    "reach": 0.321
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.005,
+  "hadMesh": false
+ },
+ "mx_old_man_idle": {
+  "file": "Old Man Idle.fbx",
+  "frames": 366,
+  "duration": 15.208,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 14.917,
+    "reach": 0.249
+   },
+   "hand_r": {
+    "t": 1.083,
+    "reach": 0.237
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.052
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": 0.039
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_old_man_walk": {
+  "file": "Old Man Walk.fbx",
+  "frames": 39,
+  "duration": 1.583,
+  "loop": true,
+  "speed": 0.291,
+  "travel": 0.461,
+  "hit": {
+   "hand_l": {
+    "t": 1.0,
+    "reach": 0.206
+   },
+   "hand_r": {
+    "t": 0.083,
+    "reach": 0.201
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.153
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": 0.139
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_picking_up": {
+  "file": "Picking Up.fbx",
+  "frames": 288,
+  "duration": 11.958,
+  "loop": false,
+  "speed": 0.003,
+  "travel": 0.038,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.116
+   },
+   "hand_r": {
+    "t": 5.208,
+    "reach": 0.289
+   },
+   "foot_l": {
+    "t": 5.667,
+    "reach": 0.023
+   },
+   "foot_r": {
+    "t": 5.667,
+    "reach": 0.018
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.193,
+  "hadMesh": false
+ },
+ "mx_praying_1": {
+  "file": "Praying (1).fbx",
+  "frames": 201,
+  "duration": 8.333,
+  "loop": true,
+  "speed": 0.057,
+  "travel": 0.478,
+  "hit": {
+   "hand_l": {
+    "t": 2.083,
+    "reach": 0.273
+   },
+   "hand_r": {
+    "t": 2.125,
+    "reach": 0.299
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": -0.082
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.089
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.125,
+  "hadMesh": false
+ },
+ "mx_praying_2": {
+  "file": "Praying (2).fbx",
+  "frames": 59,
+  "duration": 2.417,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.333,
+    "reach": 0.201
+   },
+   "hand_r": {
+    "t": 2.333,
+    "reach": 0.217
+   },
+   "foot_l": {
+    "t": 1.042,
+    "reach": -0.294
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": -0.31
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_praying": {
+  "file": "Praying.fbx",
+  "frames": 36,
+  "duration": 1.458,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.292,
+    "reach": 0.347
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.344
+   },
+   "foot_l": {
+    "t": 1.333,
+    "reach": -0.033
+   },
+   "foot_r": {
+    "t": 1.333,
+    "reach": -0.048
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_punch_combo": {
+  "file": "Punch Combo.fbx",
+  "frames": 67,
+  "duration": 2.75,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.001,
+  "hit": {
+   "hand_l": {
+    "t": 0.792,
+    "reach": 0.58
+   },
+   "hand_r": {
+    "t": 1.083,
+    "reach": 0.526
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.198
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": -0.253
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_rallying": {
+  "file": "Rallying.fbx",
+  "frames": 187,
+  "duration": 7.75,
+  "loop": false,
+  "speed": 0.137,
+  "travel": 1.063,
+  "hit": {
+   "hand_l": {
+    "t": 1.458,
+    "reach": 0.402
+   },
+   "hand_r": {
+    "t": 2.125,
+    "reach": 0.409
+   },
+   "foot_l": {
+    "t": 3.25,
+    "reach": 0.279
+   },
+   "foot_r": {
+    "t": 4.333,
+    "reach": 0.298
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_release_hostage_villain": {
+  "file": "Release Hostage - Villain.fbx",
+  "frames": 93,
+  "duration": 3.833,
+  "loop": false,
+  "speed": 0.14,
+  "travel": 0.537,
+  "hit": {
+   "hand_l": {
+    "t": 1.75,
+    "reach": 0.535
+   },
+   "hand_r": {
+    "t": 1.5,
+    "reach": 0.453
+   },
+   "foot_l": {
+    "t": 2.25,
+    "reach": 0.243
+   },
+   "foot_r": {
+    "t": 1.5,
+    "reach": -0.073
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.444,
+  "hadMesh": false
+ },
+ "mx_right_pivot": {
+  "file": "Right Pivot.fbx",
+  "frames": 38,
+  "duration": 1.542,
+  "loop": false,
+  "speed": 0.423,
+  "travel": 0.652,
+  "hit": {
+   "hand_l": {
+    "t": 0.208,
+    "reach": 0.365
+   },
+   "hand_r": {
+    "t": 0.5,
+    "reach": 0.326
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.208
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": 0.153
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.029,
+  "hadMesh": false
+ },
+ "mx_right_strafe": {
+  "file": "Right Strafe.fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": true,
+  "speed": 2.6,
+  "travel": 2.167,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.27
+   },
+   "hand_r": {
+    "t": 0.208,
+    "reach": 0.09
+   },
+   "foot_l": {
+    "t": 0.125,
+    "reach": 0.096
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": -0.038
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_roar": {
+  "file": "Roar.fbx",
+  "frames": 163,
+  "duration": 6.75,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.292,
+    "reach": 0.425
+   },
+   "hand_r": {
+    "t": 1.25,
+    "reach": 0.407
+   },
+   "foot_l": {
+    "t": 6.042,
+    "reach": 0.411
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": -0.008
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_roundhouse_kick_1": {
+  "file": "Roundhouse Kick (1).fbx",
+  "frames": 76,
+  "duration": 3.125,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.875,
+    "reach": 0.405
+   },
+   "hand_r": {
+    "t": 1.042,
+    "reach": 0.487
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.347
+   },
+   "foot_r": {
+    "t": 1.333,
+    "reach": 0.926
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_roundhouse_kick": {
+  "file": "Roundhouse Kick.fbx",
+  "frames": 76,
+  "duration": 3.125,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.875,
+    "reach": 0.405
+   },
+   "hand_r": {
+    "t": 1.042,
+    "reach": 0.487
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.347
+   },
+   "foot_r": {
+    "t": 1.333,
+    "reach": 0.926
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_running_1": {
+  "file": "Running (1).fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": true,
+  "speed": 3.415,
+  "travel": 2.988,
+  "hit": {
+   "hand_l": {
+    "t": 0.583,
+    "reach": 0.268
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.269
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.28
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": 0.348
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_running_2": {
+  "file": "Running (2).fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": true,
+  "speed": 3.148,
+  "travel": 2.754,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.325
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.409
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.358
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": 0.337
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_running_right_turn": {
+  "file": "Running Right Turn.fbx",
+  "frames": 24,
+  "duration": 0.958,
+  "loop": false,
+  "speed": 2.883,
+  "travel": 2.763,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.347
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.173
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.337
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": 0.408
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.012,
+  "hadMesh": false
+ },
+ "mx_running_to_turn": {
+  "file": "Running To Turn.fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 1.278,
+  "travel": 3.62,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.195
+   },
+   "hand_r": {
+    "t": 0.792,
+    "reach": 0.362
+   },
+   "foot_l": {
+    "t": 0.833,
+    "reach": 0.63
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": 0.67
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.377,
+  "hadMesh": false
+ },
+ "mx_running_turn_180": {
+  "file": "Running Turn 180.fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": false,
+  "speed": 0.04,
+  "travel": 0.033,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.51
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.34
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.682
+   },
+   "foot_r": {
+    "t": 0.833,
+    "reach": 0.164
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.06,
+  "hadMesh": false
+ },
+ "mx_running_up_stairs": {
+  "file": "Running Up Stairs.fbx",
+  "frames": 19,
+  "duration": 0.75,
+  "loop": true,
+  "speed": 0.631,
+  "travel": 0.473,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.21
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.276
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.062
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": 0.106
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_running": {
+  "file": "Running.fbx",
+  "frames": 20,
+  "duration": 0.792,
+  "loop": true,
+  "speed": 4.256,
+  "travel": 3.37,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.342
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.307
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.247
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": 0.33
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sheath_sword_1": {
+  "file": "sheath sword 1.fbx",
+  "frames": 39,
+  "duration": 1.583,
+  "loop": false,
+  "speed": 0.046,
+  "travel": 0.073,
+  "hit": {
+   "hand_l": {
+    "t": 1.583,
+    "reach": 0.419
+   },
+   "hand_r": {
+    "t": 0.958,
+    "reach": 0.363
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.404
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": 0.023
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.269,
+  "hadMesh": false
+ },
+ "mx_sheath_sword_2": {
+  "file": "sheath sword 2.fbx",
+  "frames": 26,
+  "duration": 1.042,
+  "loop": false,
+  "speed": 0.07,
+  "travel": 0.073,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.419
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.276
+   },
+   "foot_l": {
+    "t": 0.042,
+    "reach": 0.103
+   },
+   "foot_r": {
+    "t": 0.042,
+    "reach": 0.018
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.716,
+  "hadMesh": false
+ },
+ "mx_spell_cast": {
+  "file": "spell cast.fbx",
+  "frames": 35,
+  "duration": 1.417,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.708,
+    "reach": 0.657
+   },
+   "hand_r": {
+    "t": 1.167,
+    "reach": 0.46
+   },
+   "foot_l": {
+    "t": 1.167,
+    "reach": 0.259
+   },
+   "foot_r": {
+    "t": 0.042,
+    "reach": -0.19
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sprint": {
+  "file": "Sprint.fbx",
+  "frames": 17,
+  "duration": 0.667,
+  "loop": true,
+  "speed": 4.436,
+  "travel": 2.958,
+  "hit": {
+   "hand_l": {
+    "t": 0.292,
+    "reach": 0.267
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.351
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.182
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": 0.262
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": true
+ },
+ "mx_sprinting_forward_roll": {
+  "file": "Sprinting Forward Roll.fbx",
+  "frames": 36,
+  "duration": 1.458,
+  "loop": false,
+  "speed": 3.576,
+  "travel": 5.215,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.556
+   },
+   "hand_r": {
+    "t": 0.375,
+    "reach": 0.565
+   },
+   "foot_l": {
+    "t": 0.917,
+    "reach": 0.72
+   },
+   "foot_r": {
+    "t": 1.0,
+    "reach": 0.709
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.17,
+  "hadMesh": true
+ },
+ "mx_stabbing_1": {
+  "file": "Stabbing (1).fbx",
+  "frames": 72,
+  "duration": 2.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.167,
+    "reach": 0.62
+   },
+   "hand_r": {
+    "t": 0.458,
+    "reach": 0.312
+   },
+   "foot_l": {
+    "t": 2.375,
+    "reach": 0.297
+   },
+   "foot_r": {
+    "t": 2.375,
+    "reach": -0.202
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_stabbing_2": {
+  "file": "Stabbing (2).fbx",
+  "frames": 80,
+  "duration": 3.292,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.568
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.558
+   },
+   "foot_l": {
+    "t": 3.25,
+    "reach": 0.287
+   },
+   "foot_r": {
+    "t": 3.208,
+    "reach": -0.229
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_stabbing": {
+  "file": "Stabbing.fbx",
+  "frames": 65,
+  "duration": 2.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.208,
+    "reach": 0.523
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.604
+   },
+   "foot_l": {
+    "t": 2.333,
+    "reach": 0.247
+   },
+   "foot_r": {
+    "t": 2.292,
+    "reach": -0.245
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_stand_to_roll": {
+  "file": "Stand To Roll.fbx",
+  "frames": 72,
+  "duration": 2.958,
+  "loop": false,
+  "speed": 1.375,
+  "travel": 4.068,
+  "hit": {
+   "hand_l": {
+    "t": 0.792,
+    "reach": 0.615
+   },
+   "hand_r": {
+    "t": 0.792,
+    "reach": 0.421
+   },
+   "foot_l": {
+    "t": 1.75,
+    "reach": 0.807
+   },
+   "foot_r": {
+    "t": 1.708,
+    "reach": 0.63
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_360_high": {
+  "file": "Standing Melee Attack 360 High.fbx",
+  "frames": 96,
+  "duration": 3.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.042,
+    "reach": 0.518
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.552
+   },
+   "foot_l": {
+    "t": 3.208,
+    "reach": 0.408
+   },
+   "foot_r": {
+    "t": 0.875,
+    "reach": 0.532
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.122,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_360_low": {
+  "file": "Standing Melee Attack 360 Low.fbx",
+  "frames": 76,
+  "duration": 3.125,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.542,
+    "reach": 0.433
+   },
+   "hand_r": {
+    "t": 1.208,
+    "reach": 0.514
+   },
+   "foot_l": {
+    "t": 2.792,
+    "reach": 0.361
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": 0.199
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_backhand": {
+  "file": "Standing Melee Attack Backhand.fbx",
+  "frames": 96,
+  "duration": 3.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.833,
+    "reach": 0.561
+   },
+   "hand_r": {
+    "t": 1.292,
+    "reach": 0.599
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.374
+   },
+   "foot_r": {
+    "t": 2.375,
+    "reach": 0.435
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_downward": {
+  "file": "Standing Melee Attack Downward.fbx",
+  "frames": 69,
+  "duration": 2.833,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.528
+   },
+   "hand_r": {
+    "t": 1.042,
+    "reach": 0.627
+   },
+   "foot_l": {
+    "t": 2.333,
+    "reach": 0.385
+   },
+   "foot_r": {
+    "t": 2.292,
+    "reach": -0.259
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_horizontal": {
+  "file": "Standing Melee Attack Horizontal.fbx",
+  "frames": 73,
+  "duration": 3.0,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.583,
+    "reach": 0.579
+   },
+   "hand_r": {
+    "t": 1.167,
+    "reach": 0.626
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.428
+   },
+   "foot_r": {
+    "t": 0.417,
+    "reach": -0.237
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_attack_kick_ver_1": {
+  "file": "Standing Melee Attack Kick Ver. 1.fbx",
+  "frames": 57,
+  "duration": 2.333,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.473
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": 0.023
+   },
+   "foot_l": {
+    "t": 1.958,
+    "reach": 0.377
+   },
+   "foot_r": {
+    "t": 0.875,
+    "reach": 0.894
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_combo_attack_ver_1": {
+  "file": "Standing Melee Combo Attack Ver. 1.fbx",
+  "frames": 141,
+  "duration": 5.833,
+  "loop": false,
+  "speed": 0.241,
+  "travel": 1.404,
+  "hit": {
+   "hand_l": {
+    "t": 2.458,
+    "reach": 0.483
+   },
+   "hand_r": {
+    "t": 2.458,
+    "reach": 0.566
+   },
+   "foot_l": {
+    "t": 4.417,
+    "reach": 0.434
+   },
+   "foot_r": {
+    "t": 2.792,
+    "reach": 0.376
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_combo_attack_ver_3": {
+  "file": "Standing Melee Combo Attack Ver. 3.fbx",
+  "frames": 83,
+  "duration": 3.417,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.708,
+    "reach": 0.509
+   },
+   "hand_r": {
+    "t": 1.208,
+    "reach": 0.587
+   },
+   "foot_l": {
+    "t": 0.583,
+    "reach": 0.415
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": -0.232
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_melee_run_jump_attack": {
+  "file": "Standing Melee Run Jump Attack.fbx",
+  "frames": 111,
+  "duration": 4.583,
+  "loop": false,
+  "speed": 0.73,
+  "travel": 3.347,
+  "hit": {
+   "hand_l": {
+    "t": 2.125,
+    "reach": 0.7
+   },
+   "hand_r": {
+    "t": 2.125,
+    "reach": 0.638
+   },
+   "foot_l": {
+    "t": 0.917,
+    "reach": 0.558
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": 0.484
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.327,
+  "hadMesh": false
+ },
+ "mx_standing_react_death_backward": {
+  "file": "Standing React Death Backward.fbx",
+  "frames": 110,
+  "duration": 4.542,
+  "loop": false,
+  "speed": 0.179,
+  "travel": 0.811,
+  "hit": {
+   "hand_l": {
+    "t": 0.292,
+    "reach": 0.483
+   },
+   "hand_r": {
+    "t": 2.625,
+    "reach": 0.445
+   },
+   "foot_l": {
+    "t": 3.5,
+    "reach": 1.037
+   },
+   "foot_r": {
+    "t": 3.667,
+    "reach": 0.878
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.301,
+  "hadMesh": false
+ },
+ "mx_standing_react_large_gut": {
+  "file": "Standing React Large Gut.fbx",
+  "frames": 49,
+  "duration": 2.0,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.75,
+    "reach": 0.378
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": -0.156
+   },
+   "foot_l": {
+    "t": 1.0,
+    "reach": 0.387
+   },
+   "foot_r": {
+    "t": 1.0,
+    "reach": -0.259
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing_taunt_battlecry": {
+  "file": "Standing Taunt Battlecry.fbx",
+  "frames": 86,
+  "duration": 3.542,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.583,
+    "reach": 0.412
+   },
+   "hand_r": {
+    "t": 0.417,
+    "reach": 0.399
+   },
+   "foot_l": {
+    "t": 0.333,
+    "reach": 0.406
+   },
+   "foot_r": {
+    "t": 0.333,
+    "reach": -0.24
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_standing": {
+  "file": "Standing.fbx",
+  "frames": 84,
+  "duration": 3.458,
+  "loop": false,
+  "speed": 0.004,
+  "travel": 0.013,
+  "hit": {
+   "hand_l": {
+    "t": 0.125,
+    "reach": 0.274
+   },
+   "hand_r": {
+    "t": 0.25,
+    "reach": 0.207
+   },
+   "foot_l": {
+    "t": 0.375,
+    "reach": 0.286
+   },
+   "foot_r": {
+    "t": 0.375,
+    "reach": 0.041
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.437,
+  "hadMesh": false
+ },
+ "mx_stomach_hit": {
+  "file": "Stomach Hit.fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.042,
+    "reach": 0.353
+   },
+   "hand_r": {
+    "t": 0.208,
+    "reach": 0.242
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.275
+   },
+   "foot_r": {
+    "t": 0.292,
+    "reach": -0.196
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_stunned": {
+  "file": "Stunned.fbx",
+  "frames": 65,
+  "duration": 2.667,
+  "loop": false,
+  "speed": 0.362,
+  "travel": 0.964,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.524
+   },
+   "hand_r": {
+    "t": 0.375,
+    "reach": 0.596
+   },
+   "foot_l": {
+    "t": 1.458,
+    "reach": 0.833
+   },
+   "foot_r": {
+    "t": 1.417,
+    "reach": 0.665
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.829,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_180_turn_2": {
+  "file": "sword and shield 180 turn (2).fbx",
+  "frames": 26,
+  "duration": 1.042,
+  "loop": false,
+  "speed": 0.435,
+  "travel": 0.453,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.375
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": 0.299
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.748
+   },
+   "foot_r": {
+    "t": 1.042,
+    "reach": 0.406
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.061,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_180_turn": {
+  "file": "sword and shield 180 turn.fbx",
+  "frames": 25,
+  "duration": 1.0,
+  "loop": false,
+  "speed": 0.25,
+  "travel": 0.25,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.38
+   },
+   "hand_r": {
+    "t": 0.042,
+    "reach": 0.078
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.457
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": 0.008
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.061,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_attack_2": {
+  "file": "sword and shield attack (2).fbx",
+  "frames": 40,
+  "duration": 1.625,
+  "loop": false,
+  "speed": 1.607,
+  "travel": 2.611,
+  "hit": {
+   "hand_l": {
+    "t": 1.208,
+    "reach": 0.494
+   },
+   "hand_r": {
+    "t": 0.708,
+    "reach": 0.581
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.5
+   },
+   "foot_r": {
+    "t": 0.542,
+    "reach": 0.466
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.433,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_attack_3": {
+  "file": "sword and shield attack (3).fbx",
+  "frames": 53,
+  "duration": 2.167,
+  "loop": false,
+  "speed": 1.001,
+  "travel": 2.168,
+  "hit": {
+   "hand_l": {
+    "t": 1.625,
+    "reach": 0.551
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.596
+   },
+   "foot_l": {
+    "t": 1.417,
+    "reach": 0.568
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": 0.602
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.439,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_attack_4": {
+  "file": "sword and shield attack (4).fbx",
+  "frames": 31,
+  "duration": 1.25,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.208,
+    "reach": 0.514
+   },
+   "hand_r": {
+    "t": 0.625,
+    "reach": 0.56
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.44
+   },
+   "foot_r": {
+    "t": 0.167,
+    "reach": -0.37
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_attack": {
+  "file": "sword and shield attack.fbx",
+  "frames": 71,
+  "duration": 2.917,
+  "loop": false,
+  "speed": 1.119,
+  "travel": 3.262,
+  "hit": {
+   "hand_l": {
+    "t": 1.375,
+    "reach": 0.539
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.524
+   },
+   "foot_l": {
+    "t": 1.5,
+    "reach": 0.475
+   },
+   "foot_r": {
+    "t": 1.5,
+    "reach": -0.006
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.351,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_block_2": {
+  "file": "sword and shield block (2).fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": false,
+  "speed": 0.274,
+  "travel": 0.229,
+  "hit": {
+   "hand_l": {
+    "t": 0.042,
+    "reach": 0.429
+   },
+   "hand_r": {
+    "t": 0.667,
+    "reach": -0.221
+   },
+   "foot_l": {
+    "t": 0.375,
+    "reach": 0.483
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": -0.393
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.168,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_block_idle": {
+  "file": "sword and shield block idle.fbx",
+  "frames": 43,
+  "duration": 1.75,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.708,
+    "reach": 0.424
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": -0.426
+   },
+   "foot_l": {
+    "t": 1.417,
+    "reach": 0.331
+   },
+   "foot_r": {
+    "t": 1.417,
+    "reach": -0.659
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_block": {
+  "file": "sword and shield block.fbx",
+  "frames": 18,
+  "duration": 0.708,
+  "loop": false,
+  "speed": 0.338,
+  "travel": 0.239,
+  "hit": {
+   "hand_l": {
+    "t": 0.708,
+    "reach": 0.422
+   },
+   "hand_r": {
+    "t": 0.208,
+    "reach": -0.176
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.423
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.423
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.168,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_casting_2": {
+  "file": "sword and shield casting (2).fbx",
+  "frames": 32,
+  "duration": 1.292,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.616
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": -0.133
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.306
+   },
+   "foot_r": {
+    "t": 1.292,
+    "reach": -0.389
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_casting": {
+  "file": "sword and shield casting.fbx",
+  "frames": 90,
+  "duration": 3.708,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.001,
+  "hit": {
+   "hand_l": {
+    "t": 3.5,
+    "reach": 0.462
+   },
+   "hand_r": {
+    "t": 2.083,
+    "reach": 0.548
+   },
+   "foot_l": {
+    "t": 2.792,
+    "reach": 0.412
+   },
+   "foot_r": {
+    "t": 2.792,
+    "reach": -0.256
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouch_block_2": {
+  "file": "sword and shield crouch block (2).fbx",
+  "frames": 25,
+  "duration": 1.0,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.511
+   },
+   "hand_r": {
+    "t": 0.375,
+    "reach": -0.347
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.181
+   },
+   "foot_r": {
+    "t": 0.458,
+    "reach": -0.349
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouch_block_idle": {
+  "file": "sword and shield crouch block idle.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.042,
+    "reach": 0.485
+   },
+   "hand_r": {
+    "t": 0.5,
+    "reach": -0.415
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.162
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": -0.413
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouch_block": {
+  "file": "sword and shield crouch block.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 0.478,
+  "travel": 0.299,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.493
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": -0.289
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.181
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.182,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouch_idle": {
+  "file": "sword and shield crouch idle.fbx",
+  "frames": 74,
+  "duration": 3.042,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.425
+   },
+   "hand_r": {
+    "t": 2.458,
+    "reach": -0.278
+   },
+   "foot_l": {
+    "t": 0.667,
+    "reach": 0.438
+   },
+   "foot_r": {
+    "t": 0.625,
+    "reach": -0.18
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouch": {
+  "file": "sword and shield crouch.fbx",
+  "frames": 18,
+  "duration": 0.708,
+  "loop": false,
+  "speed": 0.348,
+  "travel": 0.247,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.474
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": -0.177
+   },
+   "foot_l": {
+    "t": 0.708,
+    "reach": 0.445
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": -0.185
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.217,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouching_2": {
+  "file": "sword and shield crouching (2).fbx",
+  "frames": 19,
+  "duration": 0.75,
+  "loop": false,
+  "speed": 0.397,
+  "travel": 0.298,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.503
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": -0.289
+   },
+   "foot_l": {
+    "t": 0.75,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.75,
+    "reach": -0.181
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.182,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouching_3": {
+  "file": "sword and shield crouching (3).fbx",
+  "frames": 20,
+  "duration": 0.792,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.498
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": -0.21
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.181
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_crouching": {
+  "file": "sword and shield crouching.fbx",
+  "frames": 16,
+  "duration": 0.625,
+  "loop": false,
+  "speed": 0.401,
+  "travel": 0.251,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.483
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": -0.155
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.436
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.181
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.217,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_death_2": {
+  "file": "sword and shield death (2).fbx",
+  "frames": 118,
+  "duration": 4.875,
+  "loop": false,
+  "speed": 0.192,
+  "travel": 0.938,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.349
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": 0.162
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.346
+   },
+   "foot_r": {
+    "t": 0.458,
+    "reach": -0.199
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.269,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_death": {
+  "file": "sword and shield death.fbx",
+  "frames": 70,
+  "duration": 2.875,
+  "loop": false,
+  "speed": 0.396,
+  "travel": 1.137,
+  "hit": {
+   "hand_l": {
+    "t": 1.667,
+    "reach": 0.436
+   },
+   "hand_r": {
+    "t": 1.833,
+    "reach": 0.122
+   },
+   "foot_l": {
+    "t": 2.375,
+    "reach": 1.006
+   },
+   "foot_r": {
+    "t": 2.875,
+    "reach": 0.707
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.315,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_idle_2": {
+  "file": "sword and shield idle (2).fbx",
+  "frames": 227,
+  "duration": 9.417,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.292,
+    "reach": 0.385
+   },
+   "hand_r": {
+    "t": 4.833,
+    "reach": 0.473
+   },
+   "foot_l": {
+    "t": 6.042,
+    "reach": 0.407
+   },
+   "foot_r": {
+    "t": 4.917,
+    "reach": -0.341
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_idle_3": {
+  "file": "sword and shield idle (3).fbx",
+  "frames": 261,
+  "duration": 10.833,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 6.833,
+    "reach": 0.463
+   },
+   "hand_r": {
+    "t": 2.792,
+    "reach": 0.409
+   },
+   "foot_l": {
+    "t": 10.292,
+    "reach": 0.354
+   },
+   "foot_r": {
+    "t": 10.292,
+    "reach": -0.413
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_idle_4": {
+  "file": "sword and shield idle (4).fbx",
+  "frames": 77,
+  "duration": 3.167,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.792,
+    "reach": 0.321
+   },
+   "hand_r": {
+    "t": 2.75,
+    "reach": -0.198
+   },
+   "foot_l": {
+    "t": 1.458,
+    "reach": 0.347
+   },
+   "foot_r": {
+    "t": 1.458,
+    "reach": -0.42
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_idle": {
+  "file": "sword and shield idle.fbx",
+  "frames": 111,
+  "duration": 4.583,
+  "loop": true,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.0,
+    "reach": 0.335
+   },
+   "hand_r": {
+    "t": 1.417,
+    "reach": 0.013
+   },
+   "foot_l": {
+    "t": 4.292,
+    "reach": 0.36
+   },
+   "foot_r": {
+    "t": 4.292,
+    "reach": -0.407
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_impact_2": {
+  "file": "sword and shield impact (2).fbx",
+  "frames": 30,
+  "duration": 1.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.417,
+    "reach": 0.332
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": -0.103
+   },
+   "foot_l": {
+    "t": 0.125,
+    "reach": 0.374
+   },
+   "foot_r": {
+    "t": 0.25,
+    "reach": -0.402
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_impact_3": {
+  "file": "sword and shield impact (3).fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.583,
+    "reach": 0.475
+   },
+   "hand_r": {
+    "t": 0.833,
+    "reach": -0.206
+   },
+   "foot_l": {
+    "t": 0.458,
+    "reach": 0.5
+   },
+   "foot_r": {
+    "t": 0.375,
+    "reach": -0.282
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_impact": {
+  "file": "sword and shield impact.fbx",
+  "frames": 24,
+  "duration": 0.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.447
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": -0.311
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.389
+   },
+   "foot_r": {
+    "t": 0.375,
+    "reach": -0.59
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_jump_2": {
+  "file": "sword and shield jump (2).fbx",
+  "frames": 30,
+  "duration": 1.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.458,
+    "reach": 0.542
+   },
+   "hand_r": {
+    "t": 0.625,
+    "reach": 0.042
+   },
+   "foot_l": {
+    "t": 0.875,
+    "reach": 0.369
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": -0.023
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_jump": {
+  "file": "sword and shield jump.fbx",
+  "frames": 26,
+  "duration": 1.042,
+  "loop": false,
+  "speed": 2.261,
+  "travel": 2.356,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.518
+   },
+   "hand_r": {
+    "t": 0.083,
+    "reach": 0.395
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.422
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": 0.283
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_kick": {
+  "file": "sword and shield kick.fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.0,
+    "reach": 0.385
+   },
+   "hand_r": {
+    "t": 0.292,
+    "reach": 0.456
+   },
+   "foot_l": {
+    "t": 1.5,
+    "reach": 0.346
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": 0.959
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_power_up": {
+  "file": "sword and shield power up.fbx",
+  "frames": 72,
+  "duration": 2.958,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.208,
+    "reach": 0.494
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.248
+   },
+   "foot_l": {
+    "t": 0.708,
+    "reach": 0.386
+   },
+   "foot_r": {
+    "t": 0.708,
+    "reach": -0.381
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_run_2": {
+  "file": "sword and shield run (2).fbx",
+  "frames": 17,
+  "duration": 0.667,
+  "loop": true,
+  "speed": 3.158,
+  "travel": 2.105,
+  "hit": {
+   "hand_l": {
+    "t": 0.083,
+    "reach": 0.396
+   },
+   "hand_r": {
+    "t": 0.5,
+    "reach": 0.131
+   },
+   "foot_l": {
+    "t": 0.5,
+    "reach": 0.379
+   },
+   "foot_r": {
+    "t": 0.125,
+    "reach": 0.28
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_run": {
+  "file": "sword and shield run.fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": true,
+  "speed": 2.982,
+  "travel": 2.609,
+  "hit": {
+   "hand_l": {
+    "t": 0.542,
+    "reach": 0.508
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": 0.363
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.263
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": 0.218
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_slash_2": {
+  "file": "sword and shield slash (2).fbx",
+  "frames": 107,
+  "duration": 4.417,
+  "loop": false,
+  "speed": 0.499,
+  "travel": 2.202,
+  "hit": {
+   "hand_l": {
+    "t": 0.333,
+    "reach": 0.622
+   },
+   "hand_r": {
+    "t": 0.875,
+    "reach": 0.63
+   },
+   "foot_l": {
+    "t": 0.625,
+    "reach": 0.374
+   },
+   "foot_r": {
+    "t": 2.625,
+    "reach": 0.794
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_slash_3": {
+  "file": "sword and shield slash (3).fbx",
+  "frames": 51,
+  "duration": 2.083,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.5,
+    "reach": 0.517
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.552
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.346
+   },
+   "foot_r": {
+    "t": 0.667,
+    "reach": 0.259
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_slash_4": {
+  "file": "sword and shield slash (4).fbx",
+  "frames": 74,
+  "duration": 3.042,
+  "loop": false,
+  "speed": 0.307,
+  "travel": 0.934,
+  "hit": {
+   "hand_l": {
+    "t": 0.75,
+    "reach": 0.595
+   },
+   "hand_r": {
+    "t": 1.667,
+    "reach": 0.429
+   },
+   "foot_l": {
+    "t": 2.833,
+    "reach": 0.343
+   },
+   "foot_r": {
+    "t": 1.292,
+    "reach": 0.541
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.121,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_slash_5": {
+  "file": "sword and shield slash (5).fbx",
+  "frames": 42,
+  "duration": 1.708,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.292,
+    "reach": 0.565
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.591
+   },
+   "foot_l": {
+    "t": 1.417,
+    "reach": 0.513
+   },
+   "foot_r": {
+    "t": 0.083,
+    "reach": -0.171
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_slash": {
+  "file": "sword and shield slash.fbx",
+  "frames": 46,
+  "duration": 1.875,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.585
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.609
+   },
+   "foot_l": {
+    "t": 0.417,
+    "reach": 0.441
+   },
+   "foot_r": {
+    "t": 0.083,
+    "reach": -0.408
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_strafe_2": {
+  "file": "sword and shield strafe (2).fbx",
+  "frames": 40,
+  "duration": 1.625,
+  "loop": true,
+  "speed": 0.782,
+  "travel": 1.272,
+  "hit": {
+   "hand_l": {
+    "t": 1.5,
+    "reach": 0.36
+   },
+   "hand_r": {
+    "t": 1.458,
+    "reach": -0.284
+   },
+   "foot_l": {
+    "t": 1.167,
+    "reach": 0.204
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": -0.082
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_strafe_3": {
+  "file": "sword and shield strafe (3).fbx",
+  "frames": 21,
+  "duration": 0.833,
+  "loop": true,
+  "speed": 2.503,
+  "travel": 2.086,
+  "hit": {
+   "hand_l": {
+    "t": 0.375,
+    "reach": 0.355
+   },
+   "hand_r": {
+    "t": 0.708,
+    "reach": -0.077
+   },
+   "foot_l": {
+    "t": 0.792,
+    "reach": 0.111
+   },
+   "foot_r": {
+    "t": 0.75,
+    "reach": -0.049
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_strafe_4": {
+  "file": "sword and shield strafe (4).fbx",
+  "frames": 22,
+  "duration": 0.875,
+  "loop": true,
+  "speed": 2.445,
+  "travel": 2.139,
+  "hit": {
+   "hand_l": {
+    "t": 0.25,
+    "reach": 0.294
+   },
+   "hand_r": {
+    "t": 0.125,
+    "reach": -0.145
+   },
+   "foot_l": {
+    "t": 0.875,
+    "reach": 0.149
+   },
+   "foot_r": {
+    "t": 0.792,
+    "reach": -0.013
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_strafe": {
+  "file": "sword and shield strafe.fbx",
+  "frames": 35,
+  "duration": 1.417,
+  "loop": true,
+  "speed": 0.884,
+  "travel": 1.253,
+  "hit": {
+   "hand_l": {
+    "t": 0.875,
+    "reach": 0.359
+   },
+   "hand_r": {
+    "t": 0.542,
+    "reach": -0.288
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.164
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": -0.129
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_turn_2": {
+  "file": "sword and shield turn (2).fbx",
+  "frames": 29,
+  "duration": 1.167,
+  "loop": false,
+  "speed": 0.013,
+  "travel": 0.015,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.329
+   },
+   "hand_r": {
+    "t": 0.917,
+    "reach": 0.358
+   },
+   "foot_l": {
+    "t": 0.167,
+    "reach": 0.418
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": 0.206
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.044,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_turn": {
+  "file": "sword and shield turn.fbx",
+  "frames": 29,
+  "duration": 1.167,
+  "loop": false,
+  "speed": 0.013,
+  "travel": 0.015,
+  "hit": {
+   "hand_l": {
+    "t": 0.0,
+    "reach": 0.319
+   },
+   "hand_r": {
+    "t": 0.0,
+    "reach": -0.209
+   },
+   "foot_l": {
+    "t": 0.0,
+    "reach": 0.346
+   },
+   "foot_r": {
+    "t": 1.167,
+    "reach": -0.02
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.033,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_walk_2": {
+  "file": "sword and shield walk (2).fbx",
+  "frames": 39,
+  "duration": 1.583,
+  "loop": true,
+  "speed": 0.817,
+  "travel": 1.293,
+  "hit": {
+   "hand_l": {
+    "t": 1.167,
+    "reach": 0.393
+   },
+   "hand_r": {
+    "t": 1.375,
+    "reach": 0.082
+   },
+   "foot_l": {
+    "t": 1.208,
+    "reach": 0.299
+   },
+   "foot_r": {
+    "t": 0.458,
+    "reach": 0.324
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_sword_and_shield_walk": {
+  "file": "sword and shield walk.fbx",
+  "frames": 34,
+  "duration": 1.375,
+  "loop": true,
+  "speed": 1.08,
+  "travel": 1.485,
+  "hit": {
+   "hand_l": {
+    "t": 0.958,
+    "reach": 0.397
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.084
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.314
+   },
+   "foot_r": {
+    "t": 1.0,
+    "reach": 0.357
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_taken_hostage_victim": {
+  "file": "Taken Hostage - Victim.fbx",
+  "frames": 66,
+  "duration": 2.708,
+  "loop": false,
+  "speed": 0.064,
+  "travel": 0.175,
+  "hit": {
+   "hand_l": {
+    "t": 1.125,
+    "reach": 0.29
+   },
+   "hand_r": {
+    "t": 1.167,
+    "reach": 0.153
+   },
+   "foot_l": {
+    "t": 2.0,
+    "reach": 0.228
+   },
+   "foot_r": {
+    "t": 0.75,
+    "reach": -0.018
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.443,
+  "hadMesh": false
+ },
+ "mx_taken_hostage_villain": {
+  "file": "Taken Hostage - Villain.fbx",
+  "frames": 66,
+  "duration": 2.708,
+  "loop": false,
+  "speed": 0.24,
+  "travel": 0.649,
+  "hit": {
+   "hand_l": {
+    "t": 0.833,
+    "reach": 0.582
+   },
+   "hand_r": {
+    "t": 1.083,
+    "reach": 0.237
+   },
+   "foot_l": {
+    "t": 0.542,
+    "reach": 0.453
+   },
+   "foot_r": {
+    "t": 0.0,
+    "reach": -0.113
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.441,
+  "hadMesh": false
+ },
+ "mx_taunt_gesture": {
+  "file": "Taunt Gesture.fbx",
+  "frames": 60,
+  "duration": 2.458,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.167,
+    "reach": 0.251
+   },
+   "hand_r": {
+    "t": 0.75,
+    "reach": 0.642
+   },
+   "foot_l": {
+    "t": 2.417,
+    "reach": 0.027
+   },
+   "foot_r": {
+    "t": 2.417,
+    "reach": 0.002
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_taunt": {
+  "file": "Taunt.fbx",
+  "frames": 50,
+  "duration": 2.042,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.625,
+    "reach": 0.436
+   },
+   "hand_r": {
+    "t": 1.583,
+    "reach": 0.318
+   },
+   "foot_l": {
+    "t": 1.917,
+    "reach": 0.218
+   },
+   "foot_r": {
+    "t": 1.917,
+    "reach": -0.249
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_terrified": {
+  "file": "Terrified.fbx",
+  "frames": 601,
+  "duration": 25.0,
+  "loop": false,
+  "speed": 0.004,
+  "travel": 0.111,
+  "hit": {
+   "hand_l": {
+    "t": 13.333,
+    "reach": 0.445
+   },
+   "hand_r": {
+    "t": 9.667,
+    "reach": 0.433
+   },
+   "foot_l": {
+    "t": 1.125,
+    "reach": 0.09
+   },
+   "foot_r": {
+    "t": 1.5,
+    "reach": 0.009
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.649,
+  "hadMesh": false
+ },
+ "mx_throw_object": {
+  "file": "Throw Object.fbx",
+  "frames": 147,
+  "duration": 6.083,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.708,
+    "reach": 0.622
+   },
+   "hand_r": {
+    "t": 3.125,
+    "reach": 0.656
+   },
+   "foot_l": {
+    "t": 4.625,
+    "reach": 0.532
+   },
+   "foot_r": {
+    "t": 0.583,
+    "reach": 0.012
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_two_handed_sword_death_2": {
+  "file": "two handed sword death (2).fbx",
+  "frames": 79,
+  "duration": 3.25,
+  "loop": false,
+  "speed": 0.353,
+  "travel": 1.149,
+  "hit": {
+   "hand_l": {
+    "t": 0.167,
+    "reach": 0.294
+   },
+   "hand_r": {
+    "t": 0.167,
+    "reach": 0.381
+   },
+   "foot_l": {
+    "t": 0.208,
+    "reach": 0.144
+   },
+   "foot_r": {
+    "t": 0.208,
+    "reach": -0.182
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.722,
+  "hadMesh": false
+ },
+ "mx_two_handed_sword_death": {
+  "file": "two handed sword death.fbx",
+  "frames": 73,
+  "duration": 3.0,
+  "loop": false,
+  "speed": 0.26,
+  "travel": 0.781,
+  "hit": {
+   "hand_l": {
+    "t": 1.083,
+    "reach": 0.518
+   },
+   "hand_r": {
+    "t": 1.583,
+    "reach": 0.532
+   },
+   "foot_l": {
+    "t": 1.958,
+    "reach": 0.879
+   },
+   "foot_r": {
+    "t": 2.0,
+    "reach": 0.677
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.564,
+  "hadMesh": false
+ },
+ "mx_uppercut_jab": {
+  "file": "Uppercut Jab.fbx",
+  "frames": 109,
+  "duration": 4.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.208,
+    "reach": 0.564
+   },
+   "hand_r": {
+    "t": 2.542,
+    "reach": 0.592
+   },
+   "foot_l": {
+    "t": 0.083,
+    "reach": 0.325
+   },
+   "foot_r": {
+    "t": 4.5,
+    "reach": -0.332
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_uppercut": {
+  "file": "Uppercut.fbx",
+  "frames": 41,
+  "duration": 1.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.583,
+    "reach": 0.563
+   },
+   "hand_r": {
+    "t": 0.375,
+    "reach": 0.243
+   },
+   "foot_l": {
+    "t": 1.292,
+    "reach": 0.254
+   },
+   "foot_r": {
+    "t": 1.292,
+    "reach": -0.235
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_victory_1": {
+  "file": "Victory (1).fbx",
+  "frames": 257,
+  "duration": 10.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.667,
+    "reach": 0.336
+   },
+   "hand_r": {
+    "t": 4.583,
+    "reach": 0.346
+   },
+   "foot_l": {
+    "t": 5.5,
+    "reach": -0.017
+   },
+   "foot_r": {
+    "t": 2.667,
+    "reach": -0.009
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_victory": {
+  "file": "Victory.fbx",
+  "frames": 136,
+  "duration": 5.625,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 4.208,
+    "reach": 0.343
+   },
+   "hand_r": {
+    "t": 4.208,
+    "reach": 0.321
+   },
+   "foot_l": {
+    "t": 4.333,
+    "reach": -0.013
+   },
+   "foot_r": {
+    "t": 4.333,
+    "reach": -0.012
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_walk_backwards": {
+  "file": "Walk Backwards.fbx",
+  "frames": 117,
+  "duration": 4.833,
+  "loop": true,
+  "speed": 0.326,
+  "travel": 1.576,
+  "hit": {
+   "hand_l": {
+    "t": 1.417,
+    "reach": 0.499
+   },
+   "hand_r": {
+    "t": 2.25,
+    "reach": 0.0
+   },
+   "foot_l": {
+    "t": 0.792,
+    "reach": 0.458
+   },
+   "foot_r": {
+    "t": 1.5,
+    "reach": 0.235
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_walking_backwards": {
+  "file": "Walking Backwards.fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": true,
+  "speed": 0.815,
+  "travel": 1.222,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.302
+   },
+   "hand_r": {
+    "t": 1.25,
+    "reach": 0.326
+   },
+   "foot_l": {
+    "t": 1.25,
+    "reach": 0.342
+   },
+   "foot_r": {
+    "t": 0.5,
+    "reach": 0.37
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_walking_left_turn": {
+  "file": "Walking Left Turn.fbx",
+  "frames": 37,
+  "duration": 1.5,
+  "loop": false,
+  "speed": 1.005,
+  "travel": 1.507,
+  "hit": {
+   "hand_l": {
+    "t": 1.0,
+    "reach": 0.155
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.277
+   },
+   "foot_l": {
+    "t": 0.25,
+    "reach": 0.401
+   },
+   "foot_r": {
+    "t": 1.0,
+    "reach": 0.446
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.019,
+  "hadMesh": false
+ },
+ "mx_walking_turn_180": {
+  "file": "Walking Turn 180.fbx",
+  "frames": 31,
+  "duration": 1.25,
+  "loop": false,
+  "speed": 0.093,
+  "travel": 0.116,
+  "hit": {
+   "hand_l": {
+    "t": 0.5,
+    "reach": 0.246
+   },
+   "hand_r": {
+    "t": 1.0,
+    "reach": 0.181
+   },
+   "foot_l": {
+    "t": 1.0,
+    "reach": 0.34
+   },
+   "foot_r": {
+    "t": 1.25,
+    "reach": 0.012
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.06,
+  "hadMesh": false
+ },
+ "mx_walking": {
+  "file": "Walking.fbx",
+  "frames": 32,
+  "duration": 1.292,
+  "loop": true,
+  "speed": 1.284,
+  "travel": 1.659,
+  "hit": {
+   "hand_l": {
+    "t": 1.0,
+    "reach": 0.245
+   },
+   "hand_r": {
+    "t": 0.333,
+    "reach": 0.281
+   },
+   "foot_l": {
+    "t": 0.292,
+    "reach": 0.372
+   },
+   "foot_r": {
+    "t": 0.917,
+    "reach": 0.384
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_yelling_out": {
+  "file": "Yelling Out.fbx",
+  "frames": 130,
+  "duration": 5.375,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.023
+   },
+   "hand_r": {
+    "t": 0.583,
+    "reach": 0.061
+   },
+   "foot_l": {
+    "t": 4.208,
+    "reach": 0.243
+   },
+   "foot_r": {
+    "t": 5.042,
+    "reach": -0.019
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_yelling": {
+  "file": "Yelling.fbx",
+  "frames": 236,
+  "duration": 9.792,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 2.958,
+    "reach": 0.22
+   },
+   "hand_r": {
+    "t": 2.917,
+    "reach": 0.124
+   },
+   "foot_l": {
+    "t": 8.542,
+    "reach": -0.042
+   },
+   "foot_r": {
+    "t": 8.542,
+    "reach": -0.047
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_zombie_biting_1": {
+  "file": "Zombie Biting (1).fbx",
+  "frames": 209,
+  "duration": 8.667,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 5.667,
+    "reach": 0.485
+   },
+   "hand_r": {
+    "t": 6.917,
+    "reach": 0.354
+   },
+   "foot_l": {
+    "t": 6.75,
+    "reach": 0.221
+   },
+   "foot_r": {
+    "t": 7.208,
+    "reach": 0.239
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_zombie_biting": {
+  "file": "Zombie Biting.fbx",
+  "frames": 71,
+  "duration": 2.917,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.625,
+    "reach": 0.352
+   },
+   "hand_r": {
+    "t": 0.583,
+    "reach": 0.064
+   },
+   "foot_l": {
+    "t": 0.708,
+    "reach": -0.218
+   },
+   "foot_r": {
+    "t": 1.125,
+    "reach": -0.539
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_zombie_crawl": {
+  "file": "Zombie Crawl.fbx",
+  "frames": 155,
+  "duration": 6.417,
+  "loop": true,
+  "speed": 0.314,
+  "travel": 2.013,
+  "hit": {
+   "hand_l": {
+    "t": 4.667,
+    "reach": 0.687
+   },
+   "hand_r": {
+    "t": 3.125,
+    "reach": 0.763
+   },
+   "foot_l": {
+    "t": 3.833,
+    "reach": -0.917
+   },
+   "foot_r": {
+    "t": 5.167,
+    "reach": -0.891
+   }
+  },
+  "endsLying": true,
+  "loopError": 0.001,
+  "hadMesh": false
+ },
+ "mx_zombie_kicking": {
+  "file": "Zombie Kicking.fbx",
+  "frames": 102,
+  "duration": 4.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 0.792,
+    "reach": 0.42
+   },
+   "hand_r": {
+    "t": 1.667,
+    "reach": 0.191
+   },
+   "foot_l": {
+    "t": 4.0,
+    "reach": 0.204
+   },
+   "foot_r": {
+    "t": 1.083,
+    "reach": 0.946
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_zombie_neck_bite": {
+  "file": "Zombie Neck Bite.fbx",
+  "frames": 126,
+  "duration": 5.208,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 3.708,
+    "reach": 0.411
+   },
+   "hand_r": {
+    "t": 3.833,
+    "reach": 0.534
+   },
+   "foot_l": {
+    "t": 3.833,
+    "reach": 0.28
+   },
+   "foot_r": {
+    "t": 4.292,
+    "reach": 0.151
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ },
+ "mx_zombie_scream": {
+  "file": "Zombie Scream.fbx",
+  "frames": 85,
+  "duration": 3.5,
+  "loop": false,
+  "speed": 0.0,
+  "travel": 0.0,
+  "hit": {
+   "hand_l": {
+    "t": 1.083,
+    "reach": 0.417
+   },
+   "hand_r": {
+    "t": 1.042,
+    "reach": 0.345
+   },
+   "foot_l": {
+    "t": 2.833,
+    "reach": 0.146
+   },
+   "foot_r": {
+    "t": 2.833,
+    "reach": -0.081
+   }
+  },
+  "endsLying": false,
+  "loopError": 0.0,
+  "hadMesh": false
+ }
+}

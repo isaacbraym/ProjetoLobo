@@ -159,6 +159,15 @@ export class Player implements Fighter {
   private pickAttack(kind: ButtonAction): string {
     const c = attacksData.combos;
     const comboAlive = this.sinceAttack < c.comboResetSeconds;
+    const wolf = this.damageMul > 1;
+    if (wolf && (kind === 'light' || kind === 'kick') && c.wolfLight) {
+      if (!comboAlive) this.lightStep = 0;
+      const step = c.wolfLight[this.lightStep % c.wolfLight.length]!;
+      this.lightStep = (this.lightStep + 1) % c.wolfLight.length;
+      return step.length > 1 ? rngs.combat.weighted(step, () => 1, this.lastLightVariant) : step[0]!;
+    }
+    if (wolf && kind === 'heavy' && c.wolfHeavy) return c.wolfHeavy[0]![0]!;
+    if (kind === 'kick' && this.state === 'dodge' && c.afterDodgeKick) return c.afterDodgeKick;
     if (kind === 'light') {
       if (!comboAlive) this.lightStep = 0;
       const step = c.light[this.lightStep % c.light.length]!;
@@ -174,8 +183,13 @@ export class Player implements Fighter {
       this.lightStep = 0;
       return id;
     }
-    return c.kick[0]![0]!;
+    const kicks = c.kick[0]!;
+    const id = kicks.length > 1 ? rngs.combat.weighted(kicks, () => 1, this.lastKick) : kicks[0]!;
+    this.lastKick = id;
+    return id;
   }
+
+  private lastKick = '';
 
   /** Free-flow: melhor alvo no cone da direção desejada (ou da frente). */
   private chooseTarget(dx: number, dz: number, mag: number, maxDist: number): Fighter | null {
@@ -270,7 +284,7 @@ export class Player implements Fighter {
     a.yaw = Math.atan2(this.dodgeDir.x, this.dodgeDir.z);
     this.dodgeDone = 0;
     this.dodgeIFrames = 0.34;
-    a.model.animator.play('roll', { speed: 1.75, start: 0.12, end: 1.12, fade: 0.05 });
+    a.model.animator.play('roll', { speed: 2.1, start: 0.45, end: 1.75, fade: 0.06, fadeOut: 0.18 });
     audio.play('whoosh', 0.6);
     this.setState('dodge');
   }
@@ -319,7 +333,7 @@ export class Player implements Fighter {
     }
     this.stun = info.heavy ? 0.6 : 0.32;
     a.yaw = Math.atan2(-info.dirX, -info.dirZ);
-    a.model.animator.play(info.attack.react === 'head' ? 'hitHead' : 'hitChest', { speed: info.heavy ? 0.8 : 1.1, fade: 0.04 });
+    a.model.animator.play(info.attack.react === 'head' ? 'hitHead' : 'hitChest', { speed: info.heavy ? 0.95 : 1.2, start: 0.05, end: info.heavy ? 0.95 : 0.7, fade: 0.04, fadeOut: 0.2 });
     this.attack = null;
     this.setState('hit');
     return true;

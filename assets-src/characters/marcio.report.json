@@ -49,7 +49,11 @@
   ],
   "out": "public\\assets\\characters\\marcio.glb",
   "outHash": "bc31d8aa5ba0739691d4cda02c49845efb45f5e791ea54943b186604749ff804",
+  "mixamo": {
+    "clips": 242,
+    "meta": "public\\assets\\anims\\mixamo_meta.json"
+  },
   "anims": "public\\assets\\anims\\humanoid_anims.glb",
-  "animCount": 43,
+  "animCount": 285,
   "qa": ".agent-tmp\\characters\\marcio"
 }

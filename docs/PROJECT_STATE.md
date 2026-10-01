@@ -42,18 +42,43 @@ sem menu e com bot: `?autotest=1&bot=1&perf=1`.
    melhorar volume, fios e o grisalho das laterais da referência (projetar a foto no cabelo também é uma opção).
 2. **Lobisomem v2:** morph targets reais na malha do Márcio (Blender: `wolf_body`, `wolf_face`), roupa rasgando
    (dissolve), corrida de quatro (galope autorado), devorar, desmembramento. Pelo hoje é shells simples.
-3. **Combate restante (M2/M4):** knockdown + levantar (clipes CMU get-up já existem no cache do Bairro — ver
-   `docs/ASSET_PIPELINE.md` §0), finalizações com câmera, agarrão/arremesso, armas improvisadas, mais arquétipos
-   (grappler, armed, thrower, shield, elite), props destrutíveis.
+3. **Combate restante (M2/M4):** (knockdown/levantar e finalizações já existem) agarrão/arremesso (`mx_goalie_throw`),
+   armas improvisadas (clipes `mx_standing_melee_*`, `mx_stabbing`, `mx_great_sword_*` prontos), mais arquétipos
+   (grappler, armed, thrower, shield, elite), props destrutíveis. **Investigar:** numa captura um corpo pareceu ficar
+   em pé após a morte (talvez morte durante `getup`/hold) — reproduzir com `npm run capture` e corrigir.
+   Download inicial subiu para ~31 MB (animações 14 MB): dividir em GLB de combate + GLB extra carregado depois.
 4. **Música:** o usuário vai entregar faixas de IA (PENDENCIAS P04) — `audio.musicBus` + ducking já prontos.
 5. **M6:** andar 1 de verdade (gerador de planta + bake de luz no Blender), reféns, arenas com barricadas.
 6. Bosses (Clóvis), mobile real, presets, andares 2/3.
 
+### Animações Mixamo (integradas — 242 clipes convertidos; validar detalhes por captura)
+- O usuário subiu **~240 FBX do Mixamo** em `assets-src/vendor/mixamo/` (fora do Git; alguns vieram "With Skin" — a
+  malha é descartada automaticamente; nomes "Boxing (3)" viram `mx_boxing_3`; a T-pose de referência é ignorada).
+- Retarget: `tools/blender/retarget_mixamo.py`, chamado pelo build do Márcio com `--mixamo` (mesma sessão = mesmo
+  repouso). Método: delta de rotação de mundo por osso (os dois em pose T) + pelve escalada. Loops ficam no lugar e a
+  **velocidade real medida** vai para `public/assets/anims/mixamo_meta.json` junto com: duração, sugestão de impacto
+  (`hit`: tempo de maior alcance de cada mão/pé), `endsLying`, erro de loop. Folhas de conferência:
+  `--qa "mx_a|mx_b"` → `.agent-tmp/characters/marcio/clips/`.
+- Runtime: `data/anim/clipmap.json` (nome canônico → clipes em ordem de preferência; Mixamo primeiro),
+  `AnimLibrary` usa o metadado para sincronizar a cadência dos pés; `Animator` reescrito (strafe lateral, troca de
+  conjunto de locomoção com crossfade em fase — humano ↔ lobo, soma de pesos sempre ≥ 1).
+- Golpes refeitos com clipes Mixamo em `data/combat/attacks.json` (jab/cruzado do mesmo clipe emendados, gancho,
+  joelhada, cotovelada, chute MMA/giratório, voadora após esquiva, patadas Mutant como lobo, socos dos capangas com
+  preparação = telegrafia). Inimigos: knockdown real (cai, fica no chão, levanta com `mx_getting_up` 2,2–6,6 s).
+- Rolamento ajustado (start 0.45 / end 1.75 / speed 2.1). GLB de animações comprimido com Meshopt
+  (`npx tsx tools/pipeline/optimize-anims.ts` — **rodar depois de todo build com `--mixamo`**): 24,8 → 14,2 MB.
+- **Pendente validar por captura:** tempos de impacto finos de cada golpe, knockdown→getup (de bruços?), headbutt e
+  brutal assassination (finalizações candidatas), clipes de reféns (hostage/kneeling/praying) para o M6.
+- Rodar tudo:
+  `BLENDER_USER_RESOURCES=C:/Ferramentas/Blender-spike-profile "C:/Program Files/Blender Foundation/Blender 4.2/blender.exe" -b --python tools/blender/build_character.py -- --recipe data/characters/marcio.json --anims --mixamo`
+  (o export do glTF com ~285 ações demora vários minutos).
+
 ### Como gerar personagens (Blender headless, ~1–2 min cada)
 ```
-BLENDER_USER_RESOURCES=C:/Ferramentas/Blender-spike-profile "C:/Program Files/Blender Foundation/Blender 4.2/blender.exe" -b --python tools/blender/build_character.py -- --recipe data/characters/marcio.json --anims
+BLENDER_USER_RESOURCES=C:/Ferramentas/Blender-spike-profile "C:/Program Files/Blender Foundation/Blender 4.2/blender.exe" -b --python tools/blender/build_character.py -- --recipe data/characters/marcio.json --anims --mixamo
 ```
-(`--anims` regrava `public/assets/anims/humanoid_anims.glb`; só precisa no Márcio.) Renders de conferência em
+(`--anims` regrava `public/assets/anims/humanoid_anims.glb`; só precisa no Márcio. **Sempre com `--mixamo`**, senão
+o GLB de animações perde os clipes do Mixamo.) Renders de conferência em
 `.agent-tmp/characters/<id>/{front,side,face,pose}.png`. Receitas: `data/characters/*.json`.
 
 ### Arquitetura de personagens (importante)
