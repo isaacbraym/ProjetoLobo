@@ -63,7 +63,7 @@ export class Ragdoll {
         R.RigidBodyDesc.dynamic()
           .setTranslation(start.x, start.y, start.z)
           .setRotation({ x: bq.x, y: bq.y, z: bq.z, w: bq.w })
-          .setLinearDamping(0.25)
+          .setLinearDamping(0.55)
           .setAngularDamping(2.2)
           .setCanSleep(true),
       );

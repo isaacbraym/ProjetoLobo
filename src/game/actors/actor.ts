@@ -76,7 +76,8 @@ export class Actor {
   move(dx: number, dz: number, dt: number): void {
     dx += this.push.x * dt;
     dz += this.push.z * dt;
-    const decay = Math.pow(0.0008, dt);
+    // atrito alto: o corpo para rápido (sensação de peso). Distância ≈ velocidade inicial / 8,3.
+    const decay = Math.pow(0.00025, dt);
     this.push.multiplyScalar(decay);
     const kcc = Actor.kcc!;
     this.tmpMove.x = dx;

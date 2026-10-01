@@ -211,12 +211,13 @@ export class Enemy implements Fighter {
     this.engaged = true;
     a.hp = Math.max(0, a.hp - info.damage);
     a.yaw = Math.atan2(-info.dirX, -info.dirZ);
-    const kb = info.attack.knockback;
+    // empurrão dividido pela massa do arquétipo (corpos pesados recuam pouco)
+    const kb = info.attack.knockback / (this.def.mass ?? 1);
     if (a.hp <= 0) {
       a.alive = false;
       this.hasToken = false;
       this.telegraphAmount = 0;
-      a.push.set(info.dirX * kb * 2.5, 0, info.dirZ * kb * 2.5);
+      a.push.set(info.dirX * kb * 1.3, 0, info.dirZ * kb * 1.3);
       this.setState('dead');
       events.emit('Killed', { victimId: a.id, killerId: info.attacker.id, archetype: this.archetypeId, tier: this.def.tier });
       return true;
@@ -229,23 +230,23 @@ export class Enemy implements Fighter {
       // derrubado de verdade: cai, fica no chão, levanta (Mixamo Knocked Down / Getting Up)
       a.poise = this.def.poise;
       this.stun = 1.6;
-      a.push.set(info.dirX * kb * 3.4, 0, info.dirZ * kb * 3.4);
+      a.push.set(info.dirX * kb * 1.7, 0, info.dirZ * kb * 1.7);
       a.model.animator.play('knockdown', { speed: 1.3, start: 0.2, end: 2.4, fade: 0.06, hold: true });
       this.cancelAttack();
       this.setState('down');
     } else if (a.poise <= 0 || heavyReact) {
       a.poise = this.def.poise;
       this.stun = heavyReact ? 0.95 : 0.75;
-      a.push.set(info.dirX * kb * 3.2, 0, info.dirZ * kb * 3.2);
+      a.push.set(info.dirX * kb * 1.4, 0, info.dirZ * kb * 1.4);
       a.model.animator.play('hitBig', { speed: 1.25, start: 0, end: 1.15, fade: 0.06 });
       this.cancelAttack();
       this.setState('stagger');
     } else if (this.state === 'attack' && this.def.poise >= 60 && !info.heavy) {
       // super-armor do Heavy: só leva o flash/dano
-      a.push.set(info.dirX * kb * 0.6, 0, info.dirZ * kb * 0.6);
+      a.push.set(info.dirX * kb * 0.25, 0, info.dirZ * kb * 0.25);
     } else {
       this.stun = 0.34;
-      a.push.set(info.dirX * kb * 2.4, 0, info.dirZ * kb * 2.4);
+      a.push.set(info.dirX * kb * 0.9, 0, info.dirZ * kb * 0.9);
       a.model.animator.play(react === 'head' ? 'hitHead' : 'hitChest', { speed: 1.15, start: 0.05, end: 0.75, fade: 0.04, fadeOut: 0.25 });
       this.cancelAttack();
       this.setState('hit');

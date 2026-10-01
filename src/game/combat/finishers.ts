@@ -27,9 +27,9 @@ interface FinisherDef {
 }
 
 const FINISHERS: FinisherDef[] = [
-  { id: 'uppercut_fatal', clip: 'uppercut', speed: 0.85, start: 0.0, impactAt: 0.28, end: 0.7, fwd: 2.5, up: 8.5, blood: 2.6, camSide: 1, camHeight: 1.0 },
-  { id: 'martelada', clip: 'heavySlam', speed: 1.1, start: 0.25, impactAt: 0.62, end: 1.0, fwd: 1.5, up: -3.0, blood: 2.2, camSide: -1, camHeight: 1.6 },
-  { id: 'chute_voador', clip: 'kick', speed: 0.95, start: 0.0, impactAt: 0.24, end: 0.55, fwd: 11, up: 3.0, blood: 2.0, camSide: 1, camHeight: 1.2 },
+  { id: 'uppercut_fatal', clip: 'uppercut', speed: 0.85, start: 0.0, impactAt: 0.28, end: 0.7, fwd: 1.6, up: 5.0, blood: 2.6, camSide: 1, camHeight: 1.0 },
+  { id: 'martelada', clip: 'heavySlam', speed: 1.1, start: 0.25, impactAt: 0.62, end: 1.0, fwd: 0.8, up: -3.0, blood: 2.2, camSide: -1, camHeight: 1.6 },
+  { id: 'chute_voador', clip: 'kick', speed: 0.95, start: 0.0, impactAt: 0.24, end: 0.55, fwd: 6.0, up: 1.6, blood: 2.0, camSide: 1, camHeight: 1.2 },
 ];
 
 /**

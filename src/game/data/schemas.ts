@@ -19,6 +19,10 @@ export const AttackSchema = z.object({
   react: z.enum(['head', 'chest', 'launch', 'knockdown']),
   sfx: z.string(),
   heavy: z.boolean(),
+  /** chance de crítico (0..1); padrão 5% leve / 15% pesado */
+  critChance: z.number().min(0).max(1).optional(),
+  /** arma branca/garra: sempre sangra */
+  bleed: z.boolean().optional(),
 });
 export type AttackDef = z.infer<typeof AttackSchema>;
 
@@ -63,6 +67,8 @@ export const ArchetypeSchema = z.object({
   width: z.number().positive(),
   colors: z.object({ main: z.string(), joints: z.string() }),
   bar: z.string(),
+  /** massa relativa: divide o empurrão dos golpes (Brutamontes quase não sai do lugar) */
+  mass: z.number().positive().optional(),
   /** id do personagem gerado no Blender (public/assets/characters/<model>.glb) */
   model: z.string().optional(),
   modelScale: z.number().positive().optional(),

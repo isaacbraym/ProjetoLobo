@@ -1,6 +1,6 @@
 /** Barramento de eventos tipado. Sistemas se comunicam por eventos; o combate não conhece música, UI ou civis. */
 export interface GameEvents {
-  HitLanded: { attackerId: number; targetId: number; damage: number; heavy: boolean; x: number; y: number; z: number; finisher?: boolean };
+  HitLanded: { attackerId: number; targetId: number; damage: number; heavy: boolean; crit?: boolean; x: number; y: number; z: number; finisher?: boolean };
   Killed: { victimId: number; killerId: number; archetype: string; tier: number };
   PlayerDamaged: { damage: number; hp: number };
   PlayerDied: { livesLeft: number };

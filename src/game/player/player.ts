@@ -256,7 +256,8 @@ export class Player implements Fighter {
     }
     if (!this.hitDone && t >= def.hitAt) {
       this.hitDone = true;
-      this.combat.resolve(this, def, (this.perfectWindow > 0 ? 1.5 : 1) * this.damageMul);
+      // contra-ataque após esquiva perfeita é sempre crítico
+      this.combat.resolve(this, def, this.damageMul, this.perfectWindow > 0);
     }
     // cancelamentos
     if (t >= def.cancelAt) {

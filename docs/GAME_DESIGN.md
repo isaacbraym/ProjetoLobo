@@ -49,6 +49,10 @@ Sessão de um andar: 20–35 min. Jogo completo: ~1h30–2h.
 - **Vida do Márcio:** 100. 3 vidas. Checkpoint no início de cada arena/sala grande. Cura: comida da cafeteria, kits de
   primeiros socorros (segredos), devorar (lobo).
 
+### Sangue e peso (DEC-0012/0013)
+Sangue só em **crítico**, **arma branca/garra** ou **golpe fatal** (inclui finalizações e poça sob o corpo). Acertos comuns
+mostram impacto seco. Inimigos recuam pouco (massa por arquétipo; o Brutamontes quase não sai do lugar).
+
 ## 5. Barra do Lobisomem (valores iniciais, `data/werewolf.json`)
 Ganho (0–100):
 | Evento | Ganho |

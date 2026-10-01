@@ -45,7 +45,8 @@
           "M_Shirt": "#7a5a2a",
           "M_Pants": "#1d1d1d"
         }
-      ]
+      ],
+      "mass": 1.0
     },
     "fast": {
       "name": "Ligeiro",
@@ -87,7 +88,8 @@
           "M_Shirt": "#a8541c",
           "M_Pants": "#262626"
         }
-      ]
+      ],
+      "mass": 0.85
     },
     "heavy": {
       "name": "Brutamontes",
@@ -125,7 +127,8 @@
           "M_Tank": "#8a1f1f",
           "M_Jeans": "#2b3a55"
         }
-      ]
+      ],
+      "mass": 1.9
     }
   }
 }

@@ -95,6 +95,20 @@ export class Particles {
     }
   }
 
+  /** Impacto seco (soco sem crítico): lufada clara curta + respingo de suor, sem sangue nem mancha. */
+  impact(x: number, y: number, z: number, dirX: number, dirZ: number, amount: number): void {
+    const r = rngs.vfx;
+    for (let k = 0; k < 7 * amount; k++) {
+      const sp = r.range(0.6, 2.0);
+      const g = r.range(0.8, 0.95);
+      this.spawn(x, y, z, dirX * sp + r.range(-0.7, 0.7), r.range(-0.2, 0.8), dirZ * sp + r.range(-0.7, 0.7), r.range(0.14, 0.24), g, g * 0.96, g * 0.9, 0.45, r.range(0.07, 0.14), 0.5, 0);
+    }
+    for (let k = 0; k < 5 * amount; k++) {
+      const sp = r.range(1.5, 3.5);
+      this.spawn(x, y, z, dirX * sp + r.range(-1, 1), r.range(0.3, 1.6), dirZ * sp + r.range(-1, 1), r.range(0.25, 0.4), 0.85, 0.88, 0.9, 0.7, r.range(0.015, 0.03), 9.8, 0);
+    }
+  }
+
   dust(x: number, y: number, z: number, amount: number): void {
     const r = rngs.vfx;
     for (let k = 0; k < 10 * amount; k++) {

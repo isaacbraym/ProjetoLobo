@@ -233,7 +233,7 @@ export class Game {
   private makeCorpse(actor: Actor): void {
     actor.disableCollision();
     const pending = this.finishers?.pendingImpulse.get(actor.id);
-    const imp = pending ?? new THREE.Vector3(actor.push.x * 0.55, 2.2 + Math.hypot(actor.push.x, actor.push.z) * 0.12, actor.push.z * 0.55);
+    const imp = pending ?? new THREE.Vector3(actor.push.x * 0.4, 0.9 + Math.hypot(actor.push.x, actor.push.z) * 0.06, actor.push.z * 0.4);
     if (pending) this.finishers.pendingImpulse.delete(actor.id);
     const rd = new Ragdoll(this.physics, actor.model, imp);
     this.corpses.push({ model: actor.model, ragdoll: rd, actor });
