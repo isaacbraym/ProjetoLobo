@@ -1,0 +1,36 @@
+{
+  "id": "thug_a",
+  "recipe": "data\\characters\\thug_a.json",
+  "generatorVersion": 1,
+  "joints_moved": 52,
+  "triangles": 16416,
+  "height_m": 1.8326,
+  "bones": 65,
+  "meshes": {
+    "Body": 3938,
+    "Shirt": 1798,
+    "Pants": 1217,
+    "Shoe_L": 1235,
+    "Shoe_R": 1235,
+    "Hair": 346,
+    "Beard": 351,
+    "Eye_L": 72,
+    "Eye_R": 72,
+    "Lash_L": 60,
+    "Lash_R": 60
+  },
+  "materials": [
+    "M_Beard",
+    "M_Eye",
+    "M_Hair",
+    "M_Lash",
+    "M_Lips",
+    "M_Pants",
+    "M_Shirt",
+    "M_Shoes",
+    "M_Skin"
+  ],
+  "out": "public\\assets\\characters\\thug_a.glb",
+  "outHash": "5c1462d2de4a398f4585e3a9afaf1e24d43a4d9d224acf156cf653da3711c163",
+  "qa": ".agent-tmp\\characters\\thug_a"
+}

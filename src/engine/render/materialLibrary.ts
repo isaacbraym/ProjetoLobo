@@ -153,7 +153,16 @@ function centerEyeUv(mesh: THREE.Mesh): void {
 
 export interface MaterialOverrides {
   iris?: string;
+  /** cor por nome de material (variação por instância de inimigos/civis) */
+  tint?: Record<string, string>;
+  /** foto do rosto projetada (UV 'FaceProj' = uv1, máscara = alfa da cor de vértice) */
+  faceMap?: THREE.Texture;
 }
+
+const ribNormal = () =>
+  heightToNormal('rib', 64, (x) => (x % 4 < 2 ? 1 : 0), 1.2);
+const twillNormal = () =>
+  heightToNormal('twill', 64, (x, y) => ((x + y * 2) % 8 < 4 ? 1 : 0), 0.9);
 
 export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrides = {}): THREE.MeshStandardMaterial[] {
   const created: THREE.MeshStandardMaterial[] = [];
@@ -163,21 +172,54 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
     const src = mesh.material as THREE.MeshStandardMaterial;
     const name = src.name || '';
     const color = src.color ? src.color.clone() : new THREE.Color(0.5, 0.5, 0.5);
+    const t = opts.tint?.[name];
+    if (t) color.set(t);
     let m: THREE.MeshStandardMaterial;
     switch (name) {
-      case 'M_Skin':
-        m = new THREE.MeshPhysicalMaterial({ name, color, roughness: 0.62, sheen: 0.25, sheenColor: new THREE.Color(0.9, 0.5, 0.4), sheenRoughness: 0.6 });
+      case 'M_Skin': {
+        const phys = new THREE.MeshPhysicalMaterial({ name, color, roughness: 0.62, sheen: 0.25, sheenColor: new THREE.Color(0.9, 0.5, 0.4), sheenRoughness: 0.6 });
+        const g = mesh.geometry;
+        if (opts.faceMap && g.getAttribute('uv1') && g.getAttribute('color')) {
+          // rosto projetado (técnica WWE 2K-lite): foto misturada à pele pela máscara por vértice
+          if (!g.getAttribute('faceUv')) {
+            g.setAttribute('faceUv', g.getAttribute('uv1'));
+            const col = g.getAttribute('color') as THREE.BufferAttribute;
+            const m = new Float32Array(col.count);
+            for (let i = 0; i < col.count; i++) m[i] = col.itemSize === 4 ? col.getW(i) : 0;
+            g.setAttribute('faceMask', new THREE.BufferAttribute(m, 1));
+          }
+          const faceMap = opts.faceMap;
+          phys.onBeforeCompile = (sh) => {
+            sh.uniforms.faceMap = { value: faceMap };
+            sh.vertexShader = sh.vertexShader
+              .replace('#include <common>', '#include <common>\nattribute vec2 faceUv; attribute float faceMask; varying vec2 vFaceUv; varying float vFaceMask;')
+              .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFaceUv = faceUv; vFaceMask = faceMask;');
+            sh.fragmentShader = sh.fragmentShader
+              .replace('#include <common>', '#include <common>\nuniform sampler2D faceMap; varying vec2 vFaceUv; varying float vFaceMask;')
+              .replace('#include <map_fragment>', '#include <map_fragment>\nvec4 faceC = texture2D(faceMap, vFaceUv);\ndiffuseColor.rgb = mix(diffuseColor.rgb, faceC.rgb, clamp(vFaceMask, 0.0, 1.0));');
+          };
+          phys.customProgramCacheKey = () => 'skin-face';
+        }
+        m = phys;
         break;
+      }
       case 'M_Lips':
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.42 });
+        break;
+      case 'M_Tank':
+        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.92, normalMap: ribNormal(), normalScale: new THREE.Vector2(0.6, 0.6) });
+        (m.normalMap as THREE.Texture).repeat.set(40, 40);
+        break;
+      case 'M_Pants':
+        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.9, normalMap: twillNormal(), normalScale: new THREE.Vector2(0.45, 0.45) });
+        (m.normalMap as THREE.Texture).repeat.set(30, 30);
         break;
       case 'M_Polo':
       case 'M_Shirt':
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.9, normalMap: knitNormal(), normalScale: new THREE.Vector2(0.45, 0.45) });
-        (m.normalMap as THREE.Texture).repeat.set(28, 28);
+        (m.normalMap as THREE.Texture).repeat.set(70, 70);
         break;
       case 'M_Jeans':
-      case 'M_Pants':
         m = new THREE.MeshStandardMaterial({ name, color: 0xffffff, map: denimColor(color), roughness: 0.88, normalMap: denimNormal(), normalScale: new THREE.Vector2(0.5, 0.5) });
         (m.map as THREE.Texture).repeat.set(10, 10);
         (m.normalMap as THREE.Texture).repeat.set(24, 24);
@@ -186,10 +228,20 @@ export function applyMaterialLibrary(root: THREE.Object3D, opts: MaterialOverrid
         m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.55 });
         break;
       case 'M_Hair':
-        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.42, metalness: 0.05, vertexColors: true, transparent: true, alphaTest: 0.02, roughnessMap: strandsTexture() });
+        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.72, metalness: 0, vertexColors: true, transparent: true, alphaTest: 0.02, map: strandsTexture(), envMapIntensity: 0.35 });
         break;
       case 'M_Beard':
-        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.75, vertexColors: true, transparent: true, depthWrite: false, alphaMap: strandsTexture(), map: strandsTexture() });
+        m = new THREE.MeshStandardMaterial({ name, color, roughness: 0.75, vertexColors: true, transparent: true, alphaTest: 0.12, map: strandsTexture() });
+        if (opts.faceMap && mesh.geometry.getAttribute('uv1')) {
+          const fm = opts.faceMap.clone();
+          fm.channel = 1;
+          fm.needsUpdate = true;
+          m.map = fm;
+          m.color.set(0xffffff);
+          m.vertexColors = false;
+          m.alphaTest = 0;
+          m.transparent = false;
+        }
         break;
       case 'M_Eye':
         centerEyeUv(mesh);

@@ -1,0 +1,64 @@
+{
+  "$comment": "Brutamontes (heavy): careca, regata, barba cheia.",
+  "id": "thug_heavy",
+  "out": "public/assets/characters/thug_heavy.glb",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.55,
+    "muscle": 0.75,
+    "weight": 0.95,
+    "proportions": 0.4,
+    "height": 0.7,
+    "cupsize": 0.5,
+    "firmness": 0.5,
+    "race": {
+      "asian": 0.1,
+      "caucasian": 0.4,
+      "african": 0.5
+    }
+  },
+  "targets": {
+    "stomach-pregnant-incr": 0.5,
+    "l-upperarm-muscle-incr": 0.8,
+    "r-upperarm-muscle-incr": 0.8,
+    "l-lowerarm-muscle-incr": 0.7,
+    "r-lowerarm-muscle-incr": 0.7,
+    "measure-shoulder-dist-incr": 0.6,
+    "neck-scale-horiz-incr": 0.8,
+    "torso-scale-depth-incr": 0.4
+  },
+  "colors": {
+    "skin": "#8a5a3c",
+    "lips": "#7a4840",
+    "shirt": "#e8e4dc",
+    "pants": "#2b3a55",
+    "shoes": "#3a2a1e",
+    "hair": "#141210",
+    "beard": "#1a1612"
+  },
+  "clothes": {
+    "shirtMaterial": "M_Tank",
+    "pantsMaterial": "M_Jeans",
+    "shoeMaterial": "M_Shoes",
+    "shirtOffset": 0.01,
+    "bellyOffset": 0.006,
+    "pantsOffset": 0.022,
+    "shoeOffset": 0.016,
+    "sleeve": 0.08,
+    "ankleZ": 0.12
+  },
+  "hair": null,
+  "beard": {
+    "thickness": 0.008,
+    "backDepth": 0.095,
+    "aboveLips": 0.014,
+    "mustache": 0.03,
+    "neckDepth": -0.002
+  },
+  "decimate": 0.45,
+  "dropParts": [
+    "Tongue",
+    "TeethUp",
+    "TeethLow"
+  ]
+}

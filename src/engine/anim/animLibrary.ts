@@ -37,10 +37,15 @@ export const LOCO_SPEED: Record<string, number> = { walk: 1.25, jog: 3.4, sprint
 
 export class AnimLibrary {
   readonly clips = new Map<string, THREE.AnimationClip>();
+  /** Posição de repouso da pelve no esqueleto de onde os clipes vieram (espaço do osso pai). */
+  restPelvis: THREE.Vector3 | null = null;
+  private derived = new Map<string, AnimLibrary>();
 
   addFromGltf(gltf: GLTF, sources: Record<string, string> = CLIP_SOURCES): void {
     // o export do Blender sufixa '_Armature' no nome da ação
     const byName = new Map(gltf.animations.map((c) => [c.name.replace(/_Armature$/, ''), c]));
+    const pel = gltf.scene.getObjectByName('pelvis');
+    if (pel && !this.restPelvis) this.restPelvis = pel.position.clone();
     for (const [canon, src] of Object.entries(sources)) {
       const c = byName.get(src);
       if (!c) continue;
@@ -52,6 +57,37 @@ export class AnimLibrary {
     const c = this.clips.get(name);
     if (!c) throw new Error(`Clip não encontrado: ${name}`);
     return c;
+  }
+
+  /**
+   * Clipes ajustados a outro esqueleto (mesmas rotações de repouso, juntas em outro lugar): desloca a trilha da
+   * pelve pela diferença de altura/posição de repouso — senão personagens mais altos/baixos flutuam ou afundam.
+   */
+  derivedFor(modelRestPelvis: THREE.Vector3): AnimLibrary {
+    if (!this.restPelvis) return this;
+    const d = modelRestPelvis.clone().sub(this.restPelvis);
+    if (d.lengthSq() < 1e-6) return this;
+    const key = `${d.x.toFixed(3)},${d.y.toFixed(3)},${d.z.toFixed(3)}`;
+    let lib = this.derived.get(key);
+    if (lib) return lib;
+    lib = new AnimLibrary();
+    lib.restPelvis = modelRestPelvis.clone();
+    for (const [name, clip] of this.clips) {
+      const tracks = clip.tracks.map((t) => {
+        if (t.name !== 'pelvis.position') return t;
+        const c = t.clone();
+        const v = c.values;
+        for (let i = 0; i < v.length; i += 3) {
+          v[i] = v[i]! + d.x;
+          v[i + 1] = v[i + 1]! + d.y;
+          v[i + 2] = v[i + 2]! + d.z;
+        }
+        return c;
+      });
+      lib.clips.set(name, new THREE.AnimationClip(name, clip.duration, tracks));
+    }
+    this.derived.set(key, lib);
+    return lib;
   }
 
   has(name: string): boolean {

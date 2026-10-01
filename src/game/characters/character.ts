@@ -24,13 +24,16 @@ export class CharacterModel {
   private flashT = 0;
 
   /** `look = null` → materiais vêm do Blender por nome (biblioteca procedural). */
-  constructor(gltf: GLTF, lib: AnimLibrary, look: CharacterLook | null, idle = 'idle') {
+  constructor(gltf: GLTF, lib: AnimLibrary, look: CharacterLook | null, idle = 'idle', tint?: Record<string, string>, scale = 1, faceMap?: THREE.Texture) {
     this.model = skeletonClone(gltf.scene);
     const s = look?.scale ?? 1;
     this.model.scale.set(s * (look?.width ?? 1), s, s * (look?.width ?? 1));
     this.root.add(this.model);
     if (!look) {
-      this.flashMats.push(...applyMaterialLibrary(this.model));
+      if (scale !== 1) this.model.scale.setScalar(scale);
+      this.flashMats.push(...applyMaterialLibrary(this.model, { tint, faceMap }));
+      const pel = this.model.getObjectByName('pelvis');
+      if (pel) lib = lib.derivedFor(pel.position);
       this.model.traverse((o) => {
         if ((o as THREE.Bone).isBone) this.bones.set(o.name, o as THREE.Bone);
         const m = o as THREE.SkinnedMesh;

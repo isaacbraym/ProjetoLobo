@@ -213,6 +213,8 @@ def shell_from_faces(body, face_pred, name, offset, mat, solidify=0.0, flatten_b
     bm.free()
     dup.data.materials.clear()
     dup.data.materials.append(mat)
+    for ca in list(dup.data.color_attributes):
+        dup.data.color_attributes.remove(ca)
     activate(dup)
     if smooth > 0:
         sm = dup.modifiers.new('Smooth', 'SMOOTH')
@@ -300,6 +302,108 @@ def edge_alpha(obj, hops=3, rgb_fn=None):
     me.color_attributes.active_color = attr
 
 
+
+def face_projection(body, parts, region, co, dom, report):
+    """Rosto v1 (WWE 2K-lite): alinha pontos-chave da foto (olhos, nariz, boca, queixo) aos mesmos pontos da cabeça
+    3D, cria a UV 'FaceProj' (projeção frontal ortográfica → pixel da foto) e a máscara 'FaceMask' (alfa por vértice:
+    frente do rosto, desvanece nas laterais/pescoço). O runtime mistura a foto sobre a pele com essa máscara."""
+    F = R.get('face')
+    if not F:
+        return None
+    photo = ROOT / F['photo']
+    if not photo.exists():
+        print(f'[face] foto ausente ({photo}); pulando projeção')
+        return None
+    cx0, cy0, cw, ch = F['crop']
+    L = F['landmarks']
+    # ---- pontos da malha (espaço de bind, frente = -Y; x da imagem cresce com x da malha) ----
+    eyes = sorted([p for n, p in parts.items() if n.startswith('Eye_')], key=lambda o: sum(v.co.x for v in o.data.vertices))
+    def centroid(o):
+        n = len(o.data.vertices)
+        return Vector((sum(v.co.x for v in o.data.vertices) / n, sum(v.co.y for v in o.data.vertices) / n, sum(v.co.z for v in o.data.vertices) / n))
+    eA, eB = centroid(eyes[0]), centroid(eyes[1])
+    head_vs = [i for i in range(len(co)) if NAME_MAP.get(dom[i], dom[i]) == 'Head']
+    nose = min((co[i] for i in head_vs), key=lambda p: p.y)
+    lips = list(region.get('lips', []))
+    mouth = Vector((0.0, 0.0, sum(co[i].z for i in lips) / max(1, len(lips))))
+    front = [co[i] for i in head_vs if abs(co[i].x) < 0.02 and co[i].y < nose.y + 0.07]
+    chin = min(front, key=lambda p: p.z)
+    # ---- ajuste: x por distância entre olhos; z por mínimos quadrados (olhos, nariz, boca, queixo) ----
+    sx = (L['eyeB'][0] - L['eyeA'][0]) / (eB.x - eA.x)
+    cxp = (L['eyeA'][0] + L['eyeB'][0]) / 2 - sx * (eA.x + eB.x) / 2
+    zs = [(eA.z + eB.z) / 2, nose.z, mouth.z, chin.z]
+    ps = [(L['eyeA'][1] + L['eyeB'][1]) / 2, L['nose'][1], L['mouth'][1], L['chin'][1]]
+    mz, mp = sum(zs) / 4, sum(ps) / 4
+    cov = sum((z - mz) * (p - mp) for z, p in zip(zs, ps))
+    var = sum((z - mz) ** 2 for z in zs)
+    sz = -cov / var
+    cyp = mp + sz * mz
+    resid = [round(abs((cyp - sz * z) - p), 2) for z, p in zip(zs, ps)]
+    report['face'] = {'sx': round(sx, 2), 'sz': round(sz, 2), 'residual_px': resid, 'eyeDistMesh': round(eB.x - eA.x, 4)}
+
+    def to_uv(p):
+        px = sx * p.x + cxp
+        py = cyp - sz * p.z
+        return (px / cw, 1.0 - py / ch)  # Blender: v para cima; o export glTF inverte
+
+    # ---- UV e máscara no corpo (a barba herda ao ser criada depois) ----
+    me = body.data
+    uvl = me.uv_layers.new(name='FaceProj')
+    for loop in me.loops:
+        uvl.data[loop.index].uv = to_uv(me.vertices[loop.vertex_index].co)
+    mask = me.color_attributes.new('FaceMask', 'FLOAT_COLOR', 'POINT')
+    face_top = eA.z + (eA.z - chin.z) * 0.9
+    for v in me.vertices:
+        p = v.co
+        facing = max(0.0, -v.normal.y)
+        fw = min(1.0, max(0.0, (facing - 0.3) / 0.4))
+        below = min(1.0, max(0.0, (p.z - (chin.z - 0.03)) / 0.03))
+        above = min(1.0, max(0.0, (face_top - p.z) / 0.04))
+        side = min(1.0, max(0.0, (0.085 - abs(p.x)) / 0.03))
+        a = fw * below * above * side if NAME_MAP.get(dom[v.index], dom[v.index]) in ('Head', 'neck_01') else 0.0
+        mask.data[v.index].color = (1.0, 1.0, 1.0, a)
+    me.color_attributes.active_color = mask
+    # ---- recorte da foto + tom de pele das bochechas ----
+    img = bpy.data.images.load(str(photo))
+    W, H = img.size
+    px = img.pixels[:]
+    def sample(x, y, r=4):
+        acc = [0.0, 0.0, 0.0]
+        n = 0
+        for yy in range(int(y) - r, int(y) + r + 1):
+            for xx in range(int(x) - r, int(x) + r + 1):
+                X, Y = xx + cx0, (H - 1) - (yy + cy0)
+                i = (Y * W + X) * 4
+                for k in range(3):
+                    acc[k] += px[i + k]
+                n += 1
+        return [a / n for a in acc]
+    c1 = sample(L['eyeA'][0], L['nose'][1])
+    c2 = sample(L['eyeB'][0], L['nose'][1])
+    def to_lin(c):
+        return (c / 12.92) if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    # pixels de PNG vêm em sRGB; o material quer linear. Leve escurecida: a bochecha da foto tem luz de estúdio.
+    skin_lin = tuple(to_lin((a + b) / 2) * 0.82 for a, b in zip(c1, c2))
+    out_img = ROOT / F['out']
+    out_img.parent.mkdir(parents=True, exist_ok=True)
+    crop = bpy.data.images.new('FaceCrop', cw, ch)
+    new = [0.0] * (cw * ch * 4)
+    for y in range(ch):
+        srcY = (H - 1) - (cy0 + (ch - 1 - y))
+        for x in range(cw):
+            si = (srcY * W + (cx0 + x)) * 4
+            di = (y * cw + x) * 4
+            new[di:di + 4] = px[si:si + 4]
+    crop.pixels[:] = new
+    crop.filepath_raw = str(out_img)
+    crop.file_format = 'JPEG'
+    bpy.context.scene.render.image_settings.quality = 92
+    crop.save()
+    report['face']['skinFromPhoto'] = [round(c, 4) for c in skin_lin]
+    report['face']['texture'] = str(out_img.relative_to(ROOT))
+    return skin_lin
+
+
 def main():
     clear_scene()
     body, mrig = mpfb_human()
@@ -332,6 +436,7 @@ def main():
         d = t - h
         return (co[vi] - h).dot(d) / max(1e-6, d.length_squared)
 
+    face_skin = face_projection(body, parts, region, co, dom, report)
     pelvis_z = ub['pelvis'][0].z
     ankle_z = R['clothes'].get('ankleZ', 0.12)
     sleeve = R['clothes'].get('sleeve', 0.55)  # fração do braço coberta pela manga
@@ -367,7 +472,7 @@ def main():
         return pred
 
     C = R['colors']
-    m_skin = material('M_Skin', srgb(C['skin']), 0.55)
+    m_skin = material('M_Skin', face_skin if face_skin else srgb(C['skin']), 0.55)
     m_lips = material('M_Lips', srgb(C.get('lips', '#a0625a')), 0.45)
     m_shirt = material(R['clothes'].get('shirtMaterial', 'M_Polo'), srgb(C['shirt']), 0.85)
     m_pants = material(R['clothes'].get('pantsMaterial', 'M_Jeans'), srgb(C['pants']), 0.8)
@@ -385,12 +490,15 @@ def main():
     hem_z = pelvis_z + cl.get('hemAbovePelvis', 0.0)
     waist_z = pelvis_z + cl.get('waistAbovePelvis', 0.06)
     neck_z = ub['neck_01'][0].z - 0.01
+    long_sleeve = bool(cl.get('longSleeve'))
     arm_cuts = []
     for side in ('l', 'r'):
-        h, t = ub[f'upperarm_{side}']
+        bname = f'lowerarm_{side}' if long_sleeve else f'upperarm_{side}'
+        h, t = ub[bname]
         d = (t - h).normalized()
-        arm_cuts.append((tuple(h + (t - h) * sleeve), tuple(d)))
-    shirt_bones = torso_bones | {'pelvis', 'upperarm_l', 'upperarm_r'}
+        frac = cl.get('cuff', 0.88) if long_sleeve else sleeve
+        arm_cuts.append((tuple(h + (t - h) * frac), tuple(d)))
+    shirt_bones = torso_bones | {'pelvis', 'upperarm_l', 'upperarm_r'} | ({'lowerarm_l', 'lowerarm_r'} if long_sleeve else set())
 
     def any_dom(f, names):
         return any(NAME_MAP.get(dom[v.index], dom[v.index]) in names for v in f.verts)
@@ -415,15 +523,17 @@ def main():
     nose = co[nose_i]
     lips = region.get('lips', set())
     lips_z = sum(co[i].z for i in lips) / max(1, len(lips)) if lips else nose.z - 0.04
-    hair_cfg = R.get('hair', {})
+    hair_cfg = R.get('hair') or {}
     scalp = region.get('scalp', set())
     hl_y = nose.y + hair_cfg.get('hairlineBack', 0.05)
-    hair = shell_from_faces(
+    hair = None
+    if R.get('hair'):
+      hair = shell_from_faces(
         body, lambda f: any(v.index in scalp for v in f.verts) or (any_dom(f, {'Head'}) and f.calc_center_median().z > head_top - 0.09), 'Hair',
         lambda v: hair_cfg.get('thickness', 0.008) + max(0.0, (v.co.z - (head_top - 0.07))) * hair_cfg.get('volumeTop', 0.25),
         m_hair, solidify=0.002, smooth=2, smooth_factor=0.4,
         cuts=[((0, hl_y, head_top - 0.03), (0, -1, -0.45)), ((0, 0, head_bot + (head_top - head_bot) * hair_cfg.get('sideBottom', 0.45)), (0, 0, -1))])
-    edge_alpha(hair, hops=2)
+      edge_alpha(hair, hops=2)
 
     beard_cfg = R.get('beard')
     beard = None
@@ -464,7 +574,9 @@ def main():
         b = NAME_MAP.get(dom[v.index], dom[v.index]) if v.index < len(dom) else None
         if b not in shirt_bones or v.co.z < hem_z + 0.02 or v.co.z > neck_z - 0.01:
             return False
-        if b in ('upperarm_l', 'upperarm_r') and along(v.index, b) > sleeve - 0.08:
+        if not long_sleeve and b in ('upperarm_l', 'upperarm_r') and along(v.index, b) > sleeve - 0.08:
+            return False
+        if long_sleeve and b in ('lowerarm_l', 'lowerarm_r') and along(v.index, b) > cl.get('cuff', 0.88) - 0.1:
             return False
         return True
 
@@ -487,7 +599,7 @@ def main():
     # índice de vértice mudou após deletar faces: recalcula lábios por posição aproximada
     for p in body.data.polygons:
         c = p.center
-        if abs(c.z - lips_z) < 0.011 and abs(c.x) < 0.028 and c.y < nose.y + 0.03:
+        if not face_skin and abs(c.z - lips_z) < 0.011 and abs(c.x) < 0.028 and c.y < nose.y + 0.03:
             p.material_index = 1
 
     for nm, obj in parts.items():
@@ -507,7 +619,7 @@ def main():
                 g_foot.add([v.index], 1.0 - t, 'REPLACE')
             if t > 0.0:
                 g_ball.add([v.index], t, 'REPLACE')
-    meshes = [body, shirt, pants, shoes_l, shoes_r, hair] + ([beard] if beard else []) + list(parts.values())
+    meshes = [body, shirt, pants, shoes_l, shoes_r] + ([hair] if hair else []) + ([beard] if beard else []) + list(parts.values())
     for obj in meshes:
         for g in [g for g in obj.vertex_groups if g.name not in bones and NAME_MAP.get(g.name, g.name) not in bones]:
             obj.vertex_groups.remove(g)
@@ -517,6 +629,25 @@ def main():
         bpy.ops.object.vertex_group_normalize_all(group_select_mode='ALL', lock_active=False)
         bpy.ops.object.shade_smooth()
     bpy.data.objects.remove(mrig, do_unlink=True)
+
+    # ---------- orçamento: remove peças invisíveis e reduz malha (pesos interpolados pelo Blender) ----------
+    for nm in R.get('dropParts', []):
+        obj = parts.pop(nm, None)
+        if obj:
+            meshes.remove(obj)
+            bpy.data.objects.remove(obj, do_unlink=True)
+    ratio = R.get('decimate', 1.0)
+    if ratio < 0.999:
+        for obj in meshes:
+            if obj.name.startswith(('Eye', 'Lash', 'Teeth', 'Tongue', 'Hair', 'Beard')) or len(obj.data.polygons) < 300:
+                continue
+            activate(obj)
+            dec = obj.modifiers.new('Decimate', 'DECIMATE')
+            dec.decimate_type, dec.ratio = 'COLLAPSE', ratio
+            bpy.ops.object.modifier_move_to_index(modifier=dec.name, index=0)
+            bpy.ops.object.modifier_apply(modifier=dec.name)
+            bpy.ops.object.vertex_group_limit_total(group_select_mode='ALL', limit=4)
+            bpy.ops.object.vertex_group_normalize_all(group_select_mode='ALL', lock_active=False)
 
     # ---------- medidas ----------
     tris = 0

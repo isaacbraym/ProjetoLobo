@@ -1,0 +1,34 @@
+{
+  "id": "thug_heavy",
+  "recipe": "data\\characters\\thug_heavy.json",
+  "generatorVersion": 1,
+  "joints_moved": 52,
+  "triangles": 15256,
+  "height_m": 2.035,
+  "bones": 65,
+  "meshes": {
+    "Body": 4037,
+    "Shirt": 1582,
+    "Pants": 1244,
+    "Shoe_L": 1228,
+    "Shoe_R": 1228,
+    "Beard": 200,
+    "Eye_L": 72,
+    "Eye_R": 72,
+    "Lash_L": 60,
+    "Lash_R": 60
+  },
+  "materials": [
+    "M_Beard",
+    "M_Eye",
+    "M_Jeans",
+    "M_Lash",
+    "M_Lips",
+    "M_Shoes",
+    "M_Skin",
+    "M_Tank"
+  ],
+  "out": "public\\assets\\characters\\thug_heavy.glb",
+  "outHash": "892075fc5b1a3e31021de4df39436b9fcb16e6eb25a4c7991607628af5cffccb",
+  "qa": ".agent-tmp\\characters\\thug_heavy"
+}

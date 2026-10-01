@@ -63,6 +63,32 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
       game.camera.pitch = pitch;
       if (dist) game.camera.distance = dist;
     },
+    setWolfMeter(v: number) {
+      game.wolf.meter = v;
+    },
+    transform() {
+      game.wolf.meter = 100;
+      return game.wolf.trigger();
+    },
+    wolfState() {
+      return { state: game.wolf.state, meter: game.wolf.meter, timer: game.wolf.timer, amount: game.wolf.visual.amount, duck: 0 };
+    },
+    /** Câmera fixa no rosto do Márcio (comparação com a foto). angle em graus (0 = de frente). */
+    faceCam(on = true, dist = 0.75, angleDeg = 0) {
+      if (!on) {
+        game.camera.cine = null;
+        game.player.setCine(false);
+        return;
+      }
+      game.player.setCine(true);
+      const p = game.player.actor;
+      const head = new THREE.Vector3();
+      p.model.boneWorld('Head', head);
+      head.y += 0.06;
+      const a = p.yaw + THREE.MathUtils.degToRad(angleDeg);
+      const pos = new THREE.Vector3(head.x + Math.sin(a) * dist, head.y + 0.02, head.z + Math.cos(a) * dist);
+      game.camera.cine = { pos, look: head.clone(), fov: 30, blend: 1 };
+    },
     perf() {
       return perf.report();
     },

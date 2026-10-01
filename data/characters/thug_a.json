@@ -1,0 +1,64 @@
+{
+  "$comment": "Capanga médio (thug/armed). Cores de roupa recebem tint por instância no runtime.",
+  "id": "thug_a",
+  "out": "public/assets/characters/thug_a.glb",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.5,
+    "muscle": 0.62,
+    "weight": 0.55,
+    "proportions": 0.5,
+    "height": 0.56,
+    "cupsize": 0.5,
+    "firmness": 0.5,
+    "race": {
+      "asian": 0.15,
+      "caucasian": 0.45,
+      "african": 0.4
+    }
+  },
+  "targets": {
+    "l-upperarm-muscle-incr": 0.4,
+    "r-upperarm-muscle-incr": 0.4,
+    "measure-shoulder-dist-incr": 0.2
+  },
+  "colors": {
+    "skin": "#a8714f",
+    "lips": "#8a5048",
+    "shirt": "#1f1f22",
+    "pants": "#3b3a33",
+    "shoes": "#1a1a1a",
+    "hair": "#141210",
+    "beard": "#1c1814"
+  },
+  "clothes": {
+    "shirtMaterial": "M_Shirt",
+    "pantsMaterial": "M_Pants",
+    "shoeMaterial": "M_Shoes",
+    "shirtOffset": 0.01,
+    "bellyOffset": 0.0,
+    "pantsOffset": 0.02,
+    "shoeOffset": 0.014,
+    "sleeve": 0.5,
+    "ankleZ": 0.12
+  },
+  "hair": {
+    "thickness": 0.006,
+    "volumeTop": 0.1,
+    "hairlineBack": 0.03,
+    "sideBottom": 0.5
+  },
+  "beard": {
+    "thickness": 0.004,
+    "backDepth": 0.08,
+    "aboveLips": 0.008,
+    "mustache": 0.02,
+    "neckDepth": -0.01
+  },
+  "decimate": 0.45,
+  "dropParts": [
+    "Tongue",
+    "TeethUp",
+    "TeethLow"
+  ]
+}

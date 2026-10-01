@@ -1,0 +1,56 @@
+{
+  "$comment": "Capanga magro (fast). Moletom de manga longa.",
+  "id": "thug_slim",
+  "out": "public/assets/characters/thug_slim.glb",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.42,
+    "muscle": 0.5,
+    "weight": 0.32,
+    "proportions": 0.55,
+    "height": 0.6,
+    "cupsize": 0.5,
+    "firmness": 0.5,
+    "race": {
+      "asian": 0.2,
+      "caucasian": 0.6,
+      "african": 0.2
+    }
+  },
+  "targets": {},
+  "colors": {
+    "skin": "#c79a7a",
+    "lips": "#9c6258",
+    "shirt": "#2a3446",
+    "pants": "#22252b",
+    "shoes": "#d8d8d8",
+    "hair": "#2a1d14",
+    "beard": "#2a1d14"
+  },
+  "clothes": {
+    "shirtMaterial": "M_Shirt",
+    "pantsMaterial": "M_Pants",
+    "shoeMaterial": "M_Shoes",
+    "shirtOffset": 0.014,
+    "bellyOffset": 0.0,
+    "pantsOffset": 0.022,
+    "shoeOffset": 0.014,
+    "sleeve": 0.5,
+    "longSleeve": true,
+    "cuff": 0.9,
+    "ankleZ": 0.12
+  },
+  "hair": {
+    "thickness": 0.012,
+    "volumeTop": 0.35,
+    "hairlineBack": 0.015,
+    "sideBottom": 0.4
+  },
+  "beard": null,
+  "decimate": 0.45,
+  "dropParts": [
+    "Tongue",
+    "TeethUp",
+    "TeethLow"
+  ]
+}

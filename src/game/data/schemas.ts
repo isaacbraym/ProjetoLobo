@@ -59,6 +59,11 @@ export const ArchetypeSchema = z.object({
   width: z.number().positive(),
   colors: z.object({ main: z.string(), joints: z.string() }),
   bar: z.string(),
+  /** id do personagem gerado no Blender (public/assets/characters/<model>.glb) */
+  model: z.string().optional(),
+  modelScale: z.number().positive().optional(),
+  /** variações de cor por instância: nome do material → cor */
+  palette: z.array(z.record(z.string(), z.string())).optional(),
 });
 export type ArchetypeDef = z.infer<typeof ArchetypeSchema>;
 export const ArchetypesFileSchema = z.object({ $comment: z.string().optional(), archetypes: z.record(z.string(), ArchetypeSchema) });

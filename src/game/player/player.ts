@@ -41,6 +41,12 @@ export class Player implements Fighter {
   dodgeIFrames = 0;
   perfectWindow = 0;
   moveSpeed = 0;
+  /** Multiplicadores externos (lobisomem). */
+  damageMul = 1;
+  speedMul = 1;
+  damageTakenMul = 1;
+  /** Pedido de transformação (o jogo decide se pode). */
+  onWolfRequest: (() => boolean) | null = null;
   /** Bot de teste pode dirigir no lugar do jogador. */
   autopilot: ((p: Player) => { mx: number; my: number; press?: ButtonAction; sprint?: boolean }) | null = null;
 
@@ -117,7 +123,7 @@ export class Player implements Fighter {
   private updateMove(dt: number, dx: number, dz: number, mag: number, sprint: boolean): void {
     const a = this.actor;
     let target = 0;
-    if (mag > 0.05) target = mag < 0.55 ? WALK + (RUN - WALK) * (mag / 0.55) * 0.5 : sprint ? SPRINT : RUN;
+    if (mag > 0.05) target = (mag < 0.55 ? WALK + (RUN - WALK) * (mag / 0.55) * 0.5 : sprint ? SPRINT : RUN) * this.speedMul;
     this.moveSpeed = damp(this.moveSpeed, target, target > this.moveSpeed ? 0.09 : 0.06, dt);
     if (mag > 0.05) {
       const l = Math.hypot(dx, dz) || 1;
@@ -130,8 +136,12 @@ export class Player implements Fighter {
   }
 
   private tryActions(input: Input, dx: number, dz: number, mag: number): boolean {
-    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'dodge');
+    const act = input.consume((x) => x === 'light' || x === 'heavy' || x === 'kick' || x === 'dodge' || x === 'wolf');
     if (!act) return false;
+    if (act === 'wolf') {
+      this.onWolfRequest?.();
+      return true;
+    }
     if (act === 'dodge') {
       this.startDodge(dx, dz, mag);
       return true;
@@ -226,7 +236,7 @@ export class Player implements Fighter {
     }
     if (!this.hitDone && t >= def.hitAt) {
       this.hitDone = true;
-      this.combat.resolve(this, def, this.perfectWindow > 0 ? 1.5 : 1);
+      this.combat.resolve(this, def, (this.perfectWindow > 0 ? 1.5 : 1) * this.damageMul);
     }
     // cancelamentos
     if (t >= def.cancelAt) {
@@ -293,7 +303,7 @@ export class Player implements Fighter {
       events.emit('PerfectDodge', { attackerId: info.attacker.id });
       return false;
     }
-    a.hp = Math.max(0, a.hp - info.damage);
+    a.hp = Math.max(0, a.hp - info.damage * this.damageTakenMul);
     a.push.set(info.dirX * info.attack.knockback * 2.2, 0, info.dirZ * info.attack.knockback * 2.2);
     events.emit('PlayerDamaged', { damage: info.damage, hp: a.hp });
     if (a.hp <= 0) {

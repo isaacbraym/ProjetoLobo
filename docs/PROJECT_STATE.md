@@ -3,60 +3,70 @@
 Atualizado: 2026-10-01 · Por: sessão 1 (Claude Opus 5.5, "ultracode")
 
 ## RETOMAR AQUI
-**Milestone atual:** M0 concluído · **M1 v1 concluído** (Márcio gerado no Blender, no jogo) · **M2 em andamento**
-(inimigos ainda são manequins Quaternius — substituir pelo pipeline de personagens é o próximo passo).
+**Estado:** M0 ✔ · M1 v1 ✔ (Márcio gerado no Blender) · M2 em andamento (combate jogável, inimigos reais) ·
+M3 v1 ✔ (rosto por projeção da foto) · M5 v1 ✔ (transformação em lobisomem jogável, sem morph targets ainda).
+Jogo publicado: https://isaacbraym.github.io/ProjetoLobo/ (deploy automático a cada push em `main`).
+Local: preview "lobo-dev" (`.claude/launch.json`) → http://localhost:5180/ProjetoLobo/ ·
+sem menu e com bot: `?autotest=1&bot=1&perf=1`.
 
-### O que já funciona (jogável em `npm run dev` → http://localhost:5180/ProjetoLobo/)
-- Gate de senha (hash de `.env.local`), carregamento, menu (dificuldade, qualidade, controles), HUD.
-- Saguão de teste "Edifício Vértice" procedural: piso de mármore escuro com reflexo, painéis de madeira, colunas,
-  recepção com logo, catracas com LED, mezanino, TVs com telejornal procedural, fachada de vidro com cidade noturna.
-- Márcio (manequim verde provisório) com locomoção misturada por velocidade (idle/andar/correr/sprint), câmera 3ª pessoa
-  com colisão, enquadramento de grupo e tremor por trauma.
-- Combate: cadeia de 4 leves com variantes (jab, cruzado, gancho, uppercut), pesado (slam), chute, free-flow com
-  warp até o alvo, hitstop local, flash de acerto, sangue (partículas + manchas persistentes no chão), som sintetizado,
-  esquiva (rolamento) + esquiva perfeita (câmera lenta), cancelamentos por janela.
-- Golpes que não existem na biblioteca CC0 são **autorados por pose-chave** em `data/anim/authored.json`
-  (`src/engine/anim/poseAuthoring.ts`): gancho, uppercut, chute.
-- Inimigos (thug, fast, heavy) por dados, IA com estados, **CombatDirector** (fichas + anéis), telegrafia com indicador
-  vermelho sobre a cabeça, reações, stagger por poise, super-armor do Heavy.
-- Morte → **ragdoll Rapier** (11 corpos, massa por segmento) → congela ao repousar (tier T2); poça de sangue.
-- Ondas infinitas no sandbox, morte/vidas/respawn do Márcio, barra do lobo enchendo por eventos (sem transformação ainda).
-- Harness: `npm run verify` (typecheck, dados, imports, unit, build+tamanho, e2e gate/combate-bot/fichas),
-  `npm run capture`, `window.__LOBO__`, overlay `?perf=1`, bot de teste.
-- Deploy: GitHub Actions → GitHub Pages (`.github/workflows/deploy.yml`).
-
-### Márcio v1 (feito)
-- `tools/blender/build_character.py` + receita `data/characters/marcio.json` → `public/assets/characters/marcio.glb`
-  e `public/assets/anims/humanoid_anims.glb` (43 clipes no esqueleto ajustado). Renders de conferência em
-  `.agent-tmp/characters/marcio/{front,side,face,pose}.png`. Rodar:
-  `BLENDER_USER_RESOURCES=C:/Ferramentas/Blender-spike-profile "C:/Program Files/Blender Foundation/Blender 4.2/blender.exe" -b --python tools/blender/build_character.py -- --recipe data/characters/marcio.json --anims`
-- Corpo MPFB2 (macros + alvos de barriga/braços/ombros), esqueleto UAL com juntas movidas (DEC-0009), roupas por casca
-  com cortes por plano + suavização, tênis por casco convexo com pesos explícitos, cabelo penteado para trás, barba
-  com alfa por cor de vértice, olhos/dentes/cílios dos helpers do MPFB.
-- Runtime: `src/engine/render/materialLibrary.ts` troca materiais por nome (malha de polo, sarja de jeans, íris,
-  barba/cabelo com fios) — tudo procedural no navegador.
+### O que já funciona
+- **Gate de senha** (hash gerado de `.env.local`), carregamento, menu (dificuldade, qualidade, controles), HUD.
+- **Saguão de teste** "Edifício Vértice" procedural: mármore escuro com reflexo, painéis de madeira, colunas, recepção
+  com logo, catracas com LED, mezanino, TVs com telejornal procedural, fachada de vidro com cidade noturna.
+- **Márcio** gerado no Blender (`data/characters/marcio.json`): corpo MPFB2 com barriga/braços/ombros, polo verde com
+  malha piquê, jeans com sarja, tênis, cabelo penteado para trás, barba. **Rosto v1 = foto projetada** (técnica
+  WWE 2K-lite): 5 pontos-chave da foto alinhados aos da cabeça 3D (erro < 2 px), UV `FaceProj` + máscara por vértice,
+  pele do corpo com o tom das bochechas da foto. Foto recortada em `public/assets/characters/marcio_face.jpg`.
+- **Inimigos reais** (mesmo pipeline): `thug_a` (camiseta), `thug_slim` (moletom manga longa), `thug_heavy` (careca,
+  regata, barba). Cor de roupa sorteada por instância (`palette` em `data/enemies/archetypes.json`).
+- **Combate:** cadeia de 4 leves com variantes (jab, cruzado, gancho, uppercut), pesado, chute, free-flow com warp,
+  hitstop, sangue persistente, som sintetizado, esquiva + esquiva perfeita (câmera lenta), cancelamentos.
+  Golpes autorados por pose-chave em `data/anim/authored.json` (`src/engine/anim/poseAuthoring.ts`).
+- **IA:** CombatDirector (fichas + anéis), telegrafia (indicador vermelho), stagger por poise, super-armor do Heavy.
+- **Morte:** ragdoll Rapier (11 corpos) → congela ao repousar (T2), sem sombra; poça de sangue.
+- **Lobisomem v1** (`src/game/werewolf/`, `data/werewolf.json`): barra por eventos → R (gamepad LT+RT, botão LOBO no
+  toque) → close frontal no rosto, **"FALA LOBINHO"** (`public/assets/audio/transform_fala_lobinho.mp3`) com ducking
+  de −18 dB + passa-baixa na música, mundo a 0,25×, braços/mãos/peito crescem (escala de osso), pelo em 10 cascas,
+  garras, orelhas, olhos âmbar, postura curvada, rugido sintetizado + onda de choque; dano ×2,5, velocidade ×1,4,
+  dano recebido ×0,5, timer 25 s (+1,5 s por kill) e retorno.
+- **Harness:** `npm run verify` (PASS), `npm run capture [combat|wolf|face|menu]`, `window.__LOBO__`
+  (`state()`, `spawn()`, `bot(true)`, `transform()`, `faceCam(true, dist, ângulo)`, `perf()`…), overlay `?perf=1`.
 
 ### Próximo passo (em ordem)
-1. **Inimigos com o mesmo pipeline**: receitas `data/characters/thug_*.json` (corpos variados, roupas/cores,
-   cabelo/barba/careca), offset de pelve por esqueleto no runtime (as animações vêm com a pelve do Márcio),
-   variação por instância (tint). Substituir os manequins.
-2. Rosto do Márcio ainda genérico → M3 (WWE 2K). Olhos parecem fechados de longe (íris pequena) — revisar.
-3. M3 rosto WWE 2K (MediaPipe → fit → projeção).
-4. M2 restante: knockdown/levantar (CMU get-up), finalizações, agarrão/arremesso, armas, mais reações.
-5. M5 lobisomem (o áudio já está em `assets-src/audio/`; `audio.playVoice` já faz o ducking).
+1. **Rosto v2:** os 5 pontos da foto foram marcados à mão em `data/characters/marcio.json` (`face.landmarks`).
+   Automatizar com MediaPipe (ver `docs/ASSET_PIPELINE.md` §3) e ajustar a forma da cabeça (modificadores MPFB de
+   nariz/olhos/boca/mandíbula). Olhos: a malha do olho aparece por cima da foto (contorno escuro) — avaliar esconder a
+   esclera da malha ou recolorir com a foto. Cabelo ainda é uma calota; melhorar volume/linha do cabelo.
+2. **Lobisomem v2:** morph targets reais na malha do Márcio (Blender: `wolf_body`, `wolf_face`), roupa rasgando
+   (dissolve), corrida de quatro (galope autorado), devorar, desmembramento. Pelo hoje é shells simples.
+3. **Combate restante (M2/M4):** knockdown + levantar (clipes CMU get-up já existem no cache do Bairro — ver
+   `docs/ASSET_PIPELINE.md` §0), finalizações com câmera, agarrão/arremesso, armas improvisadas, mais arquétipos
+   (grappler, armed, thrower, shield, elite), props destrutíveis.
+4. **Música:** o usuário vai entregar faixas de IA (PENDENCIAS P04) — `audio.musicBus` + ducking já prontos.
+5. **M6:** andar 1 de verdade (gerador de planta + bake de luz no Blender), reféns, arenas com barricadas.
+6. Bosses (Clóvis), mobile real, presets, andares 2/3.
 
-### Evidências
-- Último verify: PASS (ver `.agent-tmp/verify/` — local, não versionado).
-- Capturas do combate: `.agent-tmp/captures/` (local).
+### Como gerar personagens (Blender headless, ~1–2 min cada)
+```
+BLENDER_USER_RESOURCES=C:/Ferramentas/Blender-spike-profile "C:/Program Files/Blender Foundation/Blender 4.2/blender.exe" -b --python tools/blender/build_character.py -- --recipe data/characters/marcio.json --anims
+```
+(`--anims` regrava `public/assets/anims/humanoid_anims.glb`; só precisa no Márcio.) Renders de conferência em
+`.agent-tmp/characters/<id>/{front,side,face,pose}.png`. Receitas: `data/characters/*.json`.
+
+### Arquitetura de personagens (importante)
+- Esqueleto de runtime = esqueleto UE do Quaternius UAL (65 ossos). O builder move só as juntas para o corpo MPFB2
+  (rotações de repouso preservadas, DEC-0009) → todos os personagens usam os mesmos clipes.
+- Pelve: os clipes vêm com a pelve do Márcio; `AnimLibrary.derivedFor()` corrige para cada esqueleto (altura).
+- Materiais vêm por NOME do Blender e são trocados no runtime (`src/engine/render/materialLibrary.ts`).
 
 ### NÃO VALIDADO
-- Performance na RTX 3050: o Chromium do Playwright e o painel embutido usam a **Iris Xe** (60 FPS no Medium,
-  picos de p99 ~145 ms provavelmente por compilação de shader na primeira morte/sangue — pré-compilar).
-- Controles de toque e orientação em celular real.
-- Gamepad (mapeado, não testado com controle físico).
+- Performance na RTX 3050 (Playwright e painel embutido usam a Iris Xe: ~48–60 FPS no Medium com 3–5 inimigos).
+- Celular real, gamepad físico.
+- Timing exato da transformação nas capturas (as capturas travam o rAF; no jogo real é contínuo).
 
 ### Dívidas conhecidas
-- Ragdoll sem limites de junta (joelho pode dobrar errado) — a versão do Rapier não expõe motor em junta esférica;
-  usa amortecimento angular. Revisar com juntas genéricas/revolutas.
-- Corpos T3 (malha baked mesclada) ainda não implementados — corpos ficam em T2 (1–2 draw calls cada).
-- Navmesh ainda não usada (sandbox aberto); entra no M6.
+- Ragdoll sem limites de junta (esta versão do Rapier não expõe motor em junta esférica; usa amortecimento).
+- Corpos T3 (malha baked mesclada) não implementados; corpos ficam em T2.
+- Navmesh não usada ainda (sandbox aberto).
+- `validate:data` ainda não valida `werewolf.json` nem `data/characters/*.json`.
+- Personagens têm ~14 peças (draw calls); mesclar em runtime quando houver muitos inimigos.

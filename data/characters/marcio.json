@@ -65,5 +65,42 @@
     "aboveLips": 0.012,
     "mustache": 0.03,
     "neckDepth": -0.005
+  },
+  "decimate": 0.75,
+  "dropParts": [
+    "Tongue"
+  ],
+  "face": {
+    "photo": "refs/marcio/marcio_front.png",
+    "crop": [
+      330,
+      0,
+      360,
+      340
+    ],
+    "out": "public/assets/characters/marcio_face.jpg",
+    "landmarks": {
+      "eyeA": [
+        147,
+        157
+      ],
+      "eyeB": [
+        210,
+        157
+      ],
+      "nose": [
+        179,
+        191
+      ],
+      "mouth": [
+        179,
+        220
+      ],
+      "chin": [
+        179,
+        262
+      ]
+    },
+    "$comment": "pontos no recorte (x,y em pixels; eyeA = olho à esquerda da imagem). Ajustar pelo face_compare."
   }
 }

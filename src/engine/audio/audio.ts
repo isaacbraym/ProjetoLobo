@@ -152,7 +152,65 @@ export class AudioSystem {
       case 'ui':
         this.thump(660, 0.05, 0.2);
         break;
+      case 'roar':
+        this.roar(intensity);
+        break;
     }
+  }
+
+  /** Rugido sintetizado: serrilha grave com vibrato + ruído filtrado (até entrar um rugido gravado). */
+  private roar(intensity: number): void {
+    const ctx = this.ctx!;
+    const t = ctx.currentTime;
+    const dur = 1.3;
+    const out = ctx.createGain();
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.exponentialRampToValueAtTime(0.9 * intensity, t + 0.08);
+    out.gain.setValueAtTime(0.9 * intensity, t + 0.7);
+    out.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    const shaper = ctx.createWaveShaper();
+    const curve = new Float32Array(1024);
+    for (let i = 0; i < 1024; i++) {
+      const x = (i / 1023) * 2 - 1;
+      curve[i] = Math.tanh(x * 3.5);
+    }
+    shaper.curve = curve;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(900, t);
+    lp.frequency.linearRampToValueAtTime(2200, t + 0.25);
+    lp.frequency.linearRampToValueAtTime(600, t + dur);
+    for (const f of [72, 108, 145]) {
+      const o = ctx.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(f * 0.8, t);
+      o.frequency.linearRampToValueAtTime(f * 1.15, t + 0.3);
+      o.frequency.linearRampToValueAtTime(f * 0.7, t + dur);
+      const lfo = ctx.createOscillator();
+      lfo.frequency.value = 23 + Math.random() * 6;
+      const lg = ctx.createGain();
+      lg.gain.value = f * 0.06;
+      lfo.connect(lg).connect(o.frequency);
+      o.connect(shaper);
+      this.track(o);
+      o.start(t);
+      o.stop(t + dur);
+      lfo.start(t);
+      lfo.stop(t + dur);
+    }
+    const n = ctx.createBufferSource();
+    n.buffer = this.noise;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 700;
+    bp.Q.value = 0.8;
+    const ng = ctx.createGain();
+    ng.gain.value = 0.35;
+    n.connect(bp).connect(ng).connect(shaper);
+    n.start(t);
+    n.stop(t + dur);
+    shaper.connect(lp).connect(out).connect(this.sfx);
+    this.thump(45, 0.6, 1.2 * intensity);
   }
 
   private track(node: AudioScheduledSourceNode): void {

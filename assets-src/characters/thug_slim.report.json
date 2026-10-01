@@ -1,0 +1,34 @@
+{
+  "id": "thug_slim",
+  "recipe": "data\\characters\\thug_slim.json",
+  "generatorVersion": 1,
+  "joints_moved": 52,
+  "triangles": 16571,
+  "height_m": 1.7978,
+  "bones": 65,
+  "meshes": {
+    "Body": 3662,
+    "Shirt": 2373,
+    "Pants": 1215,
+    "Shoe_L": 1237,
+    "Shoe_R": 1238,
+    "Hair": 408,
+    "Eye_L": 72,
+    "Eye_R": 72,
+    "Lash_L": 60,
+    "Lash_R": 60
+  },
+  "materials": [
+    "M_Eye",
+    "M_Hair",
+    "M_Lash",
+    "M_Lips",
+    "M_Pants",
+    "M_Shirt",
+    "M_Shoes",
+    "M_Skin"
+  ],
+  "out": "public\\assets\\characters\\thug_slim.glb",
+  "outHash": "4455086cf5d2b56e769538992a209de0203847927114ff97048497a262dc5ca9",
+  "qa": ".agent-tmp\\characters\\thug_slim"
+}

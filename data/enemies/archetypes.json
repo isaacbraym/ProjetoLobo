@@ -1,8 +1,129 @@
 {
   "$comment": "Arquétipos de inimigo (docs/GAME_DESIGN.md §6). attackSet referencia data/combat/attacks.json. Visual provisório (manequim) até o gerador modular do M4.",
   "archetypes": {
-    "thug":  { "name": "Capanga", "tier": 1, "hp": 60,  "poise": 20, "speed": 3.0, "walk": 1.4, "aggression": 0.5, "attackSet": ["e_jab", "e_cross"], "tokenCost": 1, "scale": 1.0,  "width": 1.0,  "colors": { "main": "#5a1e1e", "joints": "#1c1a1f" }, "bar": "#ff4d5e" },
-    "fast":  { "name": "Ligeiro", "tier": 1, "hp": 45,  "poise": 10, "speed": 4.2, "walk": 1.8, "aggression": 0.8, "attackSet": ["e_jab", "e_jab", "e_cross"], "tokenCost": 1, "scale": 0.96, "width": 0.92, "colors": { "main": "#26324a", "joints": "#111" }, "bar": "#4db8ff" },
-    "heavy": { "name": "Brutamontes", "tier": 2, "hp": 180, "poise": 80, "speed": 2.2, "walk": 1.1, "aggression": 0.6, "attackSet": ["e_slam", "e_cross"], "tokenCost": 2, "scale": 1.12, "width": 1.28, "colors": { "main": "#2d2d2d", "joints": "#5a3a1a" }, "bar": "#ffb02e" }
+    "thug": {
+      "name": "Capanga",
+      "tier": 1,
+      "hp": 60,
+      "poise": 20,
+      "speed": 3.0,
+      "walk": 1.4,
+      "aggression": 0.5,
+      "attackSet": [
+        "e_jab",
+        "e_cross"
+      ],
+      "tokenCost": 1,
+      "scale": 1.0,
+      "width": 1.0,
+      "colors": {
+        "main": "#5a1e1e",
+        "joints": "#1c1a1f"
+      },
+      "bar": "#ff4d5e",
+      "model": "thug_a",
+      "modelScale": 1.0,
+      "palette": [
+        {
+          "M_Shirt": "#1f1f22",
+          "M_Pants": "#3b3a33"
+        },
+        {
+          "M_Shirt": "#5a1e1e",
+          "M_Pants": "#2b2b2b"
+        },
+        {
+          "M_Shirt": "#c9c3b5",
+          "M_Pants": "#2d3b52"
+        },
+        {
+          "M_Shirt": "#2f4a2a",
+          "M_Pants": "#433b30"
+        },
+        {
+          "M_Shirt": "#7a5a2a",
+          "M_Pants": "#1d1d1d"
+        }
+      ]
+    },
+    "fast": {
+      "name": "Ligeiro",
+      "tier": 1,
+      "hp": 45,
+      "poise": 10,
+      "speed": 4.2,
+      "walk": 1.8,
+      "aggression": 0.8,
+      "attackSet": [
+        "e_jab",
+        "e_jab",
+        "e_cross"
+      ],
+      "tokenCost": 1,
+      "scale": 0.96,
+      "width": 0.92,
+      "colors": {
+        "main": "#26324a",
+        "joints": "#111"
+      },
+      "bar": "#4db8ff",
+      "model": "thug_slim",
+      "modelScale": 1.0,
+      "palette": [
+        {
+          "M_Shirt": "#26324a",
+          "M_Pants": "#22252b"
+        },
+        {
+          "M_Shirt": "#6b1a2a",
+          "M_Pants": "#1f1f1f"
+        },
+        {
+          "M_Shirt": "#3d3d3d",
+          "M_Pants": "#2a3448"
+        },
+        {
+          "M_Shirt": "#a8541c",
+          "M_Pants": "#262626"
+        }
+      ]
+    },
+    "heavy": {
+      "name": "Brutamontes",
+      "tier": 2,
+      "hp": 180,
+      "poise": 80,
+      "speed": 2.2,
+      "walk": 1.1,
+      "aggression": 0.6,
+      "attackSet": [
+        "e_slam",
+        "e_cross"
+      ],
+      "tokenCost": 2,
+      "scale": 1.12,
+      "width": 1.28,
+      "colors": {
+        "main": "#2d2d2d",
+        "joints": "#5a3a1a"
+      },
+      "bar": "#ffb02e",
+      "model": "thug_heavy",
+      "modelScale": 1.04,
+      "palette": [
+        {
+          "M_Tank": "#e8e4dc",
+          "M_Jeans": "#2b3a55"
+        },
+        {
+          "M_Tank": "#2a2a2a",
+          "M_Jeans": "#3a3f48"
+        },
+        {
+          "M_Tank": "#8a1f1f",
+          "M_Jeans": "#2b3a55"
+        }
+      ]
+    }
   }
 }

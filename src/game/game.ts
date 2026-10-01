@@ -6,7 +6,7 @@ import { events } from '../core/events';
 import { rngs } from '../core/rng';
 import { Renderer } from '../engine/render/renderer';
 import { Physics } from '../engine/physics/physics';
-import { Assets } from '../engine/assets/loader';
+import { Assets, assetUrl } from '../engine/assets/loader';
 import { Input } from '../engine/input/input';
 import { AnimLibrary } from '../engine/anim/animLibrary';
 import { authorClip, type AuthoredClipDef } from '../engine/anim/poseAuthoring';
@@ -25,6 +25,8 @@ import { Ragdoll } from './corpses/ragdoll';
 import { buildSandboxLobby, type LevelHandle } from './levels/sandboxLobby';
 import { archetypesData, difficultyData, type DifficultyName } from './data/gameData';
 import authoredJson from '../../data/anim/authored.json';
+import wolfJson from '../../data/werewolf.json';
+import { WerewolfSystem } from './werewolf/werewolf';
 
 interface Corpse {
   model: CharacterModel;
@@ -51,6 +53,8 @@ export class Game {
   lib = new AnimLibrary();
   libMannequin = new AnimLibrary();
   private marcioGltf!: GLTF;
+  private marcioFace?: THREE.Texture;
+  private enemyModels = new Map<string, GLTF>();
   level!: LevelHandle;
   camera!: ThirdPersonCamera;
   combat!: CombatSystem;
@@ -66,7 +70,10 @@ export class Game {
   wave = 0;
   private waveClearTimer = -1;
   private respawnTimer = -1;
-  wolfMeter = 0;
+  wolf!: WerewolfSystem;
+  get wolfMeter(): number {
+    return this.wolf ? this.wolf.meter : 0;
+  }
   started = false;
   /** Tempo de simulação de cada sistema (ms), para o overlay de perf. */
   readonly timings = { sim: 0, anim: 0, physics: 0, render: 0, frame: 0 };
@@ -93,6 +100,25 @@ export class Game {
     ]);
     this.charGltf = gltf;
     this.marcioGltf = marcio;
+    try {
+      this.marcioFace = await new THREE.TextureLoader().loadAsync(assetUrl('assets/characters/marcio_face.jpg'));
+      this.marcioFace.flipY = false;
+      this.marcioFace.colorSpace = THREE.SRGBColorSpace;
+      this.marcioFace.anisotropy = 4;
+    } catch {
+      console.warn('[game] foto do rosto ausente');
+    }
+    // modelos de inimigos gerados no Blender (se faltar algum, cai no manequim)
+    const models = [...new Set(Object.values(archetypesData.archetypes).map((a) => a.model).filter((m): m is string => !!m))];
+    await Promise.all(
+      models.map(async (m) => {
+        try {
+          this.enemyModels.set(m, await this.assets.load(`assets/characters/${m}.glb`));
+        } catch {
+          console.warn('[game] modelo ausente, usando manequim:', m);
+        }
+      }),
+    );
     this.libMannequin.addFromGltf(gltf);
     this.lib.addFromGltf(anims);
     // golpes autorados por pose-chave (gancho, uppercut, chute) — um conjunto por esqueleto
@@ -104,6 +130,23 @@ export class Game {
       this.lib.clips.set(name, authorClip(name, refH, this.lib.get(def.base), def));
     }
     this.setupWorld();
+    this.warmup();
+  }
+
+  /** Compila os shaders de todos os personagens/efeitos no loading (sem travada no primeiro inimigo/sangue). */
+  warmup(): void {
+    const tmp: CharacterModel[] = [];
+    for (const g of this.enemyModels.values()) {
+      const m = new CharacterModel(g, this.lib, null, 'idleCombat');
+      m.root.position.set(0, -50, 0);
+      this.renderer.scene.add(m.root);
+      tmp.push(m);
+    }
+    this.particles.blood(0, -50, 0, 1, 0, 1);
+    this.decals.add(0, 0, 0.01, -50);
+    this.renderer.gl.compile(this.renderer.scene, this.renderer.camera);
+    this.renderer.render(1 / 60);
+    for (const m of tmp) this.renderer.scene.remove(m.root);
   }
 
   private setupWorld(): void {
@@ -117,7 +160,7 @@ export class Game {
       if (rngs.vfx.chance(0.35)) this.decals.add(x, z, s * 1.6);
     };
     this.combat = new CombatSystem(this.particles, this.camera, r);
-    const marcioModel = new CharacterModel(this.marcioGltf, this.lib, null, 'idleCombat');
+    const marcioModel = new CharacterModel(this.marcioGltf, this.lib, null, 'idleCombat', undefined, 1, this.marcioFace);
     r.scene.add(marcioModel.root);
     const pa = new Actor('player', marcioModel, this.physics, 100, 999, this.level.spawn);
     pa.yaw = Math.PI;
@@ -126,6 +169,15 @@ export class Game {
     this.camera.yaw = 0;
     this.hud = new Hud(this.uiRoot);
     this.hud.el.classList.add('hidden');
+    this.wolf = new WerewolfSystem(this.player, this.camera, this.loop, r, this.particles, () => this.enemies, this.uiRoot);
+    this.player.onWolfRequest = () => {
+      const ok = this.wolf.trigger();
+      if (!ok && this.wolf.state === 'human') {
+        this.hud.setHint(`RAIVA ${Math.floor(this.wolf.meter)}%`);
+        setTimeout(() => this.hud.setHint(null), 800);
+      }
+      return ok;
+    };
     this.applyDifficulty(this.difficulty);
     this.wireEvents();
   }
@@ -139,21 +191,21 @@ export class Game {
 
   private wireEvents(): void {
     events.on('HitLanded', (e) => {
-      if (e.attackerId === this.player.actor.id) this.addWolf(e.damage * 0.35 * (1 + Math.min(this.combat.combo, 20) / 20));
+      if (e.attackerId === this.player.actor.id) this.addWolf(e.damage * wolfJson.meter.perDamage * (1 + Math.min(this.combat.combo, 20) / 20));
     });
     events.on('Killed', (e) => {
       this.kills++;
-      this.addWolf(4 + e.tier * 2);
+      this.addWolf(wolfJson.meter.perKillBase + e.tier * wolfJson.meter.perKillTier);
       const enemy = this.enemies.find((x) => x.actor.id === e.victimId);
       if (enemy) this.makeCorpse(enemy.actor);
     });
     events.on('PlayerDamaged', (e) => {
-      this.addWolf(e.damage * 0.25);
+      this.addWolf(e.damage * wolfJson.meter.perDamageTaken);
       this.hud.damageFlash();
       if (this.godMode) this.player.actor.hp = this.player.actor.maxHp;
     });
     events.on('PerfectDodge', () => {
-      this.addWolf(5);
+      this.addWolf(wolfJson.meter.perPerfectDodge);
       this.loop.timeScale = 0.3;
       setTimeout(() => (this.loop.timeScale = 1), 320);
       this.hud.setHint('ESQUIVA PERFEITA');
@@ -163,8 +215,7 @@ export class Game {
   }
 
   private addWolf(v: number): void {
-    const gain = difficultyData.levels[this.difficulty].wolfGain;
-    this.wolfMeter = Math.min(100, this.wolfMeter + v * gain);
+    this.wolf.add(v * difficultyData.levels[this.difficulty].wolfGain);
   }
 
   private makeCorpse(actor: Actor): void {
@@ -177,6 +228,7 @@ export class Game {
 
   start(): void {
     this.started = true;
+    void audio.loadBuffer('fala_lobinho', 'assets/audio/transform_fala_lobinho.mp3');
     this.hud.el.classList.remove('hidden');
     this.hud.setLives(this.player.lives);
     if (!this.loopRunning) this.loop.start();
@@ -198,7 +250,10 @@ export class Game {
     const def = archetypesData.archetypes[archetype];
     if (!def) throw new Error(`arquétipo desconhecido: ${archetype}`);
     const diff = difficultyData.levels[this.difficulty];
-    const model = new CharacterModel(this.charGltf, this.libMannequin, { main: def.colors.main, joints: def.colors.joints, scale: def.scale, width: def.width }, 'idleCombat');
+    const gltfModel = def.model ? this.enemyModels.get(def.model) : undefined;
+    const model = gltfModel
+      ? new CharacterModel(gltfModel, this.lib, null, 'idleCombat', def.palette ? rngs.spawn.pick(def.palette) : undefined, def.modelScale ?? 1)
+      : new CharacterModel(this.charGltf, this.libMannequin, { main: def.colors.main, joints: def.colors.joints, scale: def.scale, width: def.width }, 'idleCombat');
     this.renderer.scene.add(model.root);
     const pos = at ?? rngs.spawn.pick(this.level.enemySpawns).clone().add(new THREE.Vector3(rngs.spawn.range(-1.5, 1.5), 0, rngs.spawn.range(-1.5, 1.5)));
     const actor = new Actor('enemy', model, this.physics, def.hp * diff.hp, def.poise, pos);
@@ -294,7 +349,12 @@ export class Game {
     const pa = this.player.actor;
     pa.syncVisual(alpha);
     const playerRagdoll = !pa.alive;
-    if (!playerRagdoll) pa.model.update(frameDt * this.loop.timeScale);
+    if (!playerRagdoll) pa.model.update(frameDt * (this.wolf.state === 'transforming' ? 1 : this.loop.timeScale));
+    this.wolf.update(frameDt);
+    this.wolf.applyVisual();
+    this.player.damageMul = this.wolf.damageMul;
+    this.player.speedMul = this.wolf.speedMul;
+    this.player.damageTakenMul = this.wolf.state === 'wolf' ? 0.5 : 1;
     for (const e of this.enemies) {
       e.actor.syncVisual(alpha);
       e.actor.model.update(frameDt * this.loop.timeScale);
@@ -304,6 +364,7 @@ export class Game {
         c.ragdoll.sync(frameDt);
         if (c.ragdoll.settled) {
           c.ragdoll.freeze();
+          c.model.root.traverse((o) => ((o as THREE.Mesh).castShadow = false));
           // poça de sangue sob o tronco
           c.ragdoll.torsoPosition(this.tmpTarget);
           this.decals.add(this.tmpTarget.x, this.tmpTarget.z, 1.1);
@@ -338,7 +399,8 @@ export class Game {
     this.particles.update(frameDt * this.loop.timeScale);
     if (this.started) {
       this.hud.setHealth(pa.hp / pa.maxHp);
-      this.hud.setWolf(this.wolfMeter / 100, false);
+      this.hud.setWolf(this.wolf.active ? this.wolf.timerFraction : this.wolf.meter / 100, this.wolf.active);
+      if (this.wolf.ready) this.hud.setHint('APERTE  R  —  FALA LOBINHO');
       const tgt = this.player.currentTarget;
       this.hud.update(frameDt, this.enemies, this.renderer.camera, tgt && tgt.kind === 'enemy' ? (tgt as Enemy) : null);
     }

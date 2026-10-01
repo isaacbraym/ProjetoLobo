@@ -3,22 +3,38 @@
   "recipe": "data\\characters\\marcio.json",
   "generatorVersion": 1,
   "joints_moved": 52,
-  "triangles": 36112,
+  "face": {
+    "sx": 1074.87,
+    "sz": 864.68,
+    "residual_px": [
+      0.48,
+      1.69,
+      1.53,
+      0.32
+    ],
+    "eyeDistMesh": 0.0586,
+    "skinFromPhoto": [
+      0.7541,
+      0.2803,
+      0.1416
+    ],
+    "texture": "public\\assets\\characters\\marcio_face.jpg"
+  },
+  "triangles": 27426,
   "height_m": 1.7656,
   "bones": 65,
   "meshes": {
-    "Body": 8664,
-    "Shirt": 4030,
-    "Pants": 2736,
-    "Shoe_L": 1552,
-    "Shoe_R": 1552,
+    "Body": 6525,
+    "Shirt": 3021,
+    "Pants": 2051,
+    "Shoe_L": 1409,
+    "Shoe_R": 1409,
     "Hair": 714,
     "Beard": 391,
     "Eye_L": 72,
     "Eye_R": 72,
     "TeethUp": 68,
     "TeethLow": 68,
-    "Tongue": 226,
     "Lash_L": 60,
     "Lash_R": 60
   },
@@ -32,11 +48,10 @@
     "M_Polo",
     "M_Shoes",
     "M_Skin",
-    "M_Teeth",
-    "M_Tongue"
+    "M_Teeth"
   ],
   "out": "public\\assets\\characters\\marcio.glb",
-  "outHash": "b60c07f3f485c5dae0de3427fa63b881af39dd1a397af97aa212a9e5b8eb9106",
+  "outHash": "3cd03f7e0a8a174248f467d28b5352aa8fcd5fe5bc3e4e78553b9db4ab1e3c79",
   "anims": "public\\assets\\anims\\humanoid_anims.glb",
   "animCount": 43,
   "qa": ".agent-tmp\\characters\\marcio"

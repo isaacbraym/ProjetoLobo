@@ -10,7 +10,41 @@ const scenario = process.argv[2] ?? 'combat';
 const dir = outDir('captures');
 const browser = await launch();
 try {
-  if (scenario === 'menu') {
+  if (scenario === 'face') {
+    const { page, logs } = await openGame(browser, 'perf=1', { width: 900, height: 900 });
+    await lobo(page, 'godMode(true)');
+    await page.waitForTimeout(1500);
+    // pausa os inimigos longe para não atrapalhar a foto
+    for (const [n, ang, dist] of [['front', 0, 0.75], ['three_quarter', 35, 0.8], ['profile', 85, 0.85], ['body', 0, 2.6]] as const) {
+      await lobo(page, `faceCam(true, ${dist}, ${ang})`);
+      await page.waitForTimeout(900);
+      await page.screenshot({ path: resolve(dir, `face_${n}.png`) });
+    }
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+  } else if (scenario === 'wolf') {
+    const { page, logs } = await openGame(browser, 'perf=1');
+    await lobo(page, 'seed(42)');
+    await lobo(page, 'godMode(true)');
+    await page.waitForTimeout(2500);
+    await lobo(page, 'transform()');
+    const t0 = Date.now();
+    const marks = [0.15, 0.45, 0.8, 1.1, 1.4, 1.7, 2.3];
+    const info: unknown[] = [];
+    for (const m of marks) {
+      const wait = m * 1000 - (Date.now() - t0);
+      if (wait > 0) await page.waitForTimeout(wait);
+      await page.screenshot({ path: resolve(dir, `wolf_${String(m).replace('.', '_')}s.png`) });
+      info.push({ t: m, wolf: await lobo(page, 'wolfState()') });
+    }
+    await lobo(page, 'bot(true, 5)');
+    for (const m of [4, 6, 8]) {
+      await page.waitForTimeout(2000);
+      await page.screenshot({ path: resolve(dir, `wolf_fight_${m}s.png`) });
+    }
+    info.push({ state: await lobo(page, 'state()'), perf: await lobo(page, 'perf()') });
+    writeFileSync(resolve(dir, 'state.json'), JSON.stringify(info, null, 2));
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+  } else if (scenario === 'menu') {
     const { page, logs } = await openGame(browser, 'menu=1&perf=1');
     await page.waitForTimeout(3000);
     await page.screenshot({ path: resolve(dir, 'menu.png') });

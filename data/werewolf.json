@@ -1,0 +1,28 @@
+{
+  "$comment": "Lobisomem Márcio (docs/GAME_DESIGN.md §5). Valores iniciais de tuning.",
+  "meter": { "perDamage": 0.35, "perKillBase": 4, "perKillTier": 2, "perFinisher": 12, "perPerfectDodge": 5, "perDamageTaken": 0.25, "perProp": 1 },
+  "duration": { "base": 25, "perKill": 1.5, "max": 40 },
+  "stats": { "damageMul": 2.5, "speedMul": 1.4, "shield": 100, "poiseImmune": true },
+  "transform": {
+    "total": 2.0,
+    "voiceAt": 0.05,
+    "growStart": 0.05,
+    "growEnd": 1.3,
+    "pullbackAt": 1.3,
+    "roarAt": 1.32,
+    "controlAt": 1.75,
+    "worldTimeScale": 0.25,
+    "shockwaveRadius": 4.0,
+    "shockwaveForce": 5.5
+  },
+  "revert": { "total": 0.8 },
+  "body": {
+    "boneScale": { "upperarm_l": 1.32, "upperarm_r": 1.32, "lowerarm_l": 1.38, "lowerarm_r": 1.38, "hand_l": 1.45, "hand_r": 1.45, "clavicle_l": 1.12, "clavicle_r": 1.12, "spine_03": 1.12, "neck_01": 1.18 },
+    "hunchDeg": 14,
+    "furColor": "#5a3a22",
+    "furTip": "#a8743f",
+    "furLength": 0.022,
+    "furShells": 10,
+    "eyeColor": "#ffb02e"
+  }
+}
