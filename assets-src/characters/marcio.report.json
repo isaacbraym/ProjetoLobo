@@ -1,0 +1,43 @@
+{
+  "id": "marcio",
+  "recipe": "data\\characters\\marcio.json",
+  "generatorVersion": 1,
+  "joints_moved": 52,
+  "triangles": 36112,
+  "height_m": 1.7656,
+  "bones": 65,
+  "meshes": {
+    "Body": 8664,
+    "Shirt": 4030,
+    "Pants": 2736,
+    "Shoe_L": 1552,
+    "Shoe_R": 1552,
+    "Hair": 714,
+    "Beard": 391,
+    "Eye_L": 72,
+    "Eye_R": 72,
+    "TeethUp": 68,
+    "TeethLow": 68,
+    "Tongue": 226,
+    "Lash_L": 60,
+    "Lash_R": 60
+  },
+  "materials": [
+    "M_Beard",
+    "M_Eye",
+    "M_Hair",
+    "M_Jeans",
+    "M_Lash",
+    "M_Lips",
+    "M_Polo",
+    "M_Shoes",
+    "M_Skin",
+    "M_Teeth",
+    "M_Tongue"
+  ],
+  "out": "public\\assets\\characters\\marcio.glb",
+  "outHash": "b60c07f3f485c5dae0de3427fa63b881af39dd1a397af97aa212a9e5b8eb9106",
+  "anims": "public\\assets\\anims\\humanoid_anims.glb",
+  "animCount": 43,
+  "qa": ".agent-tmp\\characters\\marcio"
+}

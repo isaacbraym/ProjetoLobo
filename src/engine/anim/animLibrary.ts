@@ -39,7 +39,8 @@ export class AnimLibrary {
   readonly clips = new Map<string, THREE.AnimationClip>();
 
   addFromGltf(gltf: GLTF, sources: Record<string, string> = CLIP_SOURCES): void {
-    const byName = new Map(gltf.animations.map((c) => [c.name, c]));
+    // o export do Blender sufixa '_Armature' no nome da ação
+    const byName = new Map(gltf.animations.map((c) => [c.name.replace(/_Armature$/, ''), c]));
     for (const [canon, src] of Object.entries(sources)) {
       const c = byName.get(src);
       if (!c) continue;

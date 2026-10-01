@@ -1,0 +1,69 @@
+{
+  "$comment": "Receita do Márcio v1 (tools/blender/build_character.py). Referência: refs/marcio/marcio_front.png. Rosto fiel vem no M3 (técnica WWE 2K).",
+  "id": "marcio",
+  "out": "public/assets/characters/marcio.glb",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.68,
+    "muscle": 0.66,
+    "weight": 0.8,
+    "proportions": 0.45,
+    "height": 0.52,
+    "cupsize": 0.5,
+    "firmness": 0.5,
+    "race": {
+      "asian": 0.1,
+      "caucasian": 0.7,
+      "african": 0.2
+    }
+  },
+  "targets": {
+    "stomach-pregnant-incr": 0.4,
+    "neck-scale-horiz-incr": 0.5,
+    "measure-neck-circ-incr": 0.5,
+    "l-upperarm-muscle-incr": 0.7,
+    "r-upperarm-muscle-incr": 0.7,
+    "l-upperarm-fat-incr": 0.4,
+    "r-upperarm-fat-incr": 0.4,
+    "l-lowerarm-muscle-incr": 0.7,
+    "r-lowerarm-muscle-incr": 0.7,
+    "l-upperarm-shoulder-muscle-incr": 0.5,
+    "r-upperarm-shoulder-muscle-incr": 0.5,
+    "measure-shoulder-dist-incr": 0.35,
+    "torso-scale-depth-incr": 0.3,
+    "measure-waist-circ-incr": 0.35
+  },
+  "colors": {
+    "skin": "#c08a68",
+    "lips": "#9c5f55",
+    "shirt": "#4b5338",
+    "pants": "#2f4f86",
+    "shoes": "#4d3527",
+    "hair": "#1b1816",
+    "beard": "#8d8984",
+    "eye": "#e9e3db"
+  },
+  "clothes": {
+    "shirtMaterial": "M_Polo",
+    "pantsMaterial": "M_Jeans",
+    "shoeMaterial": "M_Shoes",
+    "shirtOffset": 0.012,
+    "bellyOffset": 0.008,
+    "pantsOffset": 0.017,
+    "shoeOffset": 0.012,
+    "sleeve": 0.55,
+    "ankleZ": 0.11
+  },
+  "hair": {
+    "thickness": 0.008,
+    "volumeTop": 0.3,
+    "hairlineBack": 0.05
+  },
+  "beard": {
+    "thickness": 0.007,
+    "backDepth": 0.09,
+    "aboveLips": 0.012,
+    "mustache": 0.03,
+    "neckDepth": -0.005
+  }
+}

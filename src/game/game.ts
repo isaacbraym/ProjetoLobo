@@ -47,7 +47,10 @@ export class Game {
   readonly input: Input;
   readonly loop: FixedLoop;
   assets!: Assets;
+  /** Clipes do esqueleto do Márcio (humanoid_anims.glb) e dos manequins provisórios (ual1_src.glb). */
   lib = new AnimLibrary();
+  libMannequin = new AnimLibrary();
+  private marcioGltf!: GLTF;
   level!: LevelHandle;
   camera!: ThirdPersonCamera;
   combat!: CombatSystem;
@@ -82,14 +85,23 @@ export class Game {
   async load(onProgress: (f: number) => void): Promise<void> {
     this.assets = new Assets(this.renderer.gl);
     this.assets.onProgress = onProgress;
-    const [, gltf] = await Promise.all([this.physics.init(), this.assets.load('assets/anims/ual1_src.glb')]);
+    const [, gltf, marcio, anims] = await Promise.all([
+      this.physics.init(),
+      this.assets.load('assets/anims/ual1_src.glb'),
+      this.assets.load('assets/characters/marcio.glb'),
+      this.assets.load('assets/anims/humanoid_anims.glb'),
+    ]);
     this.charGltf = gltf;
-    this.lib.addFromGltf(gltf);
-    // golpes autorados por pose-chave (gancho, uppercut, chute)
-    const ref = skeletonClone(gltf.scene);
+    this.marcioGltf = marcio;
+    this.libMannequin.addFromGltf(gltf);
+    this.lib.addFromGltf(anims);
+    // golpes autorados por pose-chave (gancho, uppercut, chute) — um conjunto por esqueleto
     const authored = (authoredJson as { clips: Record<string, AuthoredClipDef> }).clips;
+    const refM = skeletonClone(gltf.scene);
+    const refH = skeletonClone(marcio.scene);
     for (const [name, def] of Object.entries(authored)) {
-      this.lib.clips.set(name, authorClip(name, ref, this.lib.get(def.base), def));
+      this.libMannequin.clips.set(name, authorClip(name, refM, this.libMannequin.get(def.base), def));
+      this.lib.clips.set(name, authorClip(name, refH, this.lib.get(def.base), def));
     }
     this.setupWorld();
   }
@@ -105,7 +117,7 @@ export class Game {
       if (rngs.vfx.chance(0.35)) this.decals.add(x, z, s * 1.6);
     };
     this.combat = new CombatSystem(this.particles, this.camera, r);
-    const marcioModel = new CharacterModel(this.charGltf, this.lib, { main: '#4a5236', joints: '#2a2320', scale: 1.0, width: 1.12 }, 'idleCombat');
+    const marcioModel = new CharacterModel(this.marcioGltf, this.lib, null, 'idleCombat');
     r.scene.add(marcioModel.root);
     const pa = new Actor('player', marcioModel, this.physics, 100, 999, this.level.spawn);
     pa.yaw = Math.PI;
@@ -186,7 +198,7 @@ export class Game {
     const def = archetypesData.archetypes[archetype];
     if (!def) throw new Error(`arquétipo desconhecido: ${archetype}`);
     const diff = difficultyData.levels[this.difficulty];
-    const model = new CharacterModel(this.charGltf, this.lib, { main: def.colors.main, joints: def.colors.joints, scale: def.scale, width: def.width }, 'idleCombat');
+    const model = new CharacterModel(this.charGltf, this.libMannequin, { main: def.colors.main, joints: def.colors.joints, scale: def.scale, width: def.width }, 'idleCombat');
     this.renderer.scene.add(model.root);
     const pos = at ?? rngs.spawn.pick(this.level.enemySpawns).clone().add(new THREE.Vector3(rngs.spawn.range(-1.5, 1.5), 0, rngs.spawn.range(-1.5, 1.5)));
     const actor = new Actor('enemy', model, this.physics, def.hp * diff.hp, def.poise, pos);

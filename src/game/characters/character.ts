@@ -3,6 +3,7 @@ import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.j
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Animator } from '../../engine/anim/animator';
 import type { AnimLibrary } from '../../engine/anim/animLibrary';
+import { applyMaterialLibrary } from '../../engine/render/materialLibrary';
 
 export interface CharacterLook {
   /** Cor principal (roupa) e secundária (juntas/pele) para o manequim provisório. */
@@ -22,11 +23,27 @@ export class CharacterModel {
   private flashMats: THREE.MeshStandardMaterial[] = [];
   private flashT = 0;
 
-  constructor(gltf: GLTF, lib: AnimLibrary, look: CharacterLook, idle = 'idle') {
+  /** `look = null` → materiais vêm do Blender por nome (biblioteca procedural). */
+  constructor(gltf: GLTF, lib: AnimLibrary, look: CharacterLook | null, idle = 'idle') {
     this.model = skeletonClone(gltf.scene);
-    const s = look.scale ?? 1;
-    this.model.scale.set(s * (look.width ?? 1), s, s * (look.width ?? 1));
+    const s = look?.scale ?? 1;
+    this.model.scale.set(s * (look?.width ?? 1), s, s * (look?.width ?? 1));
     this.root.add(this.model);
+    if (!look) {
+      this.flashMats.push(...applyMaterialLibrary(this.model));
+      this.model.traverse((o) => {
+        if ((o as THREE.Bone).isBone) this.bones.set(o.name, o as THREE.Bone);
+        const m = o as THREE.SkinnedMesh;
+        if (m.isMesh) {
+          m.castShadow = !/Eye|Lash|Teeth|Tongue/.test(m.name);
+          m.receiveShadow = true;
+          m.frustumCulled = false;
+          if (m.isSkinnedMesh) this.meshes.push(m);
+        }
+      });
+      this.animator = new Animator(this.model, lib, idle);
+      return;
+    }
     this.model.traverse((o) => {
       if ((o as THREE.Bone).isBone) this.bones.set(o.name, o as THREE.Bone);
       const m = o as THREE.SkinnedMesh;
@@ -82,7 +99,7 @@ export class CharacterModel {
     if (this.flashT > 0) {
       this.flashT -= dt;
       const k = Math.max(0, this.flashT / 0.12);
-      for (const m of this.flashMats) m.emissive.setRGB(k * 1.2, k * 0.25, k * 0.2);
+      for (const m of this.flashMats) m.emissive.setRGB(k * 0.7, k * 0.12, k * 0.08);
       if (this.flashT <= 0) for (const m of this.flashMats) m.emissive.setRGB(0, 0, 0);
     }
   }
