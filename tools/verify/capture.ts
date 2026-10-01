@@ -6,13 +6,14 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { launch, openGame, outDir, lobo, ROOT } from './browser';
 import { runControls } from './scenarioControls';
+import { runWalkthrough } from './scenarioWalk';
 
 const scenario = process.argv[2] ?? 'combat';
 const dir = outDir('captures');
 const browser = await launch();
 try {
   if (scenario === 'face') {
-    const { page, logs } = await openGame(browser, '', { width: 900, height: 900 });
+    const { page, logs } = await openGame(browser, 'scene=sandbox-combat', { width: 900, height: 900 });
     await lobo(page, 'godMode(true)');
     await page.waitForTimeout(1500);
     // pausa os inimigos longe para não atrapalhar a foto
@@ -30,7 +31,7 @@ try {
     const { compareFace } = await import('../face/compare');
     console.log('[capture] rosto vs foto:', JSON.stringify(await compareFace(resolve(ROOT, 'assets-src/characters/marcio_face_src'), resolve(dir, 'face_photo.png'), dir)));
   } else if (scenario === 'wolf') {
-    const { page, logs } = await openGame(browser, 'perf=1');
+    const { page, logs } = await openGame(browser, 'scene=sandbox-combat&perf=1');
     await lobo(page, 'seed(42)');
     await lobo(page, 'godMode(true)');
     await page.waitForTimeout(2500);
@@ -53,12 +54,51 @@ try {
     writeFileSync(resolve(dir, 'state.json'), JSON.stringify(info, null, 2));
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
   } else if (scenario === 'controls') {
-    const { page, logs } = await openGame(browser, '');
+    const { page, logs } = await openGame(browser, 'scene=sandbox-combat');
     const { failed, checks } = await runControls(page, dir);
     writeFileSync(resolve(dir, 'controls.json'), JSON.stringify({ failed, checks }, null, 2));
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
     console.log(`[capture] controles: ${failed.length ? 'FALHOU ' + failed.join(', ') : 'tudo ok'}`);
     console.log(JSON.stringify(checks));
+  } else if (scenario === 'walk') {
+    const { page, logs } = await openGame(browser, 'perf=1');
+    const r = await runWalkthrough(page, dir, { maxSeconds: Number(process.argv[3] ?? 300), timeScale: Number(process.argv[4] ?? 1) });
+    writeFileSync(resolve(dir, 'walk.json'), JSON.stringify(r, null, 2));
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
+    console.log(`[capture] percurso: ${r.ok ? 'COMPLETO' : r.stuck ? 'TRAVOU' : 'NÃO TERMINOU'} em ${r.seconds}s → ${JSON.stringify(r.final)}`);
+  } else if (scenario === 'floor1') {
+    // revisão do andar 1: uma vista por sala (jogador teleportado para a sala = culling real) + vista de cima
+    const { page, logs } = await openGame(browser, 'perf=1');
+    await page.waitForTimeout(1200);
+    const views: [string, number, number, number[], number[], number?][] = [
+      ['01_entrada', 0, 10.4, [0, 1.75, 11.3], [0, 2.6, -6], 62],
+      ['02_recepcao', -3, 8, [-5.5, 2.3, 9.5], [0.5, 1.0, 3.8]],
+      ['03_catracas', 6, -2, [9, 2.6, 0.5], [-2, 1.4, -9]],
+      ['04_mezanino', 4, 4, [6, 3.2, 6], [-13, 3, 1]],
+      ['05_espera', 9, 1, [7.5, 2.1, -0.5], [13, 1, 5]],
+      ['06_seguranca', 18, 10.5, [17.2, 2.2, 11.4], [22, 1.1, 5]],
+      ['07_cafeteria', 18, 0, [17.4, 2.4, 1.4], [27, 1, -8]],
+      ['08_balcao', 25, -3, [24, 1.9, -2.6], [30.6, 1.2, -9]],
+      ['09_corredor', -13, -13.7, [-15, 1.8, -13.7], [20, 1.2, -13.7]],
+      ['10_correspondencia', -12.3, -16.5, [-9, 2.1, -16.1], [-13.5, 0.9, -20.5]],
+      ['11_banheiro', -4.5, -16.5, [-1.6, 2.1, -16.1], [-6, 0.9, -20.5]],
+      ['12_deposito', 2.1, -16.5, [5.4, 2.1, -16.1], [1, 0.9, -20.5]],
+      ['13_escada', 9.1, -16.5, [11.4, 2.1, -16.1], [8.5, 1, -20.5]],
+    ];
+    const stats: Record<string, unknown> = {};
+    for (const [name, px, pz, c, l, fov] of views) {
+      await lobo(page, `teleport(${px}, ${pz})`);
+      await lobo(page, `cam(${c.join(',')}, ${l.join(',')}, ${fov ?? 58})`);
+      await page.waitForTimeout(700);
+      await page.screenshot({ path: resolve(dir, `floor_${name}.png`) });
+      stats[name] = { floor: await lobo(page, 'floorStats()'), perf: await lobo(page, 'perf()') };
+    }
+    await lobo(page, 'showAllRooms(true)');
+    await lobo(page, 'cam(8, 70, -4.9, 8, 0, -5, 42)');
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: resolve(dir, 'floor_00_planta.png') });
+    writeFileSync(resolve(dir, 'state.json'), JSON.stringify(stats, null, 2));
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
   } else if (scenario === 'menu') {
     const { page, logs } = await openGame(browser, 'menu=1');
     await page.waitForTimeout(3000);
@@ -75,7 +115,7 @@ try {
     await page.screenshot({ path: resolve(dir, 'menu_controls_touch.png') });
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
   } else {
-    const { page, logs } = await openGame(browser, 'perf=1');
+    const { page, logs } = await openGame(browser, 'scene=sandbox-combat&perf=1');
     await lobo(page, 'seed(42)');
     await lobo(page, 'godMode(true)');
     await lobo(page, 'bot(true, 3)');

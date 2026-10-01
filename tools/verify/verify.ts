@@ -7,6 +7,7 @@ import { writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { ROOT, launch, openGame, outDir, lobo } from './browser';
 import { runControls } from './scenarioControls';
+import { runWalkthrough } from './scenarioWalk';
 
 const quick = process.argv.includes('--quick');
 const PREVIEW_PORT = 4180;
@@ -99,7 +100,7 @@ async function e2e(): Promise<void> {
     }
     // 2) combate com bot: vence, sem erros, fichas respeitadas (L-05, L-08)
     {
-      const { page, logs } = await openGame(browser, 'perf=1');
+      const { page, logs } = await openGame(browser, 'scene=sandbox-combat&perf=1');
       await lobo(page, 'seed(7)');
       await lobo(page, 'godMode(true)');
       await lobo(page, 'bot(true, 7)');
@@ -120,16 +121,24 @@ async function e2e(): Promise<void> {
     }
     // 3) controles "poucos botões" (DEC-0016): mira, toque × segurar, Shift, G, Ctrl+W, lobo devorando
     {
-      const { page, logs } = await openGame(browser, '');
+      const { page, logs } = await openGame(browser, 'scene=sandbox-combat');
       const r = await runControls(page, null);
       const errors = logs.filter((l) => l.startsWith('[pageerror]') || l.startsWith('[error]'));
       steps.push({ name: 'e2e:controls', ok: r.failed.length === 0 && errors.length === 0, ms: 0, detail: { failed: r.failed, errors, checks: r.checks } });
+    }
+    // 4) andar 1 (DEC-0017): o bot explora, limpa os grupos, liberta reféns e chega no auditório; 30 s sem progresso = falha
+    {
+      const { page, logs } = await openGame(browser, 'perf=1');
+      const r = await runWalkthrough(page, null, { maxSeconds: 160, timeScale: 2 });
+      const errors = logs.filter((l) => l.startsWith('[pageerror]') || l.startsWith('[error]'));
+      await page.screenshot({ path: resolve(dir, 'floor1_walk.png') });
+      steps.push({ name: 'e2e:floor1-walk', ok: r.ok && errors.length === 0, ms: r.seconds * 1000, detail: { stuck: r.stuck, final: r.final, errors, seconds: r.seconds } });
     }
   } finally {
     await browser.close();
     killTree(server);
   }
-  for (const s of steps.slice(-4)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
+  for (const s of steps.slice(-5)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
   steps.push({ name: 'e2e', ok: true, ms: Date.now() - t0 });
 }
 

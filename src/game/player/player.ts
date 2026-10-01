@@ -250,7 +250,7 @@ export class Player implements Fighter {
     let best: Fighter | null = null;
     let bestScore = Infinity;
     for (const f of this.combat.fighters) {
-      if (f.kind === 'player' || !f.alive) continue;
+      if (f.kind !== 'enemy' || !f.alive) continue;
       const d = a.distanceTo(f.actor);
       if (d > maxDist) continue;
       const yawTo = a.yawTo(f.actor);

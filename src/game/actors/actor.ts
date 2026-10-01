@@ -61,7 +61,7 @@ export class Actor {
       Actor.kcc.enableSnapToGround(0.3);
     }
     this.body = physics.world.createRigidBody(R.RigidBodyDesc.kinematicPositionBased().setTranslation(spawn.x, spawn.y + 0.9, spawn.z));
-    const grp = team === 'player' ? G.player : G.enemy;
+    const grp = team === 'player' ? G.player : team === 'civilian' ? G.civilian : G.enemy;
     this.collider = physics.world.createCollider(R.ColliderDesc.capsule(0.55, this.radius).setCollisionGroups(grp), this.body);
   }
 

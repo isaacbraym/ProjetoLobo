@@ -226,3 +226,12 @@ body.aim-cursor #game { cursor: none; }
 .pause__box { display: grid; gap: 6px; text-align: center; }
 .pause__box h2 { font-family: var(--font-display); font-size: 64px; margin: 0 0 10px; transform: skewX(-6deg); text-shadow: 0 0 30px rgba(200,16,46,.5); }
 .pause__box .menu__btn { text-align: center; }
+
+/* ---------- Objetivo (DEC-0017: sem contador de onda) ---------- */
+.hud__objective { position: absolute; right: calc(22px + var(--safe-r)); top: calc(18px + var(--safe-t)); text-align: right; opacity: 0;
+  font-weight: 700; letter-spacing: .06em; font-size: 16px; line-height: 1.5; text-shadow: 0 2px 6px #000; transition: opacity .3s; max-width: 42vw; }
+.hud__objective.on { opacity: 1; }
+.hud__objective b { color: var(--amber); }
+.hud__objective .dim { color: var(--muted); font-weight: 600; font-size: 14px; }
+.hud__objective.pulse div:first-child { animation: objPulse .8s ease-out; }
+@keyframes objPulse { 0% { color: var(--amber); transform: translateX(-6px); } 100% { color: var(--ink); transform: none; } }

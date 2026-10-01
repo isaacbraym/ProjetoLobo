@@ -23,6 +23,10 @@ import { CombatDirector } from './ai/combatDirector';
 import { CombatSystem } from './combat/combatSystem';
 import { Ragdoll } from './corpses/ragdoll';
 import { buildSandboxLobby, type LevelHandle } from './levels/sandboxLobby';
+import { buildFloor, type FloorHandle } from './levels/floorBuilder';
+import { Encounters } from './levels/encounters';
+import { LevelSchema } from './data/levelSchema';
+import floor1Json from '../../data/levels/floor1/layout.json';
 import { archetypesData, attacksData, difficultyData, type DifficultyName } from './data/gameData';
 import authoredJson from '../../data/anim/authored.json';
 import wolfJson from '../../data/werewolf.json';
@@ -59,6 +63,11 @@ export class Game {
   private marcioFace?: THREE.Texture;
   private enemyModels = new Map<string, GLTF>();
   level!: LevelHandle;
+  /** Andar explorável (DEC-0017). Nulo na cena de teste de combate (`?scene=sandbox-combat`). */
+  floor: FloorHandle | null = null;
+  encounters: Encounters | null = null;
+  /** 'floor' = jogo (exploração do andar); 'sandbox' = saguão com ondas, só para testes/verify. */
+  readonly mode: 'floor' | 'sandbox' = new URLSearchParams(location.search).get('scene') === 'sandbox-combat' ? 'sandbox' : 'floor';
   camera!: ThirdPersonCamera;
   combat!: CombatSystem;
   director = new CombatDirector();
@@ -151,6 +160,7 @@ export class Game {
       this.lib.clips.set(name, authorClip(name, refH, this.lib.get(def.base), def));
     }
     this.setupWorld();
+    await this.floor?.initNav();
     this.warmup();
   }
 
@@ -165,14 +175,26 @@ export class Game {
     }
     this.particles.blood(0, -50, 0, 1, 0, 1);
     this.decals.add(0, 0, 0.01, -50);
+    // todas as salas visíveis durante a compilação (o culling por sala esconderia materiais ainda não vistos)
+    if (this.floor) {
+      this.floor.forceAll = true;
+      this.floor.setFocus(this.floor.spawn, this.floor.spawn);
+    }
     this.renderer.gl.compile(this.renderer.scene, this.renderer.camera);
     this.renderer.render(1 / 60);
+    if (this.floor) {
+      this.floor.forceAll = false;
+      this.floor.setFocus(this.floor.spawn, this.floor.spawn);
+    }
     for (const m of tmp) this.renderer.scene.remove(m.root);
   }
 
   private setupWorld(): void {
     const r = this.renderer;
-    this.level = buildSandboxLobby(r, this.physics);
+    if (this.mode === 'floor') {
+      this.floor = buildFloor(r, this.physics, LevelSchema.parse(floor1Json));
+      this.level = this.floor;
+    } else this.level = buildSandboxLobby(r, this.physics);
     this.camera = new ThirdPersonCamera(r.camera, this.physics);
     this.particles = new Particles(r.preset.particleMax);
     this.decals = new FloorDecals(r.preset.decalPool);
@@ -184,7 +206,7 @@ export class Game {
     const marcioModel = new CharacterModel(this.marcioGltf, this.lib, null, 'idleCombat', undefined, 1, this.marcioFace);
     r.scene.add(marcioModel.root);
     const pa = new Actor('player', marcioModel, this.physics, 100, 999, this.level.spawn);
-    pa.yaw = Math.PI;
+    pa.yaw = this.floor ? this.floor.def.spawn.yaw : Math.PI;
     this.player = new Player(pa, this.combat);
     this.combat.fighters.push(this.player);
     this.camera.yaw = 0;
@@ -361,7 +383,16 @@ export class Game {
     this.hud.setLives(this.player.lives);
     if (!this.loopRunning) this.loop.start();
     this.loopRunning = true;
-    this.nextWave();
+    if (this.mode === 'sandbox') this.nextWave();
+    else if (this.floor) {
+      this.encounters = new Encounters(this, this.floor);
+      this.encounters.start();
+    }
+  }
+
+  /** GLB de personagem já carregado (inimigos e civis). */
+  characterGltf(id: string): GLTF | undefined {
+    return this.enemyModels.get(id);
   }
 
   private loopRunning = false;
@@ -404,11 +435,13 @@ export class Game {
   private fixedUpdate(dt: number): void {
     const t0 = performance.now();
     for (const e of this.enemies) e.actor.beginStep();
+    if (this.encounters) for (const h of this.encounters.hostages) h.actor.beginStep();
     this.player.actor.beginStep();
     if (this.started) {
       this.player.update(dt, this.input, this.camera);
       this.director.update(dt, this.enemies, this.player);
-      for (const e of this.enemies) e.update(dt, this.player);
+      for (const e of this.enemies) if (!e.sleeping) e.update(dt, this.player);
+      this.encounters?.update(dt);
       this.combat.update(dt);
       this.updateFlow(dt);
     }
@@ -423,7 +456,7 @@ export class Game {
       this.enemies = this.enemies.filter((e) => e.alive);
       this.combat.fighters = this.combat.fighters.filter((f) => f.alive || f.kind === 'player');
     }
-    if (this.enemies.length === 0 && this.waveClearTimer < 0) {
+    if (this.mode === 'sandbox' && this.enemies.length === 0 && this.waveClearTimer < 0) {
       this.waveClearTimer = 3.2;
       this.hud.showBanner('SALA LIMPA', `${this.kills} derrubados`, 2.2);
     }
@@ -452,7 +485,7 @@ export class Game {
           this.wave = 0;
           this.hud.setLives(3);
         }
-        this.player.respawn(this.level.spawn);
+        this.player.respawn(this.encounters ? this.encounters.checkpoint : this.level.spawn);
       }
     }
   }
@@ -488,9 +521,16 @@ export class Game {
     this.player.speedMul = this.wolf.speedMul;
     this.player.damageTakenMul = this.wolf.state === 'wolf' ? 0.5 : 1;
     for (const e of this.enemies) {
+      if (e.sleeping) continue;
       e.actor.syncVisual(alpha);
       e.actor.model.update(frameDt * this.loop.timeScale);
     }
+    if (this.encounters)
+      for (const h of this.encounters.hostages) {
+        if (!h.actor.model.root.visible) continue;
+        h.actor.syncVisual(alpha);
+        h.actor.model.update(frameDt * this.loop.timeScale);
+      }
     for (const c of this.corpses) {
       if (c.ragdoll && c.ragdoll.active) {
         c.ragdoll.sync(frameDt);
@@ -525,7 +565,9 @@ export class Game {
     }
     const menuOrbit = !this.started;
     if (menuOrbit) this.camera.yaw += frameDt * 0.08;
+    if (this.floor?.current) this.camera.ceiling = this.floor.current.def.height;
     this.camera.update(frameDt, this.tmpTarget, pa.yaw, this.player.moveSpeed > 0.5, n > 0);
+    this.floor?.setFocus(this.tmpTarget, this.renderer.camera.position);
 
     this.level.update(frameDt);
     this.particles.update(frameDt * this.loop.timeScale);

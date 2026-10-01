@@ -25,7 +25,20 @@ Atualizado: 2026-10-01 · Por: sessão 2 (Claude Opus 5.5) — seguindo `docs/PR
   `npm run capture menu` → `menu_controls_*.png`; teste unitário `tests/unit/pressTracker.test.ts`.
   **NÃO VALIDADO:** captura real de Ctrl+W com tela cheia + Keyboard Lock (headless não tem tela cheia de verdade),
   gamepad físico, toque em celular real.
-- Próximo: **B** (cinemática de abertura) e **B2** (andar 1 explorável, sem ondas).
+- **B2 (base) ✔ Andar 1 explorável, sem ondas** (DEC-0017/0021/0022/0023): planta em `data/levels/floor1/layout.json`
+  (átrio monumental com mezanino, escada rolante, recepção, catracas, elevadores travados, sala de espera; segurança
+  com CCTV e mesa de cartas; cafeteria com balcão/cardápio/mesas; corredor de serviço; correspondência; banheiros;
+  depósito; escada bloqueada; auditório trancado com corrente) → `src/game/levels/floorBuilder.ts` + `props.ts` (~60
+  props por código) + `atlas.ts` + `levelTextures.ts`. 6 grupos POSICIONADOS (guarda, conversa, sentados, vigiando
+  reféns, patrulha) com percepção (cone + linha de visada + barulho), alerta que se espalha; 10 reféns (cativo →
+  esperança → livre/foge pela entrada; pânico se acertados); 2 arenas (catracas: abas de vidro + grade de aço;
+  cafeteria: mesas viradas que voam ao abrir); 3 segredos (kit, guitarra, refém escondido no banheiro); objetivo no
+  HUD; checkpoint por sala; final "TÉRREO LIMPO" na porta do auditório. Navmesh recast (inimigos/reféns/bot).
+  Evidência: `npm run capture floor1` (vistas por sala + planta), `npm run capture walk` e **`e2e:floor1-walk` no
+  verify** (bot completa o andar: 10/10 reféns, 3/3 segredos).
+  **Pendente no B2:** desempenho com o andar inteiro (≈600–750 draw calls com 15+ inimigos visíveis; meta Medium 180 →
+  mesclar personagens/sombras na F), câmera em interiores (C), props destrutíveis, mais narrativa ambiental.
+- Próximo: **B** (cinemática de abertura no átrio), depois **C** (câmera).
 
 **Estado:** M0 ✔ · M1 v1 ✔ (Márcio gerado no Blender) · M2 em andamento (combate jogável, inimigos reais) ·
 M3 v1 ✔ (rosto por projeção da foto) · M5 v1 ✔ (transformação em lobisomem jogável, sem morph targets ainda).

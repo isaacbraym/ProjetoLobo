@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ArchetypesFileSchema, AttacksFileSchema, DifficultyFileSchema, crossValidate } from '../../src/game/data/schemas';
+import { LevelSchema } from '../../src/game/data/levelSchema';
 
 const root = resolve(import.meta.dirname, '..', '..');
 const read = (p: string) => JSON.parse(readFileSync(resolve(root, p), 'utf8'));
@@ -17,6 +18,10 @@ const check = <T>(name: string, fn: () => T): T | null => {
 const attacks = check('data/combat/attacks.json', () => AttacksFileSchema.parse(read('data/combat/attacks.json')));
 const arch = check('data/enemies/archetypes.json', () => ArchetypesFileSchema.parse(read('data/enemies/archetypes.json')));
 check('data/difficulty.json', () => DifficultyFileSchema.parse(read('data/difficulty.json')));
+const level1 = check('data/levels/floor1/layout.json', () => LevelSchema.parse(read('data/levels/floor1/layout.json')));
+if (level1 && arch) {
+  for (const g of level1.groups) for (const m of g.members) if (!arch.archetypes[m.a]) errors.push(`floor1 ${g.id}: arquétipo ${m.a} não existe`);
+}
 const authored = check('data/anim/authored.json', () => read('data/anim/authored.json'));
 if (attacks && arch) errors.push(...crossValidate(attacks, arch));
 // L-04: nenhum ataque inimigo sem telegrafia mínima (a telegrafia vem da dificuldade, ≥ 0,15 s pelo schema)

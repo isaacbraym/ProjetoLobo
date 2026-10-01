@@ -35,6 +35,8 @@ export class ThirdPersonCamera {
   edgePan = 0;
   aimPitch = 0.6;
   aimDistance = 6.2;
+  /** Altura do forro da sala atual (interiores baixos achatam o ângulo em vez de atravessar o teto). */
+  ceiling = 99;
   private idleLook = 0;
 
   constructor(private cam: THREE.PerspectiveCamera, private physics: Physics) {}
@@ -72,7 +74,14 @@ export class ThirdPersonCamera {
       this.tmp.copy(this.threatCenter).sub(target);
       this.tmp.y = 0;
       const d = Math.min(this.tmp.length(), 6);
-      if (d > 0.01) this.pivotTarget.addScaledVector(this.tmp.normalize(), d * 0.28);
+      if (d > 0.01) {
+        // o pivô puxa para as ameaças, mas nunca atravessa parede (inimigo do outro lado de uma porta)
+        this.tmp.normalize();
+        let off = d * 0.28;
+        const hit = this.physics.castSphere(target.x, target.y + 1.45, target.z, this.tmp.x, 0, this.tmp.z, 0.22, off + 0.3);
+        if (hit !== null) off = Math.max(0, Math.min(off, hit - 0.3));
+        this.pivotTarget.addScaledVector(this.tmp, off);
+      }
       distTarget += Math.min(this.threatCount, 6) * 0.22 + d * 0.08;
     }
     // recentraliza atrás do personagem quando anda sem mexer a câmera
@@ -87,9 +96,13 @@ export class ThirdPersonCamera {
     this.pivot.y = damp(this.pivot.y, this.pivotTarget.y, 0.12, dt);
     this.pivot.z = damp(this.pivot.z, this.pivotTarget.z, 0.06, dt);
 
-    // braço da câmera
-    const cp = Math.cos(this.pitch);
-    this.tmp2.set(Math.sin(this.yaw) * cp, Math.sin(this.pitch), Math.cos(this.yaw) * cp); // direção pivô→câmera
+    // braço da câmera: em sala baixa o ângulo achata para a câmera caber abaixo do forro
+    let pitch = this.pitch;
+    const room = this.ceiling - 0.35 - this.pivot.y;
+    if (room < Math.sin(pitch) * distTarget) pitch = Math.max(-0.05, Math.asin(Math.max(-1, Math.min(1, room / Math.max(0.5, distTarget)))));
+    if (this.ceiling < 5) distTarget = Math.min(distTarget, this.mode === 'aim' ? 5.2 : 4.2);
+    const cp = Math.cos(pitch);
+    this.tmp2.set(Math.sin(this.yaw) * cp, Math.sin(pitch), Math.cos(this.yaw) * cp); // direção pivô→câmera
     const hit = this.physics.castSphere(this.pivot.x, this.pivot.y, this.pivot.z, this.tmp2.x, this.tmp2.y, this.tmp2.z, 0.25, distTarget);
     const allowed = hit !== null ? Math.max(0.6, hit - 0.05) : distTarget;
     // aproxima rápido (evita atravessar parede), afasta devagar

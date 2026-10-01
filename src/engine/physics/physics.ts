@@ -22,6 +22,7 @@ export const G = {
   static: groups(Layer.STATIC, 0xffff),
   player: groups(Layer.PLAYER, Layer.STATIC | Layer.PROP | Layer.ENEMY | Layer.CIVILIAN),
   enemy: groups(Layer.ENEMY, Layer.STATIC | Layer.PROP | Layer.PLAYER | Layer.ENEMY | Layer.CIVILIAN),
+  civilian: groups(Layer.CIVILIAN, Layer.STATIC | Layer.PROP | Layer.PLAYER | Layer.ENEMY | Layer.CIVILIAN),
   ragdoll: groups(Layer.RAGDOLL, Layer.STATIC | Layer.PROP),
   prop: groups(Layer.PROP, Layer.STATIC | Layer.PROP | Layer.PLAYER | Layer.ENEMY | Layer.RAGDOLL | Layer.DEBRIS),
   debris: groups(Layer.DEBRIS, Layer.STATIC | Layer.PROP),
@@ -33,6 +34,8 @@ export class Physics {
   R!: Rapier;
   world!: RAPIER.World;
   stepMs = 0;
+  /** Quando não nulo, toda caixa estática criada é registrada (entrada da navmesh). */
+  record: { cx: number; cy: number; cz: number; hx: number; hy: number; hz: number; ry: number }[] | null = null;
 
   async init(): Promise<void> {
     await RAPIER.init();
@@ -48,6 +51,7 @@ export class Physics {
   }
 
   addStaticBox(cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, rotY = 0): RAPIER.Collider {
+    this.record?.push({ cx, cy, cz, hx, hy, hz, ry: rotY });
     const body = this.world.createRigidBody(
       this.R.RigidBodyDesc.fixed()
         .setTranslation(cx, cy, cz)

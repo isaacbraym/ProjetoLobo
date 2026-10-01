@@ -46,6 +46,8 @@ export class CombatSystem {
     const half = THREE.MathUtils.degToRad(def.arc / 2);
     for (const f of this.fighters) {
       if (f === attacker || !f.alive || f.kind === attacker.kind) continue;
+      // civis só levam golpe do Márcio (sem querer); inimigos nunca miram neles
+      if (f.kind === 'civilian' && attacker.kind !== 'player') continue;
       const d = a.distanceTo(f.actor);
       if (d > def.range + f.actor.radius + 0.15) continue;
       if (d > 0.4 && a.angleTo(f.actor) > half) continue;
@@ -78,6 +80,13 @@ export class CombatSystem {
       const crit = forceCrit || (def.heavy && t.staggered) || rngs.combat.chance(def.critChance ?? (def.heavy ? 0.15 : 0.05));
       const info: HitInfo = { attacker: a, attack: def, damage: def.damage * scale * damageMul * (crit ? 1.5 : 1), dirX: dx, dirZ: dz, heavy: def.heavy };
       if (!t.takeHit(info)) continue;
+      if (t.kind === 'civilian') {
+        // refém acertado: impacto seco, sem combo nem barra do lobo
+        t.actor.model.boneWorld('spine_03', _v);
+        this.particles.impact(_v.x, _v.y, _v.z, dx, dz, 0.6);
+        audio.play(def.sfx, 0.6);
+        continue;
+      }
       hits++;
       this.feedback(attacker, t, def, dx, dz, crit, !t.alive);
     }

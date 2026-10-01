@@ -14,6 +14,7 @@ export class Hud {
   private banner: HTMLDivElement;
   private hint: HTMLDivElement;
   private toastEl: HTMLDivElement;
+  private objectiveEl: HTMLDivElement;
   private toastT = 0;
   private vignette: HTMLDivElement;
   private bars = new Map<Enemy, HTMLDivElement>();
@@ -34,6 +35,7 @@ export class Hud {
       <div class="hud__banner"></div>
       <div class="hud__hint"></div>
       <div class="hud__toast"></div>
+      <div class="hud__objective"></div>
       <div class="hud__bars"></div>`;
     root.appendChild(this.el);
     this.vignette = document.createElement('div');
@@ -50,6 +52,7 @@ export class Hud {
     this.banner = q('.hud__banner');
     this.hint = q('.hud__hint');
     this.toastEl = q('.hud__toast');
+    this.objectiveEl = q('.hud__objective');
     this.barLayer = q('.hud__bars');
   }
 
@@ -93,6 +96,15 @@ export class Hud {
     this.toastT = seconds;
   }
 
+  /** Objetivo discreto no canto superior direito (linhas; aceita <b> e <span class="dim">). */
+  setObjective(lines: string[] | null): void {
+    this.objectiveEl.innerHTML = lines ? lines.map((l) => `<div>${l}</div>`).join('') : '';
+    this.objectiveEl.classList.toggle('on', !!lines);
+    this.objectiveEl.classList.remove('pulse');
+    void this.objectiveEl.offsetWidth;
+    this.objectiveEl.classList.add('pulse');
+  }
+
   damageFlash(): void {
     this.vignette.style.transition = 'none';
     this.vignette.style.opacity = '1';
@@ -114,7 +126,7 @@ export class Hud {
     const h = window.innerHeight;
     for (const e of enemies) {
       let bar = this.bars.get(e);
-      const show = e.alive && (e.engaged && (e.lastHitTime < 4 || e === target || e.telegraphAmount > 0));
+      const show = e.alive && e.actor.model.root.visible && e.engaged && (e.lastHitTime < 4 || e === target || e.telegraphAmount > 0);
       if (!bar) {
         bar = document.createElement('div');
         bar.style.cssText = 'position:absolute;left:0;top:0;width:64px;pointer-events:none;transition:opacity .2s;will-change:transform';

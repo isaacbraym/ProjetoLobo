@@ -10,6 +10,21 @@ import { events } from '../../core/events';
 
 export type EState = 'idle' | 'approach' | 'windup' | 'attack' | 'recover' | 'hit' | 'stagger' | 'down' | 'getup' | 'dead';
 
+/** Antes da briga (inimigos posicionados no andar, DEC-0017). */
+export type PreBehavior = 'guard' | 'talk' | 'sit' | 'villainGuard' | 'patrol' | 'idle';
+export interface PreState {
+  kind: PreBehavior;
+  home: THREE.Vector3;
+  homeYaw: number;
+  path: THREE.Vector3[];
+  pathIdx: number;
+  wait: number;
+  groupId: string;
+  room: string;
+}
+
+const PRE_CLIP: Record<PreBehavior, string> = { guard: 'idle', talk: 'talk', sit: 'sitIdle', villainGuard: 'villainGuard', patrol: 'idle', idle: 'idle' };
+
 /**
  * Inimigo genérico dirigido por arquétipo (dados). Decide a 10 Hz; move a 60 Hz.
  * Só ataca com ficha do CombatDirector, sempre com telegrafia.
@@ -35,6 +50,21 @@ export class Enemy implements Fighter {
   engaged = false;
   /** Indicador visual de telegrafia (0..1) lido pela UI. */
   telegraphAmount = 0;
+  /** Comportamento antes da briga; null = já nasce na briga (cena de teste). */
+  pre: PreState | null = null;
+  /** Fora da vista e distraído: não simula nem anima (sala longe). */
+  sleeping = false;
+  /** Já percebeu o Márcio (inimigos posicionados começam distraídos). */
+  aware = true;
+  private alertIn = -1;
+  /** Navegação entre salas (o andar devolve o próximo ponto: porta ou o próprio destino). */
+  steer: ((fx: number, fz: number, tx: number, tz: number, out: THREE.Vector3) => void) | null = null;
+  private steerOut = new THREE.Vector3();
+  /** Linha livre entre dois pontos (paredes/móveis altos bloqueiam). Injetado no andar; nulo no sandbox. */
+  los: ((ax: number, az: number, bx: number, bz: number) => boolean) | null = null;
+  private losAcc = 0;
+  private slotClear = true;
+  private playerClear = true;
 
   constructor(
     readonly actor: Actor,
@@ -61,15 +91,84 @@ export class Enemy implements Fighter {
     this.stateTime = 0;
   }
 
+  /** Começa distraído com um comportamento (guarda, conversa, sentado, vigiando reféns, patrulha). */
+  setPre(pre: PreState): void {
+    this.pre = pre;
+    this.aware = false;
+    this.engaged = false;
+    this.actor.yaw = pre.homeYaw;
+    this.actor.model.animator.setLocoSet({ idle: PRE_CLIP[pre.kind] }, true);
+  }
+
+  /** Percebeu o Márcio (ou foi avisado pelo grupo): reage depois de `delay` s. */
+  alert(delay = 0): void {
+    if (this.aware || this.alertIn >= 0 || !this.actor.alive) return;
+    this.alertIn = delay;
+  }
+
+  get alerting(): boolean {
+    return this.alertIn >= 0;
+  }
+
+  private becomeAware(): void {
+    this.aware = true;
+    this.engaged = true;
+    this.alertIn = -1;
+    this.actor.model.animator.setLocoSet({ idle: 'idleCombat' });
+    this.cooldown = Math.max(this.cooldown, rngs.ai.range(0.4, 1.0));
+    this.setState('approach');
+  }
+
+  private updateUnaware(dt: number, player: Fighter): void {
+    const a = this.actor;
+    const pre = this.pre!;
+    if (this.alertIn >= 0) {
+      // reação: vira para o Márcio e entra na briga
+      this.alertIn -= dt;
+      a.yaw = dampAngle(a.yaw, a.yawTo(player.actor), 0.08, dt);
+      if (pre.kind !== 'sit') a.move(0, 0, dt);
+      if (this.alertIn < 0) this.becomeAware();
+      return;
+    }
+    a.model.animator.strafe = 0;
+    if (pre.kind === 'patrol' && pre.path.length > 1) {
+      if (pre.wait > 0) {
+        pre.wait -= dt;
+        this.moveSpeed = damp(this.moveSpeed, 0, 0.1, dt);
+      } else {
+        const wp = pre.path[pre.pathIdx]!;
+        const dx = wp.x - a.pos.x, dz = wp.z - a.pos.z;
+        const d = Math.hypot(dx, dz);
+        if (d < 0.35) {
+          pre.pathIdx = (pre.pathIdx + 1) % pre.path.length;
+          pre.wait = rngs.ai.range(1.0, 2.6);
+        } else {
+          this.moveSpeed = damp(this.moveSpeed, this.def.walk * 0.85, 0.15, dt);
+          a.yaw = dampAngle(a.yaw, Math.atan2(dx, dz), 0.12, dt);
+        }
+      }
+      a.move(Math.sin(a.yaw) * this.moveSpeed * dt, Math.cos(a.yaw) * this.moveSpeed * dt, dt);
+      a.model.animator.speed = this.moveSpeed;
+      return;
+    }
+    a.model.animator.speed = 0;
+    a.yaw = dampAngle(a.yaw, pre.homeYaw, 0.3, dt);
+    if (pre.kind !== 'sit') a.move(0, 0, dt);
+  }
+
   update(dt: number, player: Fighter): void {
     this.stateTime += dt;
     this.lastHitTime += dt;
     this.cooldown = Math.max(0, this.cooldown - dt);
     const a = this.actor;
     if (!a.alive) return;
+    if (!this.aware && this.state !== 'hit' && this.state !== 'stagger' && this.state !== 'down' && this.state !== 'getup') {
+      this.updateUnaware(dt, player);
+      return;
+    }
     const p = player.actor;
     const dist = a.distanceTo(p);
-    if (!this.engaged && (dist < 14 || this.lastHitTime < 1)) this.engaged = true;
+    if (!this.engaged && this.pre === null && (dist < 14 || this.lastHitTime < 1)) this.engaged = true;
 
     switch (this.state) {
       case 'idle':
@@ -159,15 +258,32 @@ export class Enemy implements Fighter {
     // decisão a 10 Hz: atacar se tiver ficha, cooldown pronto e estiver no alcance
     if (this.decideAcc >= 0.1) {
       this.decideAcc = 0;
-      if (this.hasToken && this.cooldown <= 0 && dist < 2.6 && player.alive) {
+      // linha de visada (a 5 Hz): slot atrás de balcão/parede vira "persegue o Márcio pela navmesh"; sem ataque através de móvel
+      this.losAcc += 0.1;
+      if (this.los && this.losAcc >= 0.2) {
+        this.losAcc = 0;
+        this.slotClear = this.los(p.pos.x, p.pos.z, this.slot.x, this.slot.z);
+        this.playerClear = this.los(a.pos.x, a.pos.z, p.pos.x, p.pos.z);
+      }
+      if (this.hasToken && this.cooldown <= 0 && dist < 2.6 && player.alive && this.playerClear) {
         this.beginAttack();
         return;
       }
       if (rngs.ai.chance(0.03)) this.strafeDir *= -1;
     }
-    // vai até o slot; perto do slot, circula olhando para o Márcio
-    let tx = this.slot.x - a.pos.x;
-    let tz = this.slot.z - a.pos.z;
+    // vai até o slot (pelas portas, se estiver em outra sala); perto do slot, circula olhando para o Márcio
+    let gx = this.slot.x, gz = this.slot.z;
+    if (!this.slotClear || !this.playerClear) {
+      gx = p.pos.x;
+      gz = p.pos.z;
+    }
+    if (this.steer) {
+      this.steer(a.pos.x, a.pos.z, gx, gz, this.steerOut);
+      gx = this.steerOut.x;
+      gz = this.steerOut.z;
+    }
+    let tx = gx - a.pos.x;
+    let tz = gz - a.pos.z;
     const toSlot = Math.hypot(tx, tz);
     let speed = 0;
     if (toSlot > 0.4) {
@@ -209,6 +325,12 @@ export class Enemy implements Fighter {
     if (!a.alive) return false;
     this.lastHitTime = 0;
     this.engaged = true;
+    if (!this.aware) {
+      // pego de surpresa: entra na briga já (sem tempo de reação)
+      this.aware = true;
+      this.alertIn = -1;
+      a.model.animator.setLocoSet({ idle: 'idleCombat' }, true);
+    }
     a.hp = Math.max(0, a.hp - info.damage);
     a.yaw = Math.atan2(-info.dirX, -info.dirZ);
     // empurrão dividido pela massa do arquétipo (corpos pesados recuam pouco)

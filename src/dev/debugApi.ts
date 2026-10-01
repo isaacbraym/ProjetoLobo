@@ -27,6 +27,18 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
         activeAttackers: game.director.activeAttackers(game.enemies),
         tokens: game.director.tokens,
         simTime: game.loop.simTime,
+        floor: game.encounters
+          ? {
+              room: game.floor?.current?.def.id ?? null,
+              progress: game.encounters.progress,
+              freed: game.encounters.freedCount,
+              hostages: game.encounters.totalHostages,
+              secrets: game.encounters.secretsFound,
+              groupsLeft: game.encounters.groups.filter((g) => !g.cleared).map((g) => g.id),
+              allClear: game.encounters.allClear,
+              finished: game.encounters.finished,
+            }
+          : null,
       };
     },
     start() {
@@ -118,6 +130,31 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
     },
     perf() {
       return perf.report();
+    },
+    /** Câmera fixa de inspeção (cenas de revisão do andar). */
+    cam(x: number, y: number, z: number, lx: number, ly: number, lz: number, fov = 55) {
+      game.player.setCine(true);
+      game.camera.cine = { pos: new THREE.Vector3(x, y, z), look: new THREE.Vector3(lx, ly, lz), fov, blend: 1 };
+    },
+    camOff() {
+      game.camera.cine = null;
+      game.player.setCine(false);
+    },
+    /** Mostra todas as salas (vista geral) — ignora o culling por sala. */
+    showAllRooms(on = true) {
+      if (game.floor) game.floor.forceAll = game.floor.planView = on;
+    },
+    /** Caminho da navmesh (cantos) e o próximo ponto do grafo de portas, para depurar travamentos. */
+    navPath(fx: number, fz: number, tx: number, tz: number) {
+      const f = game.floor;
+      if (!f) return null;
+      const out = new THREE.Vector3();
+      const ok = f.nextWaypoint(fx, fz, tx, tz, out);
+      const path = f.nav ? f.nav.path(new THREE.Vector3(fx, 0, fz), new THREE.Vector3(tx, 0, tz)).map((p) => [+p.x.toFixed(2), +p.z.toFixed(2)]) : null;
+      return { nav: !!f.nav, path, door: ok ? [+out.x.toFixed(2), +out.z.toFixed(2)] : null };
+    },
+    floorStats() {
+      return game.floor ? { ...game.floor.stats(), current: game.floor.current?.def.id ?? null, visible: [...game.floor.visibleRooms], navMs: game.floor.nav ? Math.round(game.floor.nav.buildMs) : null } : null;
     },
     /** Estado dos controles/mira (cenário `npm run capture controls`). */
     aimState() {
