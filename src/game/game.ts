@@ -25,6 +25,10 @@ import { Ragdoll } from './corpses/ragdoll';
 import { buildSandboxLobby, type LevelHandle } from './levels/sandboxLobby';
 import { buildFloor, type FloorHandle } from './levels/floorBuilder';
 import { Encounters } from './levels/encounters';
+import { CinematicPlayer } from './cinematics/cinematic';
+import { CinematicSchema } from './data/cinematicSchema';
+import introJson from '../../data/cinematics/intro.json';
+import { CineOverlay } from '../presentation/ui/cineOverlay';
 import { LevelSchema } from './data/levelSchema';
 import floor1Json from '../../data/levels/floor1/layout.json';
 import { archetypesData, attacksData, difficultyData, type DifficultyName } from './data/gameData';
@@ -66,6 +70,12 @@ export class Game {
   /** Andar explorável (DEC-0017). Nulo na cena de teste de combate (`?scene=sandbox-combat`). */
   floor: FloorHandle | null = null;
   encounters: Encounters | null = null;
+  cinematic!: CinematicPlayer;
+  /** Abertura: toca ao iniciar o andar (testes automáticos pulam, exceto com ?intro=1). */
+  private readonly playIntro = (() => {
+    const q = new URLSearchParams(location.search);
+    return !q.has('nointro') && (!q.has('autotest') || q.has('intro'));
+  })();
   /** 'floor' = jogo (exploração do andar); 'sandbox' = saguão com ondas, só para testes/verify. */
   readonly mode: 'floor' | 'sandbox' = new URLSearchParams(location.search).get('scene') === 'sandbox-combat' ? 'sandbox' : 'floor';
   camera!: ThirdPersonCamera;
@@ -213,6 +223,10 @@ export class Game {
     this.hud = new Hud(this.uiRoot);
     this.hud.el.classList.add('hidden');
     this.reticle = new Reticle(this.uiRoot);
+    // luz de borda das cinemáticas: sempre na cena (intensidade 0) para não mudar a contagem de luzes
+    const rim = new THREE.PointLight(0xffb36e, 0, 3, 2);
+    r.scene.add(rim);
+    this.cinematic = new CinematicPlayer(this, new CineOverlay(this.uiRoot), rim);
     this.wolf = new WerewolfSystem(this.player, this.camera, this.loop, r, this.particles, () => this.enemies, this.uiRoot);
     this.finishers = new FinisherSystem(this.player, this.camera, this.loop, this.particles, r, () => this.enemies);
     this.player.onInteract = () => this.finishers.tryStart();
@@ -347,7 +361,7 @@ export class Game {
     const inp = this.input;
     const pa = this.player.actor;
     this.refreshBodies();
-    const mouseAim = this.started && !inp.usingTouch && !inp.usingGamepad && inp.camMode === 'aim';
+    const mouseAim = this.started && !this.cinematic.active && !inp.usingTouch && !inp.usingGamepad && inp.camMode === 'aim';
     const cam = this.renderer.camera;
     const h = this.renderer.gl.domElement.clientHeight || 720;
     let state: ReticleState = 'idle';
@@ -366,7 +380,7 @@ export class Game {
     else if (this.aim.enemy && mouseAim) state = 'enemy';
     for (const e of this.enemies) e.actor.model.setHighlight(mouseAim && e === this.aim.enemy ? 1 : 0);
     this.camera.mode = inp.camMode === 'aim' && !inp.usingTouch && !inp.usingGamepad ? 'aim' : 'free';
-    this.reticle.update(this.started && !this.loop.paused && !inp.usingTouch && !inp.usingGamepad && (mouseAim ? inp.cursorInside : true), inp.cursorPx.x, inp.cursorPx.y, state, this.player.chargeLevel, !mouseAim);
+    this.reticle.update(this.started && !this.cinematic.active && !this.loop.paused && !inp.usingTouch && !inp.usingGamepad && (mouseAim ? inp.cursorInside : true), inp.cursorPx.x, inp.cursorPx.y, state, this.player.chargeLevel, !mouseAim);
     document.body.classList.toggle('aim-cursor', mouseAim && !this.loop.paused);
   }
 
@@ -387,6 +401,8 @@ export class Game {
     else if (this.floor) {
       this.encounters = new Encounters(this, this.floor);
       this.encounters.start();
+      if (this.playIntro) this.cinematic.play(CinematicSchema.parse(introJson));
+      else this.encounters.alertIntroGroups();
     }
   }
 
@@ -438,6 +454,7 @@ export class Game {
     if (this.encounters) for (const h of this.encounters.hostages) h.actor.beginStep();
     this.player.actor.beginStep();
     if (this.started) {
+      this.cinematic.fixedUpdate(dt);
       this.player.update(dt, this.input, this.camera);
       this.director.update(dt, this.enemies, this.player);
       for (const e of this.enemies) if (!e.sleeping) e.update(dt, this.player);
@@ -504,6 +521,7 @@ export class Game {
     this.input.poll(frameDt);
     const look = this.input.takeLook();
     this.camera.rotate(look.dx, look.dy);
+    this.cinematic.update(frameDt);
     if (this.started && this.input.consume((a) => a === 'camToggle')) this.toggleCamera();
     if (this.started && this.input.consume((a) => a === 'pause')) this.onPauseRequest?.();
     this.updateAim();
@@ -517,6 +535,7 @@ export class Game {
     this.wolf.update(frameDt);
     this.finishers.update(frameDt);
     this.wolf.applyVisual();
+    this.cinematic.lateUpdate();
     this.player.damageMul = this.wolf.damageMul;
     this.player.speedMul = this.wolf.speedMul;
     this.player.damageTakenMul = this.wolf.state === 'wolf' ? 0.5 : 1;

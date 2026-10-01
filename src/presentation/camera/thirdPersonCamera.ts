@@ -21,6 +21,8 @@ export class ThirdPersonCamera {
   threatCount = 0;
   /** Override cinematográfico (finalizações/transformação). */
   cine: { pos: THREE.Vector3; look: THREE.Vector3; fov: number; blend: number } | null = null;
+  /** Próximo quadro entra direto no plano cinematográfico (corte seco, sem mistura). */
+  cineSnap = false;
   private cineBlend = 0;
   private t = 0;
   private tmp = new THREE.Vector3();
@@ -115,6 +117,10 @@ export class ThirdPersonCamera {
 
     // cinematográfica
     const wantCine = this.cine ? 1 : 0;
+    if (this.cineSnap && this.cine) {
+      this.cineBlend = 1;
+      this.cineSnap = false;
+    }
     this.cineBlend = damp(this.cineBlend, wantCine, this.cine ? 0.05 : 0.12, dt);
     let fov = this.fovBase + this.fovKick;
     if (this.cine && this.cineBlend > 0.001) {

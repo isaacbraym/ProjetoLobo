@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ArchetypesFileSchema, AttacksFileSchema, DifficultyFileSchema, crossValidate } from '../../src/game/data/schemas';
 import { LevelSchema } from '../../src/game/data/levelSchema';
+import { CinematicSchema } from '../../src/game/data/cinematicSchema';
 
 const root = resolve(import.meta.dirname, '..', '..');
 const read = (p: string) => JSON.parse(readFileSync(resolve(root, p), 'utf8'));
@@ -22,6 +23,7 @@ const level1 = check('data/levels/floor1/layout.json', () => LevelSchema.parse(r
 if (level1 && arch) {
   for (const g of level1.groups) for (const m of g.members) if (!arch.archetypes[m.a]) errors.push(`floor1 ${g.id}: arquétipo ${m.a} não existe`);
 }
+check('data/cinematics/intro.json', () => CinematicSchema.parse(read('data/cinematics/intro.json')));
 const authored = check('data/anim/authored.json', () => read('data/anim/authored.json'));
 if (attacks && arch) errors.push(...crossValidate(attacks, arch));
 // L-04: nenhum ataque inimigo sem telegrafia mínima (a telegrafia vem da dificuldade, ≥ 0,15 s pelo schema)

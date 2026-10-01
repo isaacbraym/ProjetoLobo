@@ -6,6 +6,7 @@ import {
   EffectPass,
   RenderPass,
   SMAAEffect,
+  DepthOfFieldEffect,
   SMAAPreset,
   ToneMappingEffect,
   ToneMappingMode,
@@ -25,6 +26,10 @@ export class Renderer {
   preset!: QualityPreset;
   private bloom?: BloomEffect;
   private chroma?: ChromaticAberrationEffect;
+  /** Profundidade de campo (só em cinemáticas; desligada no preset Baixo). */
+  private dof?: DepthOfFieldEffect;
+  private dofPass?: EffectPass;
+  private dofTarget = new THREE.Vector3();
   private dpr = 1;
   private fpsAcc = 0;
   private fpsFrames = 0;
@@ -71,6 +76,16 @@ export class Renderer {
     const p = this.preset;
     this.composer = new EffectComposer(this.gl, { frameBufferType: THREE.HalfFloatType, multisampling: 0 });
     this.composer.addPass(new RenderPass(this.scene, this.camera));
+    if (p.name !== 'low') {
+      this.dof = new DepthOfFieldEffect(this.camera, { focusDistance: 2, focusRange: 0.9, bokehScale: 2.5, resolutionScale: 0.5 });
+      this.dof.target = this.dofTarget;
+      this.dofPass = new EffectPass(this.camera, this.dof);
+      this.dofPass.enabled = false;
+      this.composer.addPass(this.dofPass);
+    } else {
+      this.dof = undefined;
+      this.dofPass = undefined;
+    }
     const effects = [];
     if (p.bloom) {
       this.bloom = new BloomEffect({ intensity: 0.9, luminanceThreshold: 0.82, luminanceSmoothing: 0.25, mipmapBlur: true, radius: 0.7 });
@@ -114,6 +129,16 @@ export class Renderer {
     if (Math.abs(next - this.dpr) > 0.01) {
       this.dpr = next;
       this.resize();
+    }
+  }
+
+  /** Liga/desliga a profundidade de campo com foco em `target` (cinemáticas). */
+  setDof(on: boolean, target?: THREE.Vector3, bokeh = 2.5): void {
+    if (!this.dofPass || !this.dof) return;
+    this.dofPass.enabled = on;
+    if (on && target) {
+      this.dofTarget.copy(target);
+      this.dof.bokehScale = bokeh;
     }
   }
 

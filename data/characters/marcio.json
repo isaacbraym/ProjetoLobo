@@ -53,8 +53,14 @@
     "shoeOffset": 0.012,
     "sleeve": 0.55,
     "ankleZ": 0.11,
-    "collarHeight": 0.012,
-    "collarSlope": 0.9
+    "collarHeight": 0.02,
+    "collarSlope": 0.9,
+    "collar": {
+      "height": 0.032,
+      "offset": 0.004,
+      "trim": 0.0055,
+      "trimColor": "#aaa69c"
+    }
   },
   "hair": {
     "thickness": 0.004,

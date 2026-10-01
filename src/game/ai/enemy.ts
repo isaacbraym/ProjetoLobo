@@ -54,6 +54,10 @@ export class Enemy implements Fighter {
   pre: PreState | null = null;
   /** Fora da vista e distraído: não simula nem anima (sala longe). */
   sleeping = false;
+  /** Controlado por cinemática (a IA não mexe). */
+  scripted = false;
+  /** Escondido por cinemática (aparece depois). */
+  hidden = false;
   /** Já percebeu o Márcio (inimigos posicionados começam distraídos). */
   aware = true;
   private alertIn = -1;
@@ -161,7 +165,7 @@ export class Enemy implements Fighter {
     this.lastHitTime += dt;
     this.cooldown = Math.max(0, this.cooldown - dt);
     const a = this.actor;
-    if (!a.alive) return;
+    if (!a.alive || this.scripted) return;
     if (!this.aware && this.state !== 'hit' && this.state !== 'stagger' && this.state !== 'down' && this.state !== 'getup') {
       this.updateUnaware(dt, player);
       return;

@@ -44,8 +44,11 @@ export function createBot(game: Game, seed = 7) {
     const me = p.actor;
     let best = null as null | (typeof game.enemies)[number];
     let bd = Infinity;
+    // arena trancada: só quem está do lado de dentro da grade
+    const zone = game.encounters?.lockedZone() ?? null;
     for (const e of game.enemies) {
       if (!e.alive || (game.floor && !e.aware)) continue;
+      if (zone && !game.encounters!.inside(zone, e.actor.pos.x, e.actor.pos.z)) continue;
       const d = me.distanceTo(e.actor);
       if (d < bd) {
         bd = d;

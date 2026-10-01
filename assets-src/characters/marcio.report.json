@@ -93,15 +93,16 @@
     "validPath": "C:\\PROJETOS\\Lobo\\.agent-tmp\\face\\texture_valid.png"
   },
   "joints_moved": 52,
-  "triangles": 27542,
+  "triangles": 27925,
   "height_m": 1.7508,
   "bones": 65,
   "meshes": {
-    "Body": 6527,
-    "Shirt": 2933,
+    "Body": 6452,
+    "Shirt": 2970,
     "Pants": 2051,
     "Shoe_L": 1409,
     "Shoe_R": 1409,
+    "Collar": 240,
     "Hair": 766,
     "Beard": 699,
     "Eye_L": 72,
@@ -118,7 +119,8 @@
     "M_Polo",
     "M_Shoes",
     "M_Skin",
-    "M_Teeth"
+    "M_Teeth",
+    "M_Trim"
   ],
   "faceQA": {
     "renders": [
@@ -127,15 +129,15 @@
       ".agent-tmp\\characters\\marcio\\face_qa_profile.png"
     ],
     "front": {
-      "meanErrPctInterocular": 0.61,
-      "maxErrPct": 1.58
+      "meanErrPctInterocular": 0.59,
+      "maxErrPct": 1.39
     },
     "three_quarter": {
-      "meanErrPctInterocular": 9.55,
-      "maxErrPct": 29.82
+      "meanErrPctInterocular": 9.75,
+      "maxErrPct": 30.29
     }
   },
   "out": "public\\assets\\characters\\marcio.glb",
-  "outHash": "e9aa7bf96be0c099b32659c7f1a134950e4e6ab7531b398b91faf4843fd24b7c",
+  "outHash": "8a9f9eb41a5b0c7b0cbfa5ba5508fa88cbbb8d042e2f1fa47029d13b83582f30",
   "qa": ".agent-tmp\\characters\\marcio"
 }

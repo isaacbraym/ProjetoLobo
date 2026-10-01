@@ -71,6 +71,8 @@ export class Encounters {
   secretsFound = 0;
   /** progresso para o bot/verify (muda quando algo avança) */
   progress = 0;
+  /** Cinemática rodando: sem percepção, arenas nem segredos. */
+  paused = false;
 
   constructor(
     private game: Game,
@@ -373,8 +375,23 @@ export class Encounters {
     };
   }
 
-  private inZone(z: [number, number, number, number], x: number, zz: number): boolean {
-    return x >= z[0] && x <= z[2] && zz >= z[1] && zz <= z[3];
+  /** margem > 0 aumenta a zona; < 0 encolhe */
+  private inZone(z: [number, number, number, number], x: number, zz: number, margin = 0): boolean {
+    return x >= z[0] - margin && x <= z[2] + margin && zz >= z[1] - margin && zz <= z[3] + margin;
+  }
+
+  /** Zona da arena trancada em que o Márcio está (o bot só persegue quem está do lado de dentro). */
+  lockedZone(): [number, number, number, number] | null {
+    const pp = this.game.player.actor.pos;
+    for (const g of this.groups) {
+      const ar = g.arena;
+      if (ar && ar.state === 'closed' && this.inZone(ar.def.zone, pp.x, pp.z)) return ar.def.zone;
+    }
+    return null;
+  }
+
+  inside(z: [number, number, number, number], x: number, zz: number): boolean {
+    return this.inZone(z, x, zz);
   }
 
   // ---------- segredos ----------
@@ -451,6 +468,8 @@ export class Encounters {
     this.acc += dt;
     if (this.acc < 0.1) return; // lógica a 10 Hz
     this.acc = 0;
+    this.updateVisibility();
+    if (this.paused) return;
     const pp = p.actor.pos;
     const room = this.floor.current;
     // checkpoint e nome da sala na primeira visita
@@ -472,14 +491,27 @@ export class Encounters {
           if (this.canSee(e)) this.alertGroup(g, e, rngs.ai.range(0.25, 0.55));
         }
       }
-      // arena: entrou na zona com o grupo vivo → fecha as saídas
+      // arena: entrou na zona com o grupo vivo → fecha as saídas. Só fecha com o grupo inteiro do lado de dentro
+      // (membro que saiu atrás do Márcio ficaria trancado do lado de fora e a arena nunca acabaria).
       const ar = g.arena;
       if (ar && ar.state === 'idle' && this.inZone(ar.def.zone, pp.x, pp.z) && g.members.some((e) => e.alive)) {
-        ar.state = 'closed';
-        ar.barriers.forEach((b) => b.close());
-        this.alertGroup(g, null, 0.15);
-        this.game.hud.showBanner(ar.def.banner, 'ninguém sai', 1.6);
-        events.emit('EncounterStart', { id: ar.id, arena: true });
+        if (g.members.every((e) => !e.alive || this.inZone(ar.def.zone, e.actor.pos.x, e.actor.pos.z, -0.4))) {
+          ar.state = 'closed';
+          ar.closeT = 0;
+          ar.barriers.forEach((b) => b.close());
+          this.alertGroup(g, null, 0.15);
+          this.game.hud.showBanner(ar.def.banner, 'ninguém sai', 1.6);
+          events.emit('EncounterStart', { id: ar.id, arena: true });
+        } else if (!g.alerted) this.alertGroup(g, null, 0.15);
+      }
+      // trancada com alguém do grupo do lado de fora (empurrado, caminho estranho) por 3 s → reabre e tenta de novo
+      if (ar && ar.state === 'closed') {
+        const out = g.members.some((e) => e.alive && !this.inZone(ar.def.zone, e.actor.pos.x, e.actor.pos.z, 0.8));
+        ar.closeT = out ? ar.closeT + 0.1 : 0;
+        if (ar.closeT > 3) {
+          ar.state = 'idle';
+          ar.barriers.forEach((b) => b.open());
+        }
       }
       // grupo derrotado
       if (!g.cleared && g.members.every((e) => !e.alive)) {
@@ -513,22 +545,25 @@ export class Encounters {
         this.game.hud.showBanner('TÉRREO LIMPO', L.objectives.finalHint, 4);
       }
     }
-    // visibilidade/sono: inimigos e reféns de salas não visíveis somem e não animam
+    this.tmp.set(0, 0, 0);
+  }
+
+  /** Visibilidade/sono: inimigos e reféns de salas não visíveis somem e não animam. */
+  private updateVisibility(): void {
     const vis = this.floor.visibleRooms;
     for (const g of this.groups)
       for (const e of g.members) {
         if (!e.alive) continue;
         const r = this.floor.roomAt(e.actor.pos.x, e.actor.pos.z);
-        const show = e.aware || !r || vis.has(r.def.id);
+        const show = !e.hidden && (e.aware || !r || vis.has(r.def.id));
         e.actor.model.setVisible(show);
-        e.sleeping = !show;
+        e.sleeping = !show && !e.scripted;
       }
     for (const h of this.hostages) {
       if (h.state === 'gone') continue;
       const r = this.floor.roomAt(h.actor.pos.x, h.actor.pos.z);
-      h.actor.model.setVisible(!r || vis.has(r.def.id) || h.state === 'fleeing');
+      h.actor.model.setVisible(!h.hidden && (!r || vis.has(r.def.id) || h.state === 'fleeing'));
     }
-    this.tmp.set(0, 0, 0);
   }
 
   /** Segredos ainda não achados (o bot de teste visita). */

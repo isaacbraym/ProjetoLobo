@@ -93,6 +93,12 @@ export class Actor {
     this.pos.set(nx, ny - 0.9, nz);
   }
 
+  /** Movimento roteirizado (cinemática): sem colisão, mas com interpolação visual entre passos. */
+  scriptMove(x: number, z: number): void {
+    this.pos.set(x, this.pos.y, z);
+    this.body.setNextKinematicTranslation({ x, y: this.pos.y + 0.9, z });
+  }
+
   /** Teleporte sem colisão (spawn, debug). */
   teleport(p: THREE.Vector3): void {
     this.pos.copy(p);

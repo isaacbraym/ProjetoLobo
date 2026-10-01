@@ -38,7 +38,22 @@ Atualizado: 2026-10-01 · Por: sessão 2 (Claude Opus 5.5) — seguindo `docs/PR
   verify** (bot completa o andar: 10/10 reféns, 3/3 segredos).
   **Pendente no B2:** desempenho com o andar inteiro (≈600–750 draw calls com 15+ inimigos visíveis; meta Medium 180 →
   mesclar personagens/sombras na F), câmera em interiores (C), props destrutíveis, mais narrativa ambiental.
-- Próximo: **B** (cinemática de abertura no átrio), depois **C** (câmera).
+- **B ✔ Cinemática de abertura** (DEC-0024): `data/cinematics/intro.json` (23,6 s, validado por schema
+  `src/game/data/cinematicSchema.ts`) tocado por `src/game/cinematics/cinematic.ts` (reutilizável para a intro do
+  Clóvis): plano de estabelecimento do átrio → Márcio entra andando olhando o celular com o café na outra mão
+  (camada de parte de cima no `Animator.setUpper`, objetos posicionados em espaço de mundo depois da animação) →
+  close com profundidade de campo + luz de recorte → "…hm?" → três capangas surgem (grupo da recepção escondido até
+  ali), provocam ("o tiozão do cafezinho", "Larga o café, vovô. PERDEU!") → café cai e espirra, guarda de luta →
+  título "MÁRCIO · o prédio errado no dia errado" em contra-plongée → passa para o jogo com o grupo já alertado.
+  Câmera por chaves com corte seco ou interpolação, opcionalmente ancoradas na cabeça de um ator (o enquadramento
+  segue a animação). Legendas PT-BR + barras de cinema (`cineOverlay.ts`); pular com Espaço/Enter/Esc/toque (após
+  1 s); só na primeira vez por sessão. `?nointro=1` pula; `?autotest=1` também, salvo `&intro=1`.
+  Evidência: `npm run capture intro` (folha de contato `intro_sheet.png`, 15 quadros) e **`e2e:intro` no verify**
+  (legenda aparece, Espaço pula, controle volta ao Márcio). Gola da polo virou gola dobrada procedural no Blender
+  (sem pele aparecendo no ombro/pescoço). **NÃO VALIDADO:** som (headless sem áudio audível), ritmo em 60 FPS reais.
+  Arena: só fecha com o grupo inteiro dentro (antes podia trancar capangas do lado de fora → percurso travava às
+  vezes); reabre se alguém do grupo ficar 3 s do lado de fora.
+- Próximo: **C** (câmera profissional) — a câmera de jogo logo após a abertura deixa o Márcio no canto em interiores.
 
 **Estado:** M0 ✔ · M1 v1 ✔ (Márcio gerado no Blender) · M2 em andamento (combate jogável, inimigos reais) ·
 M3 v1 ✔ (rosto por projeção da foto) · M5 v1 ✔ (transformação em lobisomem jogável, sem morph targets ainda).

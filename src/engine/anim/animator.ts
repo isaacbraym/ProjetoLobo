@@ -26,6 +26,8 @@ interface ActiveShot {
 }
 
 export type LocoSlot = 'idle' | 'walk' | 'jog' | 'sprint' | 'strafeL' | 'strafeR';
+/** Ossos da parte de cima (esqueleto UE/UAL). */
+const UPPER_BONES = /^(spine_0[23]|neck_01|Head|clavicle_|upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_)/;
 const SLOTS: LocoSlot[] = ['idle', 'walk', 'jog', 'sprint', 'strafeL', 'strafeR'];
 
 interface Retiring {
@@ -62,6 +64,11 @@ export class Animator {
   private lodAcc = 0;
   lodHz = 60;
   private speedRef: Partial<Record<LocoSlot, number>> = {};
+  // camada da parte de cima do corpo (cinemáticas): clipe filtrado para tronco superior, braços e cabeça
+  private upperAction: THREE.AnimationAction | null = null;
+  private upperW = 0;
+  private upperTarget = 0;
+  private upperClips = new Map<string, THREE.AnimationClip>();
 
   constructor(root: THREE.Object3D, private lib: AnimLibrary, idle = 'idle') {
     this.mixer = new THREE.AnimationMixer(root);
@@ -89,6 +96,33 @@ export class Animator {
       this.speedRef[slot] = this.lib.locoSpeed[name] ?? this.lib.locoSpeed[slot];
     }
     this.swapT = instant ? 1 : 0;
+  }
+
+  /**
+   * Camada da parte de cima (tronco superior, braços, cabeça) por cima da locomoção — ex.: andar olhando o celular.
+   * O mixer normaliza os pesos por osso: peso 9 ≈ 90% da pose da camada nesses ossos; pernas seguem a locomoção.
+   */
+  setUpper(name: string | null): void {
+    if (!name) {
+      this.upperTarget = 0;
+      return;
+    }
+    let clip = this.upperClips.get(name);
+    if (!clip) {
+      const src = this.lib.get(name);
+      clip = new THREE.AnimationClip(`${src.name}_upper`, src.duration, src.tracks.filter((t) => UPPER_BONES.test(t.name.split('.')[0]!)));
+      this.upperClips.set(name, clip);
+    }
+    const a = this.mixer.clipAction(clip);
+    if (this.upperAction && this.upperAction !== a) this.upperAction.stop();
+    if (this.upperAction !== a) {
+      a.reset();
+      a.setLoop(THREE.LoopRepeat, Infinity);
+      a.play();
+      a.setEffectiveWeight(0);
+    }
+    this.upperAction = a;
+    this.upperTarget = 1;
   }
 
   /** Compatível com versões antigas: troca só o idle. */
@@ -199,6 +233,15 @@ export class Animator {
     if (s && s.opts.hold && s.done) sum = 1;
     this.locoWeight = clamp(1 - sum, 0, 1);
     this.applyLocoWeights(step);
+    if (this.upperAction) {
+      this.upperW = damp(this.upperW, this.upperTarget, 0.12, step);
+      this.upperAction.setEffectiveWeight(this.upperW * 9);
+      if (this.upperTarget === 0 && this.upperW < 0.01) {
+        this.upperAction.stop();
+        this.upperAction = null;
+        this.upperW = 0;
+      }
+    }
     this.mixer.update(step);
   }
 

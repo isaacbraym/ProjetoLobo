@@ -24,6 +24,8 @@ export class Hostage implements Fighter {
   steer: ((fx: number, fz: number, tx: number, tz: number, out: THREE.Vector3) => void) | null = null;
   onFreed: ((h: Hostage) => void) | null = null;
   private counted = false;
+  /** Escondido por cinemática. */
+  hidden = false;
   onGone: ((h: Hostage) => void) | null = null;
 
   constructor(
@@ -49,8 +51,8 @@ export class Hostage implements Fighter {
   /** A briga começou perto: reza/torce baixinho. */
   hope(): void {
     if (this.state !== 'captive') return;
+    // mantém a pose (ajoelhado continua ajoelhado: trocar de clipe fazia levantar do nada)
     this.state = 'hope';
-    this.actor.model.animator.setLocoSet({ idle: 'hostageScared' });
   }
 
   /** O grupo caiu: levanta e foge pela saída. */

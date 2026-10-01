@@ -5,6 +5,8 @@ import { createBot } from './botPilot';
 import { reseedAll } from '../core/rng';
 import type { QualityName } from '../engine/render/quality';
 import { attacksData } from '../game/data/gameData';
+import { CinematicSchema } from '../game/data/cinematicSchema';
+import introJson from '../../data/cinematics/intro.json';
 
 /** API de debug para Playwright/agentes. Só instalada em dev ou ?autotest=1 em localhost. */
 export function installDebugApi(game: Game, perf: PerfOverlay): void {
@@ -130,6 +132,13 @@ export function installDebugApi(game: Game, perf: PerfOverlay): void {
     },
     perf() {
       return perf.report();
+    },
+    /** Toca a abertura (cenário `npm run capture intro`). */
+    intro() {
+      game.cinematic.play(CinematicSchema.parse(introJson));
+    },
+    cineState() {
+      return { active: game.cinematic.active, t: +game.cinematic.t.toFixed(2) };
     },
     /** Câmera fixa de inspeção (cenas de revisão do andar). */
     cam(x: number, y: number, z: number, lx: number, ly: number, lz: number, fov = 55) {

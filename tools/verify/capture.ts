@@ -60,6 +60,20 @@ try {
     writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
     console.log(`[capture] controles: ${failed.length ? 'FALHOU ' + failed.join(', ') : 'tudo ok'}`);
     console.log(JSON.stringify(checks));
+  } else if (scenario === 'intro') {
+    // abertura: quadros ao longo da cinemática para revisão de direção (enquadramento, ritmo, pés no chão)
+    const { page, logs } = await openGame(browser, 'intro=1');
+    const marks = [0.4, 2.5, 4.6, 6.0, 7.8, 9.0, 10.6, 12.2, 13.4, 15.2, 17.3, 18.8, 20.6, 22.2, 24.5];
+    const t0 = Date.now();
+    const info: unknown[] = [];
+    for (const [i, m] of marks.entries()) {
+      const wait = m * 1000 - (Date.now() - t0);
+      if (wait > 0) await page.waitForTimeout(wait);
+      await page.screenshot({ path: resolve(dir, `intro_${String(i).padStart(2, '0')}.png`) });
+      info.push({ mark: m, cine: await lobo(page, 'cineState()') });
+    }
+    writeFileSync(resolve(dir, 'state.json'), JSON.stringify(info, null, 2));
+    writeFileSync(resolve(dir, 'logs.txt'), logs.join('\n'));
   } else if (scenario === 'walk') {
     const { page, logs } = await openGame(browser, 'perf=1');
     const r = await runWalkthrough(page, dir, { maxSeconds: Number(process.argv[3] ?? 300), timeScale: Number(process.argv[4] ?? 1) });

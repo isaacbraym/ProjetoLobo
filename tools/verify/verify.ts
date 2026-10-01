@@ -126,7 +126,20 @@ async function e2e(): Promise<void> {
       const errors = logs.filter((l) => l.startsWith('[pageerror]') || l.startsWith('[error]'));
       steps.push({ name: 'e2e:controls', ok: r.failed.length === 0 && errors.length === 0, ms: 0, detail: { failed: r.failed, errors, checks: r.checks } });
     }
-    // 4) andar 1 (DEC-0017): o bot explora, limpa os grupos, liberta reféns e chega no auditório; 30 s sem progresso = falha
+    // 4) abertura: toca, mostra legenda e pula com uma tecla devolvendo o controle
+    {
+      const { page, logs } = await openGame(browser, 'intro=1');
+      await page.waitForTimeout(2200);
+      const during = (await lobo(page, 'cineState()')) as { active: boolean; t: number };
+      const caption = await page.locator('.cine__caption.on').count();
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(400);
+      const after = (await lobo(page, 'cineState()')) as { active: boolean };
+      const st = (await lobo(page, 'state()')) as { player: { state: string } };
+      const errors = logs.filter((l) => l.startsWith('[pageerror]') || l.startsWith('[error]'));
+      steps.push({ name: 'e2e:intro', ok: during.active && caption === 1 && !after.active && st.player.state !== 'cine' && errors.length === 0, ms: 0, detail: { during, caption, after, player: st.player.state, errors } });
+    }
+    // 5) andar 1 (DEC-0017): o bot explora, limpa os grupos, liberta reféns e chega no auditório; 30 s sem progresso = falha
     {
       const { page, logs } = await openGame(browser, 'perf=1');
       const r = await runWalkthrough(page, null, { maxSeconds: 160, timeScale: 2 });
@@ -138,7 +151,7 @@ async function e2e(): Promise<void> {
     await browser.close();
     killTree(server);
   }
-  for (const s of steps.slice(-5)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
+  for (const s of steps.slice(-6)) console.log(`${s.ok ? '✔' : '✘'} ${s.name}`, s.ok ? '' : JSON.stringify(s.detail).slice(0, 800));
   steps.push({ name: 'e2e', ok: true, ms: Date.now() - t0 });
 }
 

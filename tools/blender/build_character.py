@@ -305,6 +305,71 @@ def edge_alpha(obj, hops=3, rgb_fn=None):
 
 
 
+
+def polo_collar(body, cc, p0, n, ub, m_shirt, shirt_off):
+    """Gola de polo procedural: contorno do pescoço no plano do corte (raios a partir do eixo do pescoço contra a
+    malha do corpo) → faixa em pé levemente aberta, 70% tecido da polo + 30% friso claro. Pesos copiados do corpo."""
+    from mathutils.bvhtree import BVHTree
+    bm = bmesh.new()
+    bm.from_mesh(body.data)
+    bm.transform(body.matrix_world)
+    tree = BVHTree.FromBMesh(bm)
+    bm.free()
+    nh, nt = ub['neck_01']
+    # centro: eixo do pescoço cruzando o plano do corte
+    dirv = (nt - nh)
+    denom = dirv.dot(n)
+    t = (p0 - nh).dot(n) / denom if abs(denom) > 1e-6 else 0.0
+    c = nh + dirv * max(0.0, min(1.5, t))
+    u = Vector((1, 0, 0))
+    w = n.cross(u).normalized()
+    h_c = cc.get('height', 0.034)
+    trim = cc.get('trim', 0.009)
+    seg = 40
+    ring = []
+    for i in range(seg):
+        a = (i / seg) * math.tau
+        d = (u * math.cos(a) + w * math.sin(a)).normalized()
+        hit = tree.ray_cast(c + d * 0.25, -d, 0.3)  # de fora para dentro: pega a superfície externa
+        if hit[0] is None:
+            hit = (c + d * 0.07, None, None, None)
+        ring.append((hit[0], d))
+    me = bpy.data.meshes.new('Collar')
+    obj = bpy.data.objects.new('Collar', me)
+    bpy.context.collection.objects.link(obj)
+    bm = bmesh.new()
+    rows = []
+    # gola deitada: sobe um pouco no pescoço e dobra para fora/baixo sobre a camisa (cobre a emenda)
+    base_off = shirt_off + cc.get('offset', 0.004)
+    profile = ((0.0, n * 0.012), (h_c * 0.55, -n * 0.006), (h_c * 0.55 + trim * 1.4, -n * 0.012))
+    for k, (out, up) in enumerate(profile):
+        rows.append([bm.verts.new(pt + d * (base_off + out) + up) for pt, d in ring])
+    for r in range(2):
+        for i in range(seg):
+            j = (i + 1) % seg
+            f = bm.faces.new((rows[r][i], rows[r][j], rows[r + 1][j], rows[r + 1][i]))
+            f.material_index = 1 if r == 1 else 0
+            f.smooth = True
+    bm.normal_update()
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(m_shirt)
+    me.materials.append(material('M_Trim', srgb(cc.get('trimColor', '#c9c6bd')), 0.7))
+    activate(obj)
+    # normais para fora (a faixa foi construída no sentido anti-horário visto de cima → corrige se precisar)
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    sd = obj.modifiers.new('Solidify', 'SOLIDIFY')
+    sd.thickness = 0.003
+    sd.offset = -1
+    bpy.ops.object.modifier_apply(modifier=sd.name)
+    bpy.ops.object.shade_smooth()
+    transfer_weights(obj, body)
+    return obj
+
+
 def set_col(obj, rgba):
     """Atributo de cor por vértice 'Col' (RGBA float) a partir de um array (N, 4)."""
     me = obj.data
@@ -517,11 +582,21 @@ def main():
     def any_dom(f, names):
         return any(NAME_MAP.get(dom[v.index], dom[v.index]) in names for v in f.verts)
 
+    collar_p0 = Vector((0, -0.03, neck_z + cl.get('collarHeight', 0.035)))
+    collar_n = Vector((0, -cl.get('collarSlope', 0.75), 1)).normalized()
+
+    def collar_dist(co_):
+        # > 0 acima do corte da gola (pele à mostra), < 0 abaixo (coberto pela camisa)
+        return (co_ - collar_p0).dot(collar_n)
+
     shirt = shell_from_faces(
         body, lambda f: any_dom(f, shirt_bones), 'Shirt',
         lambda v: cl['shirtOffset'] + (belly if (v.co.y < ub['spine_01'][0].y - 0.04 and v.co.z < ub['spine_03'][0].z) else 0),
         m_shirt, solidify=0.004, smooth=6, smooth_factor=0.45,
         cuts=[((0, 0, hem_z), (0, 0, -1)), ((0, -0.03, neck_z + cl.get('collarHeight', 0.035)), (0, -cl.get('collarSlope', 0.75), 1))] + arm_cuts)
+    collar = None
+    if cl.get('collar'):
+        collar = polo_collar(body, cl['collar'], collar_p0, collar_n, ub, m_shirt, cl['shirtOffset'])
     pants = shell_from_faces(
         body, lambda f: any_dom(f, {'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r'}), 'Pants', cl['pantsOffset'],
         m_pants, solidify=0.003, smooth=14, smooth_factor=0.55,
@@ -662,7 +737,9 @@ def main():
     bm.from_mesh(body.data)
     def inside_shirt(v):
         b = NAME_MAP.get(dom[v.index], dom[v.index]) if v.index < len(dom) else None
-        if b not in shirt_bones or v.co.z < hem_z + 0.02 or v.co.z > neck_z - 0.01:
+        # coberto = abaixo do plano real do corte da gola (antes: altura absoluta deixava pele no topo do ombro
+        # atravessar a manga quando o braço desce)
+        if b not in shirt_bones or v.co.z < hem_z + 0.02 or collar_dist(v.co) > -0.012:
             return False
         if not long_sleeve and b in ('upperarm_l', 'upperarm_r') and along(v.index, b) > sleeve - 0.08:
             return False
@@ -709,7 +786,7 @@ def main():
                 g_foot.add([v.index], 1.0 - t, 'REPLACE')
             if t > 0.0:
                 g_ball.add([v.index], t, 'REPLACE')
-    meshes = [body, shirt, pants, shoes_l, shoes_r] + ([hair] if hair else []) + ([beard] if beard else []) + list(parts.values())
+    meshes = [body, shirt, pants, shoes_l, shoes_r] + ([collar] if collar else []) + ([hair] if hair else []) + ([beard] if beard else []) + list(parts.values())
     for obj in meshes:
         for g in [g for g in obj.vertex_groups if g.name not in bones and NAME_MAP.get(g.name, g.name) not in bones]:
             obj.vertex_groups.remove(g)
